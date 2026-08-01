@@ -1,0 +1,23 @@
+# Normalise to LF in the repository. Shell scripts, Dockerfiles and the Makefile MUST be LF
+# or they break inside Linux containers, so those are pinned explicitly.
+* text=auto eol=lf
+
+*.sh        text eol=lf
+*.bash      text eol=lf
+Makefile    text eol=lf
+Dockerfile  text eol=lf
+*.py        text eol=lf
+*.go        text eol=lf
+*.yaml      text eol=lf
+*.yml       text eol=lf
+*.sql       text eol=lf
+*.jsonl     text eol=lf
+
+# Windows-only helpers keep CRLF.
+*.ps1       text eol=crlf
+*.bat       text eol=crlf
+
+# Never touch binaries.
+*.png       binary
+*.jpg       binary
+*.pdf       binary
