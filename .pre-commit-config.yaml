@@ -1,0 +1,45 @@
+# Install with: pre-commit install
+default_language_version:
+  python: python3.11
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+        args: [--allow-multiple-documents]
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: [--maxkb=5120]
+      - id: detect-private-key
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.6
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2
+    hooks:
+      - id: gitleaks
+        args: [--config=.gitleaks.toml]
+
+  - repo: local
+    hooks:
+      - id: size-check
+        name: repo size budget
+        entry: bash scripts/size_check.sh
+        language: system
+        pass_filenames: false
+
+      - id: no-handwritten-results
+        name: benchmark results must come from make bench
+        entry: bash scripts/check_results_provenance.sh
+        language: system
+        files: ^benchmarks/results/.*\.json$
+        pass_filenames: true

@@ -1,0 +1,24 @@
+title = "LLMRouter gitleaks config"
+
+[extend]
+useDefault = true
+
+# Demo tenant keys are intentionally committed and are not secrets.
+[[rules]]
+id = "llmrouter-demo-tenant-key"
+description = "Allow the obviously-fake demo tenant keys"
+regex = '''demo-tenant-[a-l]'''
+[rules.allowlist]
+regexTarget = "match"
+regexes = ['''demo-tenant-[a-l]''']
+
+[allowlist]
+description = "Paths that legitimately contain key-shaped strings"
+paths = [
+  '''config/tenants\.yaml''',
+  '''\.env\.example''',
+  '''services/guardrails/app/detectors/secrets\.py''',
+  '''services/guardrails/tests/.*''',
+  '''seed/generate_.*\.py''',
+  '''docs/.*\.md''',
+]
