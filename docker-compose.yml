@@ -1,0 +1,246 @@
+# LLMRouter -- the whole demo stack.
+#
+#   make demo   brings this up, seeds ClickHouse and runs a load burst.
+#   make down   tears it down including volumes.
+#
+# Nothing here reaches the public internet at runtime. Provider calls are served by the
+# in-process mock harness (PROVIDER_MODE=mock) and the embedding model is baked into the
+# embedder image at build time.
+
+name: llmrouter
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+x-restart: &default-restart
+  restart: unless-stopped
+
+services:
+  # ===========================================================================
+  # Hot path
+  # ===========================================================================
+  gateway:
+    build:
+      context: ./services/gateway
+      dockerfile: Dockerfile
+    image: llmrouter/gateway:dev
+    <<: [*default-restart]
+    logging: *default-logging
+    ports:
+      - "8080:8080"   # OpenAI-compatible API
+      - "9090:9090"   # Prometheus metrics
+    env_file: [.env.example]
+    environment:
+      GATEWAY_ADDR: ":8080"
+      METRICS_ADDR: ":9090"
+      PROVIDER_MODE: ${PROVIDER_MODE:-mock}
+      PROVIDERS_CONFIG: /etc/llmrouter/providers.yaml
+      POLICIES_CONFIG: /etc/llmrouter/policies.yaml
+      TENANTS_CONFIG: /etc/llmrouter/tenants.yaml
+      MOCK_FIXTURES: /etc/llmrouter/fixtures/responses.jsonl
+      REDIS_URL: redis://redis:6379/0
+      BUDGET_REDIS_URL: redis://redis:6379/1
+      QDRANT_URL: http://qdrant:6333
+      EMBEDDER_URL: http://embedder:8000
+      GUARDRAILS_URL: http://guardrails:8000
+      CLICKHOUSE_URL: http://clickhouse:8123
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
+      OTEL_SERVICE_NAME: llmrouter-gateway
+    volumes:
+      - ./config:/etc/llmrouter:ro
+      - ./seed/fixtures:/etc/llmrouter/fixtures:ro
+    depends_on:
+      redis: { condition: service_healthy }
+      qdrant: { condition: service_started }
+      embedder: { condition: service_healthy }
+      guardrails: { condition: service_healthy }
+      clickhouse: { condition: service_healthy }
+    healthcheck:
+      test: ["CMD", "/gateway", "-healthcheck"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+
+  guardrails:
+    build:
+      context: ./services/guardrails
+    image: llmrouter/guardrails:dev
+    <<: [*default-restart]
+    logging: *default-logging
+    ports: ["8000:8000"]
+    environment:
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      GUARDRAILS_TOXICITY_ENABLED: "false"
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
+      OTEL_SERVICE_NAME: llmrouter-guardrails
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://localhost:8000/healthz')"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 5s
+
+  embedder:
+    build:
+      context: ./services/embedder
+    image: llmrouter/embedder:dev
+    <<: [*default-restart]
+    logging: *default-logging
+    ports: ["8001:8000"]
+    environment:
+      EMBEDDER_MODE: ${EMBEDDER_MODE:-onnx}
+      EMBEDDING_DIM: "384"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://localhost:8000/healthz')"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+
+  # ===========================================================================
+  # Stateful dependencies
+  # ===========================================================================
+  redis:
+    image: redis:7.4-alpine
+    <<: [*default-restart]
+    logging: *default-logging
+    command: ["redis-server", "--appendonly", "no", "--save", ""]
+    ports: ["6379:6379"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 2s
+      retries: 20
+
+  qdrant:
+    image: qdrant/qdrant:v1.12.4
+    <<: [*default-restart]
+    logging: *default-logging
+    ports: ["6333:6333"]
+    environment:
+      QDRANT__TELEMETRY_DISABLED: "true"
+    volumes:
+      - qdrant-data:/qdrant/storage
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:24.8-alpine
+    <<: [*default-restart]
+    logging: *default-logging
+    ports:
+      - "8123:8123"   # HTTP + /play
+      - "9000:9000"   # native
+    environment:
+      CLICKHOUSE_DB: llmrouter
+      CLICKHOUSE_USER: default
+      CLICKHOUSE_PASSWORD: ""
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: "1"
+    ulimits:
+      nofile: { soft: 262144, hard: 262144 }
+    volumes:
+      - clickhouse-data:/var/lib/clickhouse
+      - ./infra/clickhouse/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8123/ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 10s
+
+  # ===========================================================================
+  # Telemetry
+  # ===========================================================================
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.116.1
+    <<: [*default-restart]
+    logging: *default-logging
+    command: ["--config=/etc/otel/config.yaml"]
+    ports:
+      - "4317:4317"   # OTLP gRPC
+      - "4318:4318"   # OTLP HTTP
+      - "8889:8889"   # prometheus exporter scrape target
+    volumes:
+      - ./infra/otel-collector-config.yaml:/etc/otel/config.yaml:ro
+    depends_on:
+      clickhouse: { condition: service_healthy }
+      jaeger: { condition: service_started }
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.64.0
+    <<: [*default-restart]
+    logging: *default-logging
+    ports:
+      - "16686:16686"
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+
+  prometheus:
+    image: prom/prometheus:v3.0.1
+    <<: [*default-restart]
+    logging: *default-logging
+    ports: ["9091:9090"]
+    volumes:
+      - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./infra/prometheus/rules:/etc/prometheus/rules:ro
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.retention.time=7d
+
+  grafana:
+    image: grafana/grafana:11.4.0
+    <<: [*default-restart]
+    logging: *default-logging
+    ports: ["3000:3000"]
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+    volumes:
+      - ./infra/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./infra/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on: [prometheus]
+
+  # ===========================================================================
+  # Cost and attribution dashboard
+  # ===========================================================================
+  dashboard:
+    build:
+      # Repo root, because the dashboard imports benchmarks/common/anomaly.py -- the same
+      # detector `make bench` runs -- so the page and the committed result cannot disagree.
+      context: .
+      dockerfile: services/dashboard/Dockerfile
+    image: llmrouter/dashboard:dev
+    <<: [*default-restart]
+    logging: *default-logging
+    ports: ["8501:8501"]
+    environment:
+      CLICKHOUSE_URL: http://clickhouse:8123
+      CLICKHOUSE_DB: llmrouter
+      ANOMALY_ZSCORE_THRESHOLD: "2.5"
+    depends_on:
+      clickhouse: { condition: service_healthy }
+
+  # ===========================================================================
+  # Tooling container: lets `make test-go` / `make lint-go` work without a local Go.
+  # Not started by `docker compose up` -- it lives behind a profile.
+  # ===========================================================================
+  gateway-tools:
+    image: golang:1.23-alpine
+    profiles: ["tools"]
+    working_dir: /src
+    volumes:
+      - ./services/gateway:/src
+      - go-mod-cache:/go/pkg/mod
+    entrypoint: ["sh", "-c"]
+    command: ["go version"]
+
+volumes:
+  qdrant-data:
+  clickhouse-data:
+  go-mod-cache:
