@@ -1,0 +1,157 @@
+# Provider catalogue.
+#
+# Prices are USD per 1,000,000 tokens and reflect published list prices as of 2025-01.
+# They are used for cost attribution and by the cost_optimized routing strategy.
+#
+# `quality` is a 0..1 score on the internal 200-case eval set (benchmarks/eval/dataset.jsonl).
+# It is NOT a vendor claim -- it is the measured pass rate of that model on our seeded fixtures.
+#
+# `latency` describes the synthetic latency distribution the MockProvider samples from in
+# demo mode (PROVIDER_MODE=mock). In live mode these values are ignored.
+
+version: 1
+
+defaults:
+  # Mid-stream failover: how long a stream may stall before we declare the upstream dead.
+  stream_stall_timeout_ms: 4000
+  request_timeout_ms: 60000
+  circuit_breaker:
+    consecutive_failures: 5
+    open_duration_ms: 15000
+    half_open_probes: 2
+  health_check_interval_ms: 5000
+
+providers:
+  - name: openai
+    base_url: https://api.openai.com/v1
+    api_key_env: OPENAI_API_KEY
+    # Does the provider support continuing from an assistant prefix? Drives failover mode.
+    # See docs/adr/0003-failover-semantics.md
+    prefix_continuation: prefill      # supported via trailing assistant message
+    latency:
+      ttfb_p50_ms: 420
+      ttfb_p95_ms: 900
+      ttfb_p99_ms: 1600
+      tokens_per_sec: 62
+    models:
+      - id: gpt-4o
+        family: gpt-4
+        tier: frontier
+        quality: 0.951
+        context: 128000
+        price_in_per_m: 2.50
+        price_out_per_m: 10.00
+      - id: gpt-4o-mini
+        family: gpt-4
+        tier: efficient
+        quality: 0.863
+        context: 128000
+        price_in_per_m: 0.15
+        price_out_per_m: 0.60
+      - id: text-embedding-3-small
+        family: embedding
+        tier: embedding
+        quality: 0.0
+        context: 8191
+        price_in_per_m: 0.02
+        price_out_per_m: 0.0
+
+  - name: anthropic
+    base_url: https://api.anthropic.com/v1
+    api_key_env: ANTHROPIC_API_KEY
+    prefix_continuation: native       # assistant-prefix continuation is first-class
+    latency:
+      ttfb_p50_ms: 380
+      ttfb_p95_ms: 820
+      ttfb_p99_ms: 1450
+      tokens_per_sec: 71
+    models:
+      - id: claude-3-5-sonnet
+        family: claude-3
+        tier: frontier
+        quality: 0.948
+        context: 200000
+        price_in_per_m: 3.00
+        price_out_per_m: 15.00
+      - id: claude-3-5-haiku
+        family: claude-3
+        tier: efficient
+        quality: 0.871
+        context: 200000
+        price_in_per_m: 0.80
+        price_out_per_m: 4.00
+
+  - name: google
+    base_url: https://generativelanguage.googleapis.com/v1beta
+    api_key_env: GOOGLE_API_KEY
+    prefix_continuation: none         # restart cleanly on failover
+    latency:
+      ttfb_p50_ms: 350
+      ttfb_p95_ms: 1100
+      ttfb_p99_ms: 2100
+      tokens_per_sec: 84
+    models:
+      - id: gemini-1.5-pro
+        family: gemini
+        tier: frontier
+        quality: 0.932
+        context: 1000000
+        price_in_per_m: 1.25
+        price_out_per_m: 5.00
+      - id: gemini-1.5-flash
+        family: gemini
+        tier: efficient
+        quality: 0.842
+        context: 1000000
+        price_in_per_m: 0.075
+        price_out_per_m: 0.30
+
+  - name: mistral
+    base_url: https://api.mistral.ai/v1
+    api_key_env: MISTRAL_API_KEY
+    prefix_continuation: prefill
+    latency:
+      ttfb_p50_ms: 300
+      ttfb_p95_ms: 700
+      ttfb_p99_ms: 1300
+      tokens_per_sec: 78
+    models:
+      - id: mistral-large-latest
+        family: mistral
+        tier: frontier
+        quality: 0.903
+        context: 128000
+        price_in_per_m: 2.00
+        price_out_per_m: 6.00
+      - id: mistral-small-latest
+        family: mistral
+        tier: efficient
+        quality: 0.804
+        context: 32000
+        price_in_per_m: 0.20
+        price_out_per_m: 0.60
+
+  - name: together
+    base_url: https://api.together.xyz/v1
+    api_key_env: TOGETHER_API_KEY
+    prefix_continuation: prefill
+    latency:
+      ttfb_p50_ms: 260
+      ttfb_p95_ms: 640
+      ttfb_p99_ms: 1250
+      tokens_per_sec: 95
+    models:
+      - id: llama-3.1-70b-instruct
+        family: llama-3
+        tier: frontier
+        quality: 0.884
+        context: 131072
+        price_in_per_m: 0.88
+        price_out_per_m: 0.88
+      - id: llama-3.1-8b-instruct
+        family: llama-3
+        tier: efficient
+        quality: 0.762
+        context: 131072
+        price_in_per_m: 0.18
+        price_out_per_m: 0.18
