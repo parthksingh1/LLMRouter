@@ -1,0 +1,151 @@
+# Tenant registry.
+#
+# `api_key` values here are DEMO keys for the offline stack. They are not secrets and are
+# deliberately obvious ("demo-tenant-a"). In a real deployment this file holds only tenant
+# metadata and keys live in a secret store -- see docs/adr/0008-secrets-and-tenancy.md.
+#
+# `seed_profile` is consumed ONLY by seed/generate_traffic.py to shape synthetic history.
+# The gateway ignores it. The anomaly detector in the dashboard does not read it either --
+# it has to rediscover the runaway tenants from the event stream, which is the point.
+
+version: 1
+
+# `cache_affinity` is the fraction of a tenant's requests that repeat or paraphrase something
+# they already asked. It is the single biggest driver of the measured cache hit rate, so the
+# values below are stated per tenant rather than assumed: an FAQ-shaped workload (Iris
+# localisation, Borealis docs search) repeats heavily, while a code-review or research workload
+# (Cobalt, Helix) barely repeats at all. benchmarks/results/cache_bench.json reports the hit
+# rate these produce, broken down by request kind.
+
+defaults:
+  daily_token_budget: 2000000
+  monthly_usd_budget: 500.00
+  default_policy: quality_tiered
+  allowed_models: ["*"]
+  # Emit a warning header once usage crosses this fraction of budget.
+  warn_threshold: 0.80
+
+tenants:
+  - id: tenant-a
+    name: Acme Support Bot
+    api_key: demo-tenant-a
+    default_policy: quality_tiered
+    daily_token_budget: 5000000
+    monthly_usd_budget: 1200.00
+    allowed_models: ["*"]
+    seed_profile: { shape: steady, rps: 1.8, cache_affinity: 0.78 }
+
+  - id: tenant-b
+    name: Borealis Docs Search
+    api_key: demo-tenant-b
+    default_policy: cost_optimized
+    daily_token_budget: 3000000
+    monthly_usd_budget: 400.00
+    allowed_models: ["gpt-4o-mini", "claude-3-5-haiku", "gemini-1.5-flash", "llama-3.1-8b-instruct"]
+    seed_profile: { shape: steady, rps: 1.1, cache_affinity: 0.82 }
+
+  - id: tenant-c
+    name: Cobalt Code Review
+    api_key: demo-tenant-c
+    default_policy: quality_tiered
+    daily_token_budget: 4000000
+    monthly_usd_budget: 900.00
+    allowed_models: ["*"]
+    seed_profile: { shape: business_hours, rps: 0.9, cache_affinity: 0.4 }
+
+  - id: tenant-d
+    name: Delta Analytics Copilot
+    api_key: demo-tenant-d
+    default_policy: latency_optimized
+    daily_token_budget: 2500000
+    monthly_usd_budget: 350.00
+    allowed_models: ["*"]
+    seed_profile: { shape: business_hours, rps: 0.7, cache_affinity: 0.62 }
+
+  - id: tenant-e
+    name: Echo Marketing Studio
+    api_key: demo-tenant-e
+    default_policy: cost_optimized
+    daily_token_budget: 1500000
+    monthly_usd_budget: 200.00
+    allowed_models: ["*"]
+    seed_profile: { shape: bursty, rps: 0.5, cache_affinity: 0.7 }
+
+  - id: tenant-f
+    name: Foxtrot Internal QA
+    api_key: demo-tenant-f
+    default_policy: quality_tiered
+    daily_token_budget: 1000000
+    monthly_usd_budget: 150.00
+    allowed_models: ["*"]
+    seed_profile: { shape: steady, rps: 0.35, cache_affinity: 0.8 }
+
+  - id: tenant-g
+    name: Gamma Sales Assist
+    api_key: demo-tenant-g
+    default_policy: canary
+    daily_token_budget: 1200000
+    monthly_usd_budget: 180.00
+    allowed_models: ["*"]
+    seed_profile: { shape: business_hours, rps: 0.4, cache_affinity: 0.72 }
+
+  - id: tenant-h
+    name: Helix Research
+    api_key: demo-tenant-h
+    default_policy: quality_tiered
+    daily_token_budget: 900000
+    monthly_usd_budget: 140.00
+    allowed_models: ["*"]
+    seed_profile: { shape: bursty, rps: 0.3, cache_affinity: 0.34 }
+
+  - id: tenant-i
+    name: Iris Localisation
+    api_key: demo-tenant-i
+    default_policy: cost_optimized
+    daily_token_budget: 800000
+    monthly_usd_budget: 120.00
+    allowed_models: ["*"]
+    seed_profile: { shape: steady, rps: 0.28, cache_affinity: 0.86 }
+
+  # ---------------------------------------------------------------------------
+  # The three runaway workloads.
+  #
+  # Note the LOW request rates. These are not the noisiest tenants -- they are
+  # quiet ones whose individual requests are pathologically expensive, which is
+  # exactly the shape that hides in a monthly bill. A tenant sending ten times
+  # the traffic gets noticed; one sending a twentieth of the traffic at forty
+  # times the cost per call does not.
+  #
+  # Nothing here marks them as anomalous to the gateway -- they simply generate
+  # pathological traffic in the seeded history:
+  #   - runaway_retry_storm : a broken retry loop hammering the frontier model
+  #   - runaway_no_cache    : cache-hostile prompts (uuid per request) on a big model
+  #   - runaway_context_bloat: 40k-token contexts stuffed on every call
+  # The dashboard's z-score detector has to find them from spend alone.
+  # ---------------------------------------------------------------------------
+  - id: tenant-j
+    name: Juno Batch Ingest
+    api_key: demo-tenant-j
+    default_policy: quality_tiered
+    daily_token_budget: 20000000
+    monthly_usd_budget: 4000.00
+    allowed_models: ["*"]
+    seed_profile: { shape: runaway_retry_storm, rps: 0.088, cache_affinity: 0.05, onset_day: 12 }
+
+  - id: tenant-k
+    name: Kilo Agent Swarm
+    api_key: demo-tenant-k
+    default_policy: quality_tiered
+    daily_token_budget: 20000000
+    monthly_usd_budget: 4000.00
+    allowed_models: ["*"]
+    seed_profile: { shape: runaway_no_cache, rps: 0.070, cache_affinity: 0.0, onset_day: 17 }
+
+  - id: tenant-l
+    name: Lima Document Pipeline
+    api_key: demo-tenant-l
+    default_policy: quality_tiered
+    daily_token_budget: 20000000
+    monthly_usd_budget: 4000.00
+    allowed_models: ["*"]
+    seed_profile: { shape: runaway_context_bloat, rps: 0.032, cache_affinity: 0.10, onset_day: 9 }
