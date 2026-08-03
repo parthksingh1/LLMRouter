@@ -1,0 +1,175 @@
+# Routing policies.
+#
+# A policy is selected per request in this order:
+#   1. the `x-llmrouter-policy` request header,
+#   2. the tenant's `default_policy` (config/tenants.yaml),
+#   3. `default_policy` below.
+#
+# A request that names a concrete model (e.g. "gpt-4o") bypasses routing entirely and is
+# pinned to that model. Routing engages when the client asks for a virtual model:
+#   "auto"        -> the selected policy decides
+#   "auto:cheap"  -> forces cost_optimized
+#   "auto:fast"   -> forces latency_optimized
+#   "auto:best"   -> forces quality_tiered
+
+version: 1
+default_policy: quality_tiered
+
+# Virtual model aliases exposed on GET /v1/models.
+virtual_models:
+  auto: quality_tiered
+  auto:cheap: cost_optimized
+  auto:fast: latency_optimized
+  auto:best: quality_tiered
+
+policies:
+  # ---------------------------------------------------------------------------
+  # Cheapest model whose measured eval quality clears a hard floor.
+  # ---------------------------------------------------------------------------
+  - name: cost_optimized
+    strategy: cost_optimized
+    params:
+      quality_floor: 0.84
+      # Never route to a model whose p99 TTFB exceeds this, however cheap it is.
+      max_ttfb_p99_ms: 2500
+    fallbacks: [anthropic, openai, together]
+
+  # ---------------------------------------------------------------------------
+  # Fastest healthy provider by observed TTFB, subject to a quality floor.
+  # ---------------------------------------------------------------------------
+  - name: latency_optimized
+    strategy: latency_optimized
+    params:
+      quality_floor: 0.80
+      # Observed-latency EWMA weight; 0 = trust configured p50 only.
+      ewma_alpha: 0.30
+    fallbacks: [together, mistral, google]
+
+  # ---------------------------------------------------------------------------
+  # The headline policy. A prompt-difficulty classifier buckets each request, and
+  # each bucket carries a quality floor. Within a bucket we take the cheapest
+  # model that clears floor + safety_margin.
+  #
+  # safety_margin is what trades cost against quality drift: raising it keeps more
+  # traffic on frontier models. The committed value is the operating point measured
+  # by benchmarks/eval/run_eval.py -> benchmarks/results/eval.json.
+  # ---------------------------------------------------------------------------
+  - name: quality_tiered
+    strategy: quality_tiered
+    params:
+      # Added on top of every bucket floor. It is the dial that trades cost against quality:
+      # raising it keeps more traffic on frontier models. It is 0 here because the floors below
+      # are already set to each bucket's worst case; raise it if you would rather overspend than
+      # risk a weak answer.
+      #
+      # 0.02 was selected by the sweep recorded in the `sensitivity` block of
+      # benchmarks/results/eval.json, not by taste: at 0.0 the router saves 73% but drifts 4 pp,
+      # which is too much quality to trade for money on this workload.
+      safety_margin: 0.02
+      # Each floor is the quality needed to answer the hardest case in that bucket, so a
+      # correctly classified prompt never regresses. Every regression the eval reports is
+      # therefore a classifier mistake, which is the honest thing for the number to mean.
+      #   easy   -> gpt-4o-mini            (0.863)
+      #   medium -> llama-3.1-70b-instruct (0.884)
+      #   hard   -> gemini-1.5-pro         (0.932)
+      buckets:
+        - name: easy
+          quality_floor: 0.86
+        - name: medium
+          quality_floor: 0.88
+        - name: hard
+          quality_floor: 0.93
+      classifier:
+        # Heuristic difficulty classifier. Documented in docs/adr/0002.
+        # score = w_len*norm_len + w_kw*keyword_signal + w_code*has_code + w_multi*multi_turn
+        #
+        # keyword_signal is SIGNED (-1..1): easy markers subtract, hard markers add, each
+        # saturating at three matches. The total is clamped to -1..1, NOT 0..1 -- the sign is
+        # what separates easy from medium. Clamping at zero collapsed both into one bucket and
+        # sent 100% of medium traffic to the cheapest model; the eval caught it.
+        weights:
+          length: 0.28
+          keywords: 0.46
+          code: 0.14
+          multi_turn: 0.12
+        thresholds:
+          # Below zero means the easy markers won: route cheap.
+          easy_below: 0.0
+          # 0.30 is just under two saturated hard markers (2/3 * 0.46 = 0.307), so a prompt
+          # naming two hard concepts is treated as hard even when it is short.
+          hard_above: 0.30
+          # A score within this distance BELOW a boundary is promoted to the harder bucket,
+          # because under-serving a hard prompt costs an answer while over-serving an easy one
+          # costs a fraction of a cent.
+          #
+          # Calibrated to 0.0 for this workload: the 0.02 safety margin above already lifts
+          # every bucket to a model that covers it, so widening the band only adds cost without
+          # removing regressions. The sensitivity block in benchmarks/results/eval.json shows
+          # the sweep. On a workload whose difficulty scores are spread rather than clustered,
+          # this is the finer of the two dials.
+          confidence_band: 0.0
+        hard_keywords:
+          - prove
+          - derive
+          - theorem
+          - complexity
+          - step by step
+          - trade-off
+          - architect
+          - optimi
+          - debug
+          - root cause
+          - refactor
+          - concurrency
+          - race condition
+          - distributed
+          - algorithm
+          - compare
+        easy_keywords:
+          - translate
+          - summar
+          - rephrase
+          - capital of
+          - define
+          - list
+          - what is
+          - spell
+          - convert
+    fallbacks: [anthropic, google, openai]
+
+  # ---------------------------------------------------------------------------
+  # A/B testing.
+  # ---------------------------------------------------------------------------
+  - name: weighted_round_robin
+    strategy: weighted_round_robin
+    params:
+      targets:
+        - model: gpt-4o-mini
+          weight: 40
+        - model: claude-3-5-haiku
+          weight: 35
+        - model: llama-3.1-70b-instruct
+          weight: 25
+    fallbacks: [openai, anthropic]
+
+  # ---------------------------------------------------------------------------
+  # Canary a new model to a slice of traffic. Sticky by tenant+prompt hash so a
+  # given caller sees a consistent variant.
+  # ---------------------------------------------------------------------------
+  - name: canary
+    strategy: canary
+    params:
+      baseline_model: gpt-4o-mini
+      canary_model: gemini-1.5-flash
+      canary_percent: 10
+      sticky: true
+    fallbacks: [openai]
+
+# Global routing guardrails, applied after a strategy has chosen.
+constraints:
+  # Skip providers whose circuit breaker is open or whose health check is failing.
+  require_healthy: true
+  # Honour the tenant's allowed_models list.
+  enforce_tenant_allowlist: true
+  # Maximum providers to try for one logical request (initial + fallbacks).
+  max_attempts: 3
