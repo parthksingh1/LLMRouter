@@ -1,0 +1,62 @@
+run:
+  timeout: 5m
+  tests: true
+
+linters:
+  disable-all: true
+  enable:
+    - errcheck        # unchecked errors
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    - gosimple
+    - bodyclose       # leaked HTTP response bodies, easy to do in provider adapters
+    - contextcheck    # context propagation, which this service depends on
+    - errorlint       # %w and errors.Is/As usage
+    - gocritic
+    - goconst
+    - misspell
+    - noctx           # HTTP requests built without a context
+    - nolintlint
+    - revive
+    - unconvert
+    - wastedassign
+    - whitespace
+    - copyloopvar
+
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+    check-blank: false
+  govet:
+    enable:
+      - shadow
+  revive:
+    rules:
+      - name: exported            # every exported symbol carries a doc comment
+      - name: context-as-argument # ctx is the first parameter
+      - name: error-strings
+      - name: error-return
+      - name: indent-error-flow
+      - name: unexported-return
+      - name: var-naming
+  gocritic:
+    enabled-tags: [diagnostic, style, performance]
+    disabled-checks:
+      - hugeParam       # domain values are passed by value on purpose
+      - rangeValCopy
+  goconst:
+    min-len: 3
+    min-occurrences: 4
+
+issues:
+  exclude-rules:
+    # Tests may be long and may skip the doc-comment rule.
+    - path: _test\.go
+      linters: [goconst, revive, gocritic]
+    # The mock harness uses math/rand deliberately: it is a simulation, not crypto.
+    - path: internal/providers/mock/
+      text: "G404"
+  max-issues-per-linter: 0
+  max-same-issues: 0
