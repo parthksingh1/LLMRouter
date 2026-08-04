@@ -1,0 +1,21 @@
+# Pinned, small, and enough to run every offline benchmark and test.
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.4
+pydantic-settings==2.7.0
+httpx==0.28.1
+PyYAML==6.0.2
+numpy==2.2.1
+matplotlib==3.10.0
+streamlit==1.41.1
+pandas==2.2.3
+clickhouse-connect==0.8.11
+redis==5.2.1
+qdrant-client==1.12.2
+openai==1.59.6
+pytest==8.3.4
+pytest-cov==6.0.0
+pytest-asyncio==0.25.1
+ruff==0.8.6
+mypy==1.14.1
+types-PyYAML==6.0.12.20241230
