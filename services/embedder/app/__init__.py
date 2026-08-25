@@ -1,0 +1,1 @@
+"""LLMRouter embedding sidecar."""
