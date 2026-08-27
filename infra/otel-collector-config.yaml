@@ -1,0 +1,109 @@
+# OpenTelemetry Collector: one ingestion point, three destinations.
+#
+# The gateway and the guardrails sidecar speak OTLP to this collector and nothing else. That
+# indirection is the point: swapping Jaeger for Tempo, or adding a vendor backend, is a change
+# to this file rather than a redeploy of every service.
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  # Batching is the single most important processor here: it amortises export overhead and is
+  # what keeps the collector from making one network call per span.
+  batch:
+    timeout: 2s
+    send_batch_size: 512
+    send_batch_max_size: 1024
+
+  # A hard memory ceiling. Without it a burst of traffic during an outage -- exactly when traces
+  # matter most -- can OOM the collector and lose everything.
+  memory_limiter:
+    check_interval: 1s
+    limit_mib: 384
+    spike_limit_mib: 96
+
+  resource:
+    attributes:
+      - key: deployment.environment
+        value: demo
+        action: upsert
+
+  # Drop any attribute that could carry prompt content into the tracing backend.
+  #
+  # Nothing sets these today, but an attribute is one careless line away from existing, and a
+  # trace backend is not a place prompts should end up. Denying by name here is a cheap backstop
+  # for a mistake that would otherwise be invisible until an audit.
+  attributes/redact:
+    actions:
+      - key: llmrouter.prompt
+        action: delete
+      - key: llmrouter.completion
+        action: delete
+      - key: http.request.body
+        action: delete
+
+exporters:
+  otlp/jaeger:
+    endpoint: jaeger:4317
+    tls:
+      insecure: true
+
+  # Scraped by Prometheus. The collector re-exposes the metrics it receives so that a service
+  # which only speaks OTLP still lands in the same Prometheus as the gateway's own /metrics.
+  prometheus:
+    endpoint: 0.0.0.0:8889
+    namespace: llmrouter_otel
+    send_timestamps: true
+    resource_to_telemetry_conversion:
+      enabled: true
+
+  # Spans into ClickHouse alongside the request events, so a trace can be joined to its billing
+  # row by request id. "Show me the trace for the request that cost four dollars" is then one
+  # query rather than two systems and a spreadsheet.
+  clickhouse:
+    endpoint: tcp://clickhouse:9000?dial_timeout=10s
+    database: llmrouter
+    ttl: 168h
+    traces_table_name: otel_traces
+    logs_table_name: otel_logs
+    create_schema: true
+    timeout: 10s
+    retry_on_failure:
+      enabled: true
+      initial_interval: 5s
+      max_interval: 30s
+      max_elapsed_time: 300s
+
+  debug:
+    verbosity: basic
+
+service:
+  # memory_limiter is first in every pipeline: it can only shed load if it sees the data before
+  # anything else has buffered it.
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, attributes/redact, resource, batch]
+      exporters: [otlp/jaeger, clickhouse]
+
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter, resource, batch]
+      exporters: [prometheus]
+
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, attributes/redact, resource, batch]
+      exporters: [clickhouse]
+
+  telemetry:
+    logs:
+      level: warn
+    metrics:
+      level: basic
+      address: 0.0.0.0:8888
