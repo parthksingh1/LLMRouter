@@ -1,0 +1,92 @@
+# Alerting rules.
+#
+# Each is written against a symptom a user would notice, not a cause. "More than 2% of requests
+# are failing" is actionable; "a goroutine count is elevated" is not, and alerts that fire on
+# causes are the ones people learn to ignore.
+
+groups:
+  - name: llmrouter
+    interval: 30s
+    rules:
+      - alert: GatewayErrorRateHigh
+        expr: |
+          sum(rate(llmrouter_requests_total{status="5xx"}[5m]))
+            / sum(rate(llmrouter_requests_total[5m])) > 0.02
+        for: 5m
+        labels:
+          severity: page
+        annotations:
+          summary: "More than 2% of gateway requests are failing"
+          description: "Check /readyz for provider health and the circuit breaker states."
+
+      - alert: AllProvidersUnavailable
+        expr: max(llmrouter_provider_up) == 0
+        for: 2m
+        labels:
+          severity: page
+        annotations:
+          summary: "Every provider is unhealthy"
+          description: >
+            The gateway can serve only cache hits. Failover has nowhere left to go, so this is
+            a full outage for anything not already cached.
+
+      - alert: CacheHitRateCollapsed
+        expr: llmrouter_cache_hit_ratio < 0.15
+        for: 30m
+        labels:
+          severity: ticket
+        annotations:
+          summary: "Cache hit ratio has fallen below 15%"
+          description: >
+            Usually the embedder or Redis is down, or a deploy changed prompt construction so
+            every request looks new. Nothing breaks; the bill just goes up, which is why this
+            needs an alert rather than a dashboard nobody is watching.
+
+      - alert: GuardrailsFailingOpen
+        expr: rate(llmrouter_guardrail_fail_open_total[5m]) > 0
+        for: 5m
+        labels:
+          severity: page
+        annotations:
+          summary: "Requests are bypassing guardrail screening"
+          description: >
+            The guardrails sidecar is unreachable and the gateway is configured to fail open.
+            Prompts are reaching providers unscreened. This is the trade-off working as
+            designed, and it still needs someone to know about it.
+
+      - alert: FailoverRateElevated
+        expr: |
+          sum(rate(llmrouter_failover_total[10m]))
+            / sum(rate(llmrouter_requests_total{route="/v1/chat/completions"}[10m])) > 0.10
+        for: 10m
+        labels:
+          severity: ticket
+        annotations:
+          summary: "More than 10% of requests are failing over"
+          description: >
+            Failover is working, which is precisely why nobody has complained. A provider is
+            degraded and the gateway is absorbing it.
+
+      - alert: TenantSpendSpike
+        expr: |
+          sum by (tenant) (increase(llmrouter_cost_usd_total[1h]))
+            > 5 * sum by (tenant) (increase(llmrouter_cost_usd_total[1h] offset 1d))
+        for: 1h
+        labels:
+          severity: ticket
+        annotations:
+          summary: "Tenant {{ $labels.tenant }} is spending 5x its usual hourly rate"
+          description: >
+            The same signal the attribution dashboard surfaces, as an alert so it is noticed
+            within the hour rather than at the end of the month.
+
+      - alert: BudgetExhaustionWidespread
+        expr: sum(rate(llmrouter_budget_block_total{action="block"}[15m])) > 0.5
+        for: 15m
+        labels:
+          severity: ticket
+        annotations:
+          summary: "Tenants are being refused for budget exhaustion"
+          description: >
+            Either a tenant needs a larger budget or something is consuming one. Check the
+            attribution dashboard before raising a limit.
