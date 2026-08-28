@@ -1,0 +1,208 @@
+{{/*
+Gateway workload.
+
+Reference implementation. `make demo` uses docker-compose and never touches this chart; see
+infra/helm/README.md for why the two exist separately.
+*/}}
+{{- $tag := .Values.gateway.image.tag | default .Chart.AppVersion -}}
+{{- if not .Values.gateway.existingSecret -}}
+{{- fail "gateway.existingSecret is required: provider API keys must come from a Secret you created, never from values.yaml" -}}
+{{- end -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-gateway
+  labels:
+    app.kubernetes.io/name: llmrouter
+    app.kubernetes.io/component: gateway
+    app.kubernetes.io/version: {{ $tag | quote }}
+spec:
+  {{- if not .Values.gateway.autoscaling.enabled }}
+  replicas: {{ .Values.gateway.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: llmrouter
+      app.kubernetes.io/component: gateway
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      # maxUnavailable 0: a rollout must never reduce capacity, because the pods being replaced
+      # are holding streams that will take up to two minutes to drain.
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: llmrouter
+        app.kubernetes.io/component: gateway
+      annotations:
+        # Roll the pods when configuration changes, which a ConfigMap volume alone does not do
+        # -- the gateway reads its YAML once at start-up.
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+    spec:
+      terminationGracePeriodSeconds: {{ .Values.gateway.terminationGracePeriodSeconds }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: gateway
+          image: "{{ .Values.gateway.image.repository }}:{{ $tag }}"
+          imagePullPolicy: {{ .Values.gateway.image.pullPolicy }}
+          securityContext:
+            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+          ports:
+            - { name: http, containerPort: 8080 }
+            - { name: metrics, containerPort: 9090 }
+          env:
+            - { name: GATEWAY_ADDR, value: ":8080" }
+            - { name: METRICS_ADDR, value: ":9090" }
+            - { name: PROVIDER_MODE, value: {{ .Values.gateway.config.providerMode | quote }} }
+            - { name: LOG_LEVEL, value: {{ .Values.gateway.config.logLevel | quote }} }
+            - { name: LOG_FORMAT, value: "json" }
+            - { name: GUARDRAILS_FAIL_MODE, value: {{ .Values.gateway.config.guardrailsFailMode | quote }} }
+            - { name: CACHE_SIMILARITY_THRESHOLD, value: {{ .Values.gateway.config.cacheSimilarityThreshold | quote }} }
+            - { name: GUARDRAILS_URL, value: "http://{{ .Release.Name }}-guardrails:8000" }
+            - { name: EMBEDDER_URL, value: "http://{{ .Release.Name }}-embedder:8000" }
+            - { name: REDIS_URL, value: {{ .Values.external.redis.url | quote }} }
+            - { name: BUDGET_REDIS_URL, value: {{ .Values.external.redis.url | quote }} }
+            - { name: QDRANT_URL, value: {{ .Values.external.qdrant.url | quote }} }
+            - { name: CLICKHOUSE_URL, value: {{ .Values.external.clickhouse.url | quote }} }
+            - { name: CLICKHOUSE_DB, value: {{ .Values.external.clickhouse.database | quote }} }
+            - { name: OTEL_EXPORTER_OTLP_ENDPOINT, value: {{ .Values.external.otlpEndpoint | quote }} }
+            - { name: OTEL_SERVICE_NAME, value: "llmrouter-gateway" }
+            - name: POD_NAME
+              valueFrom: { fieldRef: { fieldPath: metadata.name } }
+          envFrom:
+            - secretRef:
+                name: {{ .Values.gateway.existingSecret }}
+          volumeMounts:
+            - { name: config, mountPath: /etc/llmrouter, readOnly: true }
+            # readOnlyRootFilesystem is on, so anything that needs to write needs a volume.
+            - { name: tmp, mountPath: /tmp }
+          # Liveness deliberately probes /healthz, which does NOT consult providers. A liveness
+          # check that fails during an upstream outage restarts every pod at exactly the moment
+          # the failover logic is doing its job.
+          livenessProbe:
+            httpGet: { path: /healthz, port: http }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+          # Readiness probes /readyz, which DOES consult providers, so a pod with no usable
+          # upstream is pulled from the Service instead of returning 503s.
+          readinessProbe:
+            httpGet: { path: /readyz, port: http }
+            initialDelaySeconds: 3
+            periodSeconds: 5
+            failureThreshold: 2
+          startupProbe:
+            httpGet: { path: /healthz, port: http }
+            failureThreshold: 30
+            periodSeconds: 2
+          resources:
+            {{- toYaml .Values.gateway.resources | nindent 12 }}
+          lifecycle:
+            preStop:
+              exec:
+                # Sleep before shutting down so the endpoint is removed from every kube-proxy
+                # before the process stops accepting. Without it a rollout drops the requests
+                # that arrive in the gap between SIGTERM and endpoint propagation.
+                command: ["/bin/sh", "-c", "sleep 5"]
+      volumes:
+        - name: config
+          configMap:
+            name: {{ .Release.Name }}-config
+        - name: tmp
+          emptyDir: {}
+      {{- with .Values.nodeSelector }}
+      nodeSelector: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations: {{- toYaml . | nindent 8 }}
+      {{- end }}
+      affinity:
+        {{- if .Values.affinity }}
+        {{- toYaml .Values.affinity | nindent 8 }}
+        {{- else }}
+        # Spread across nodes so losing one node does not lose the gateway. Preferred rather
+        # than required, so a small cluster can still schedule the requested replicas.
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: llmrouter
+                    app.kubernetes.io/component: gateway
+        {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-gateway
+  labels:
+    app.kubernetes.io/name: llmrouter
+    app.kubernetes.io/component: gateway
+spec:
+  type: {{ .Values.gateway.service.type }}
+  ports:
+    - { name: http, port: {{ .Values.gateway.service.port }}, targetPort: http }
+    - { name: metrics, port: {{ .Values.gateway.service.metricsPort }}, targetPort: metrics }
+  selector:
+    app.kubernetes.io/name: llmrouter
+    app.kubernetes.io/component: gateway
+{{- if .Values.gateway.autoscaling.enabled }}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ .Release.Name }}-gateway
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ .Release.Name }}-gateway
+  minReplicas: {{ .Values.gateway.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.gateway.autoscaling.maxReplicas }}
+  metrics:
+    # In-flight requests first. The gateway spends most of its life blocked on an upstream, so
+    # CPU stays low while concurrency -- the thing that actually saturates it -- climbs. CPU is
+    # kept as a secondary signal for the cases where something is genuinely burning cycles.
+    - type: Pods
+      pods:
+        metric:
+          name: llmrouter_requests_in_flight
+        target:
+          type: AverageValue
+          averageValue: {{ .Values.gateway.autoscaling.targetInFlightPerPod | quote }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.gateway.autoscaling.targetCPUUtilizationPercentage }}
+  behavior:
+    scaleDown:
+      # Slow scale-down. Removing a pod terminates whatever streams it is serving after the
+      # grace period, so flapping is expensive in a way it is not for a stateless API.
+      stabilizationWindowSeconds: 300
+      policies:
+        - { type: Pods, value: 1, periodSeconds: 60 }
+    scaleUp:
+      stabilizationWindowSeconds: 30
+      policies:
+        - { type: Percent, value: 100, periodSeconds: 30 }
+{{- end }}
+{{- if .Values.gateway.podDisruptionBudget.enabled }}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ .Release.Name }}-gateway
+spec:
+  minAvailable: {{ .Values.gateway.podDisruptionBudget.minAvailable }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: llmrouter
+      app.kubernetes.io/component: gateway
+{{- end }}

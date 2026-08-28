@@ -1,0 +1,9 @@
+apiVersion: v2
+name: llmrouter
+description: OpenAI-compatible LLM gateway with routing, failover, caching and guardrails
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+keywords: [llm, gateway, openai, routing, cost]
+maintainers:
+  - name: Parth Kumar Singh

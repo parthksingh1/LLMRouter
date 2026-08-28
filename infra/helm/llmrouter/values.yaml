@@ -1,0 +1,107 @@
+# Reference values. See infra/helm/README.md -- this chart is NOT part of the demo path.
+
+gateway:
+  replicaCount: 3
+  image:
+    repository: ghcr.io/parthkumarsingh/llmrouter/gateway
+    tag: ""              # defaults to .Chart.AppVersion
+    pullPolicy: IfNotPresent
+
+  resources:
+    # requests == limits for CPU is deliberate. The gateway is latency-sensitive and CPU
+    # throttling under a burst shows up as tail latency that is very hard to attribute.
+    requests: { cpu: "500m", memory: "256Mi" }
+    limits:   { cpu: "500m", memory: "512Mi" }
+
+  autoscaling:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 20
+    # Scaled on in-flight requests rather than CPU. The gateway spends most of its life waiting
+    # on an upstream, so CPU stays low while concurrency -- the thing that actually saturates
+    # it -- climbs. CPU-based autoscaling would not react until it was far too late.
+    targetInFlightPerPod: 40
+    targetCPUUtilizationPercentage: 70
+
+  # SSE streams can run for minutes. A pod that stops accepting connections still needs time to
+  # finish the ones it has, or every deploy truncates somebody's answer mid-sentence.
+  terminationGracePeriodSeconds: 120
+
+  podDisruptionBudget:
+    enabled: true
+    minAvailable: 2
+
+  service:
+    type: ClusterIP
+    port: 8080
+    metricsPort: 9090
+
+  config:
+    providerMode: live
+    logLevel: info
+    guardrailsFailMode: open
+    cacheSimilarityThreshold: "0.9962"
+
+  # Provider API keys. Never in values.yaml: this names an existing Secret, and the chart
+  # refuses to render without it.
+  existingSecret: llmrouter-provider-keys
+
+guardrails:
+  replicaCount: 2
+  image:
+    repository: ghcr.io/parthkumarsingh/llmrouter/guardrails
+    tag: ""
+  resources:
+    requests: { cpu: "250m", memory: "128Mi" }
+    limits:   { cpu: "500m", memory: "256Mi" }
+  toxicityEnabled: false
+
+embedder:
+  replicaCount: 2
+  image:
+    repository: ghcr.io/parthkumarsingh/llmrouter/embedder
+    tag: ""
+  resources:
+    # The ONNX model is loaded per process, so memory is the binding constraint here, not CPU.
+    requests: { cpu: "500m", memory: "512Mi" }
+    limits:   { cpu: "1", memory: "1Gi" }
+
+# External dependencies. The chart does not deploy these: managed Redis, a managed vector store
+# and managed ClickHouse are the right answer in every environment where this chart makes sense,
+# and bundling stateful services into an application chart makes upgrades miserable.
+external:
+  redis:
+    url: ""              # redis://llmrouter-redis:6379/0
+    existingSecret: ""
+  qdrant:
+    url: ""
+  clickhouse:
+    url: ""
+    database: llmrouter
+    existingSecret: ""
+  otlpEndpoint: ""
+
+serviceMonitor:
+  enabled: true
+  interval: 15s
+
+networkPolicy:
+  # Default-deny with explicit egress. A gateway holds every tenant's API keys and sees every
+  # prompt; unrestricted egress from that pod is the single worst thing in the deployment.
+  enabled: true
+  allowedEgressCIDRs: ["0.0.0.0/0"]
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 10001
+  fsGroup: 10001
+  seccompProfile: { type: RuntimeDefault }
+
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities: { drop: ["ALL"] }
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

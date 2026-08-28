@@ -1,0 +1,195 @@
+{{/* Sidecars, configuration, network policy and monitoring. Reference implementation. */}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+data:
+  # The provider, policy and tenant catalogues. Mounted read-only; the gateway parses them once
+  # at start-up, which is why the Deployment carries a checksum annotation to force a roll.
+  providers.yaml: |
+{{ .Files.Get "files/providers.yaml" | default "# supply via --set-file or a values override" | indent 4 }}
+  policies.yaml: |
+{{ .Files.Get "files/policies.yaml" | default "# supply via --set-file or a values override" | indent 4 }}
+  tenants.yaml: |
+{{ .Files.Get "files/tenants.yaml" | default "# supply via --set-file or a values override" | indent 4 }}
+---
+{{/*
+No Secret template on purpose.
+
+A chart that can create a Secret invites `--set apiKey=...`, which puts the key in the shell
+history, the CI log and `helm get values` forever. The chart requires an existing Secret and
+fails to render without one; creating it is a separate, auditable step.
+
+  kubectl create secret generic llmrouter-provider-keys \
+    --from-literal=OPENAI_API_KEY=... \
+    --from-literal=ANTHROPIC_API_KEY=...
+*/}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-guardrails
+  labels:
+    app.kubernetes.io/name: llmrouter
+    app.kubernetes.io/component: guardrails
+spec:
+  replicas: {{ .Values.guardrails.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: llmrouter
+      app.kubernetes.io/component: guardrails
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: llmrouter
+        app.kubernetes.io/component: guardrails
+    spec:
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: guardrails
+          image: "{{ .Values.guardrails.image.repository }}:{{ .Values.guardrails.image.tag | default .Chart.AppVersion }}"
+          securityContext:
+            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+          ports:
+            - { name: http, containerPort: 8000 }
+          env:
+            - { name: GUARDRAILS_TOXICITY_ENABLED, value: {{ .Values.guardrails.toxicityEnabled | quote }} }
+            - { name: OTEL_EXPORTER_OTLP_ENDPOINT, value: {{ .Values.external.otlpEndpoint | quote }} }
+            - { name: OTEL_SERVICE_NAME, value: "llmrouter-guardrails" }
+          readinessProbe:
+            httpGet: { path: /healthz, port: http }
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: { path: /healthz, port: http }
+            periodSeconds: 15
+          resources:
+            {{- toYaml .Values.guardrails.resources | nindent 12 }}
+          volumeMounts:
+            - { name: tmp, mountPath: /tmp }
+      volumes:
+        - name: tmp
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-guardrails
+spec:
+  ports:
+    - { name: http, port: 8000, targetPort: http }
+  selector:
+    app.kubernetes.io/name: llmrouter
+    app.kubernetes.io/component: guardrails
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-embedder
+  labels:
+    app.kubernetes.io/name: llmrouter
+    app.kubernetes.io/component: embedder
+spec:
+  replicas: {{ .Values.embedder.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: llmrouter
+      app.kubernetes.io/component: embedder
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: llmrouter
+        app.kubernetes.io/component: embedder
+    spec:
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: embedder
+          image: "{{ .Values.embedder.image.repository }}:{{ .Values.embedder.image.tag | default .Chart.AppVersion }}"
+          securityContext:
+            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
+          ports:
+            - { name: http, containerPort: 8000 }
+          env:
+            - { name: EMBEDDER_MODE, value: "onnx" }
+          readinessProbe:
+            httpGet: { path: /healthz, port: http }
+            # The ONNX model loads at start-up, so the first probe must not be immediate.
+            initialDelaySeconds: 15
+            periodSeconds: 5
+          resources:
+            {{- toYaml .Values.embedder.resources | nindent 12 }}
+          volumeMounts:
+            - { name: tmp, mountPath: /tmp }
+      volumes:
+        - name: tmp
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-embedder
+spec:
+  ports:
+    - { name: http, port: 8000, targetPort: http }
+  selector:
+    app.kubernetes.io/name: llmrouter
+    app.kubernetes.io/component: embedder
+{{- if .Values.networkPolicy.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ .Release.Name }}-gateway
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: llmrouter
+      app.kubernetes.io/component: gateway
+  policyTypes: [Ingress, Egress]
+  ingress:
+    - from:
+        - podSelector: {}
+      ports:
+        - { protocol: TCP, port: 8080 }
+        - { protocol: TCP, port: 9090 }
+  egress:
+    # DNS, or nothing else works.
+    - to:
+        - namespaceSelector: {}
+          podSelector:
+            matchLabels: { k8s-app: kube-dns }
+      ports:
+        - { protocol: UDP, port: 53 }
+        - { protocol: TCP, port: 53 }
+    # In-cluster sidecars and stores.
+    - to:
+        - podSelector: {}
+    # Provider APIs. This is the rule worth arguing about: the gateway holds every tenant's
+    # keys and sees every prompt, so open egress from this pod is the worst thing in the
+    # deployment. Narrow allowedEgressCIDRs to the provider ranges, or put an egress proxy in
+    # front, before anyone calls this production-ready.
+    {{- range .Values.networkPolicy.allowedEgressCIDRs }}
+    - to:
+        - ipBlock: { cidr: {{ . | quote }} }
+      ports:
+        - { protocol: TCP, port: 443 }
+    {{- end }}
+{{- end }}
+{{- if .Values.serviceMonitor.enabled }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ .Release.Name }}-gateway
+  labels:
+    app.kubernetes.io/name: llmrouter
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: llmrouter
+      app.kubernetes.io/component: gateway
+  endpoints:
+    - port: metrics
+      interval: {{ .Values.serviceMonitor.interval }}
+      path: /metrics
+{{- end }}
