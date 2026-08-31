@@ -1,0 +1,70 @@
+{
+  "by_kind": {
+    "exact_repeat": {
+      "hit_rate_pct": 86.17,
+      "hits": 10776,
+      "requests": 12505
+    },
+    "near_miss": {
+      "hit_rate_pct": 69.94,
+      "hits": 3780,
+      "requests": 5405
+    },
+    "new": {
+      "hit_rate_pct": 0.0,
+      "hits": 0,
+      "requests": 24578
+    },
+    "paraphrase": {
+      "hit_rate_pct": 69.79,
+      "hits": 5243,
+      "requests": 7512
+    }
+  },
+  "calibration": {
+    "embedder": "onnx",
+    "threshold": 0.996233
+  },
+  "false_hit_rate_of_all_requests_pct": 0.0,
+  "false_hit_rate_pct": 0.0,
+  "false_hits": 0,
+  "hit_rate_pct": 39.6,
+  "hits": 19799,
+  "latency_method": "cached: measured wall clock of the real lookup path plus a warm Redis round trip; uncached: the same, plus provider time sampled from the distribution in config/providers.yaml",
+  "latency_ms": {
+    "cached": {
+      "count": 19799,
+      "max": 4.779,
+      "mean": 0.821,
+      "min": 0.806,
+      "p50": 0.82,
+      "p95": 0.835,
+      "p99": 0.847
+    },
+    "uncached": {
+      "count": 30201,
+      "max": 6133.262,
+      "mean": 2705.518,
+      "min": 1986.605,
+      "p50": 2470.864,
+      "p95": 3712.23,
+      "p99": 4222.061
+    }
+  },
+  "near_miss_opportunities": 5405,
+  "provenance": {
+    "embedder": "onnx",
+    "generated_at": "2026-09-06T10:23:51+00:00",
+    "generated_by": "benchmarks/cache/run_cache_bench.py",
+    "git_sha": "17c0c69-dirty",
+    "mode": "offline",
+    "platform": "windows-amd64",
+    "python": "3.11.9",
+    "requests": 50000,
+    "seed": 1337,
+    "threshold": 0.996233
+  },
+  "requests": 50000,
+  "semantic_tier_enabled": true,
+  "threshold": 0.996233
+}

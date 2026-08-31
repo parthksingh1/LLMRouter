@@ -1,0 +1,44 @@
+{
+  "budget_ms": 12.0,
+  "corpus": {
+    "blocked": 760,
+    "findings": 3291,
+    "note": "roughly one prompt in three triggers a detector, which is far above real traffic; the point is to measure the expensive path",
+    "size": 4006
+  },
+  "detectors": [
+    "secrets",
+    "pii",
+    "prompt_injection"
+  ],
+  "http_ms": {
+    "count": 4006,
+    "max": 34.3775,
+    "mean": 3.2445,
+    "p50": 2.9174,
+    "p90": 4.773,
+    "p95": 5.526,
+    "p99": 7.6557
+  },
+  "in_process_ms": {
+    "count": 4006,
+    "max": 79.0287,
+    "mean": 0.354,
+    "p50": 0.1735,
+    "p90": 0.7953,
+    "p95": 1.0754,
+    "p99": 1.7775
+  },
+  "provenance": {
+    "budget_ms": 12.0,
+    "generated_at": "2026-09-06T10:29:42+00:00",
+    "generated_by": "benchmarks/guardrails/bench_guardrails.py",
+    "git_sha": "a493340-dirty",
+    "iterations": 4006,
+    "mode": "offline",
+    "platform": "windows-amd64",
+    "python": "3.11.9",
+    "seed": 1337
+  },
+  "within_budget": true
+}

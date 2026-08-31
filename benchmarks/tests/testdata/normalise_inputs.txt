@@ -1,0 +1,18 @@
+List three metrics worth tracking for an email delivery queue.
+list 3 metrics worth tracking for an email delivery queue
+Quick question: list three metrics worth tracking for an email delivery queue. Thanks!
+  LIST   THREE   METRICS   WORTH   TRACKING   for an email delivery queue.
+Summarise the incident report.
+Summarize the incident report.
+Should I increase the timeout for the worker?
+Should I decrease the timeout for the worker?
+What is the capital of Peru?
+What is the currency of Peru?
+Explain the design of the scheduler.
+Write the design of the scheduler.
+for the queue, list the metrics
+list the metrics for the queue
+Hi, could you please help me with this - what is idempotency? Thanks!
+what is idempotency
+Analyze the p99 latency spike.
+Analyse the p99 latency spike.

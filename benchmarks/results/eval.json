@@ -1,0 +1,208 @@
+{
+  "cases": 200,
+  "classifier": {
+    "accuracy_pct": 80.0,
+    "confusion": {
+      "easy": {
+        "easy": 68,
+        "medium": 3
+      },
+      "hard": {
+        "easy": 4,
+        "hard": 23,
+        "medium": 4
+      },
+      "medium": {
+        "easy": 29,
+        "medium": 69
+      }
+    }
+  },
+  "cost": {
+    "baseline_usd": 0.212778,
+    "reduction_pct": 51.95,
+    "routed_usd": 0.102249,
+    "saved_usd": 0.110528
+  },
+  "dataset": "benchmarks\\eval\\dataset.jsonl",
+  "policy": "quality_tiered",
+  "provenance": {
+    "cases": 200,
+    "generated_at": "2026-09-06T09:52:03+00:00",
+    "generated_by": "benchmarks/eval/run_eval.py",
+    "git_sha": "17c0c69-dirty",
+    "mode": "offline",
+    "platform": "windows-amd64",
+    "policy": "quality_tiered",
+    "python": "3.11.9",
+    "seed": 1337
+  },
+  "quality": {
+    "baseline_accuracy_pct": 100.0,
+    "drift_pp": 1.5,
+    "drift_relative_pct": 1.5,
+    "regressions": 3,
+    "routed_accuracy_pct": 98.5
+  },
+  "regression_detail": [
+    {
+      "difficulty": "hard",
+      "id": "eval-084",
+      "min_quality": 0.891,
+      "misleading": true,
+      "predicted": "easy",
+      "routed_model": "llama-3.1-70b-instruct"
+    },
+    {
+      "difficulty": "hard",
+      "id": "eval-144",
+      "min_quality": 0.924,
+      "misleading": true,
+      "predicted": "easy",
+      "routed_model": "llama-3.1-70b-instruct"
+    },
+    {
+      "difficulty": "hard",
+      "id": "eval-160",
+      "min_quality": 0.907,
+      "misleading": true,
+      "predicted": "easy",
+      "routed_model": "llama-3.1-70b-instruct"
+    }
+  ],
+  "routing": {
+    "by_model": {
+      "gemini-1.5-pro": 76,
+      "gpt-4o": 23,
+      "llama-3.1-70b-instruct": 101
+    },
+    "by_provider": {
+      "google": 76,
+      "openai": 23,
+      "together": 101
+    }
+  },
+  "scoring_note": "A case counts as answered when the serving model's measured quality (config/providers.yaml) clears the case's seeded difficulty threshold. This is a step function, not a judge: it measures the cost of the routing decision, not real model capability.",
+  "sensitivity": [
+    {
+      "confidence_band": 0.0,
+      "cost_reduction_pct": 82.67,
+      "quality_drift_pp": 6.0,
+      "regressions": 12,
+      "safety_margin": 0.0,
+      "selected": false
+    },
+    {
+      "confidence_band": 0.1,
+      "cost_reduction_pct": 82.67,
+      "quality_drift_pp": 6.0,
+      "regressions": 12,
+      "safety_margin": 0.0,
+      "selected": false
+    },
+    {
+      "confidence_band": 0.2,
+      "cost_reduction_pct": 79.22,
+      "quality_drift_pp": 3.5,
+      "regressions": 7,
+      "safety_margin": 0.0,
+      "selected": false
+    },
+    {
+      "confidence_band": 0.0,
+      "cost_reduction_pct": 51.95,
+      "quality_drift_pp": 1.5,
+      "regressions": 3,
+      "safety_margin": 0.01,
+      "selected": false
+    },
+    {
+      "confidence_band": 0.1,
+      "cost_reduction_pct": 51.95,
+      "quality_drift_pp": 1.5,
+      "regressions": 3,
+      "safety_margin": 0.01,
+      "selected": false
+    },
+    {
+      "confidence_band": 0.2,
+      "cost_reduction_pct": 37.28,
+      "quality_drift_pp": 0.0,
+      "regressions": 0,
+      "safety_margin": 0.01,
+      "selected": false
+    },
+    {
+      "confidence_band": 0.0,
+      "cost_reduction_pct": 51.95,
+      "quality_drift_pp": 1.5,
+      "regressions": 3,
+      "safety_margin": 0.02,
+      "selected": true
+    },
+    {
+      "confidence_band": 0.1,
+      "cost_reduction_pct": 51.95,
+      "quality_drift_pp": 1.5,
+      "regressions": 3,
+      "safety_margin": 0.02,
+      "selected": false
+    },
+    {
+      "confidence_band": 0.2,
+      "cost_reduction_pct": 37.28,
+      "quality_drift_pp": 0.0,
+      "regressions": 0,
+      "safety_margin": 0.02,
+      "selected": false
+    },
+    {
+      "confidence_band": 0.0,
+      "cost_reduction_pct": 38.17,
+      "quality_drift_pp": 0.0,
+      "regressions": 0,
+      "safety_margin": 0.03,
+      "selected": false
+    },
+    {
+      "confidence_band": 0.1,
+      "cost_reduction_pct": 38.17,
+      "quality_drift_pp": 0.0,
+      "regressions": 0,
+      "safety_margin": 0.03,
+      "selected": false
+    },
+    {
+      "confidence_band": 0.2,
+      "cost_reduction_pct": 36.81,
+      "quality_drift_pp": 0.0,
+      "regressions": 0,
+      "safety_margin": 0.03,
+      "selected": false
+    },
+    {
+      "confidence_band": 0.0,
+      "cost_reduction_pct": 38.17,
+      "quality_drift_pp": 0.0,
+      "regressions": 0,
+      "safety_margin": 0.05,
+      "selected": false
+    },
+    {
+      "confidence_band": 0.1,
+      "cost_reduction_pct": 38.17,
+      "quality_drift_pp": 0.0,
+      "regressions": 0,
+      "safety_margin": 0.05,
+      "selected": false
+    },
+    {
+      "confidence_band": 0.2,
+      "cost_reduction_pct": 36.81,
+      "quality_drift_pp": 0.0,
+      "regressions": 0,
+      "safety_margin": 0.05,
+      "selected": false
+    }
+  ]
+}

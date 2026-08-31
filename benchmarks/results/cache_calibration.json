@@ -1,0 +1,2891 @@
+{
+  "by_kind": {
+    "different_question": {
+      "admitted_at_operating_point": 0,
+      "admitted_pct": 0.0,
+      "count": 175,
+      "exact_tier_matches": 0,
+      "label": 0,
+      "max_similarity": 0.827336,
+      "mean_similarity": 0.552486
+    },
+    "minimal_pair": {
+      "admitted_at_operating_point": 2,
+      "admitted_pct": 1.0,
+      "count": 200,
+      "exact_tier_matches": 0,
+      "label": 0,
+      "max_similarity": 0.99815,
+      "mean_similarity": 0.934297
+    },
+    "paraphrase": {
+      "admitted_at_operating_point": 199,
+      "admitted_pct": 39.8,
+      "count": 500,
+      "exact_tier_matches": 198,
+      "label": 1,
+      "max_similarity": 0.996859,
+      "mean_similarity": 0.95824
+    },
+    "subject_swap": {
+      "admitted_at_operating_point": 0,
+      "admitted_pct": 0.0,
+      "count": 125,
+      "exact_tier_matches": 0,
+      "label": 0,
+      "max_similarity": 0.933551,
+      "mean_similarity": 0.827648
+    }
+  },
+  "curve": [
+    {
+      "false_hit_rate": 1.0,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 1.0,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.231078
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.232996
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.234914
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.236831
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.238749
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.240667
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.242584
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.244502
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.24642
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.248337
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.250255
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.252173
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.25409
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.256008
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.257926
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.259844
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.261761
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.263679
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.265597
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.267514
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.269432
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.27135
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.273267
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.275185
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.277103
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.27902
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.280938
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.282856
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.284773
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.286691
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.288609
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.290526
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.292444
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.294362
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.296279
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.298197
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.300115
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.302032
+    },
+    {
+      "false_hit_rate": 0.998,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.998,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.30395
+    },
+    {
+      "false_hit_rate": 0.996,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.996,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.305868
+    },
+    {
+      "false_hit_rate": 0.996,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.996,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.307786
+    },
+    {
+      "false_hit_rate": 0.996,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.996,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.309703
+    },
+    {
+      "false_hit_rate": 0.994,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.994,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.311621
+    },
+    {
+      "false_hit_rate": 0.994,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.994,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.313539
+    },
+    {
+      "false_hit_rate": 0.994,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.994,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.315456
+    },
+    {
+      "false_hit_rate": 0.994,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.994,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.317374
+    },
+    {
+      "false_hit_rate": 0.994,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.994,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.319292
+    },
+    {
+      "false_hit_rate": 0.994,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.994,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.321209
+    },
+    {
+      "false_hit_rate": 0.994,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.994,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.323127
+    },
+    {
+      "false_hit_rate": 0.994,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.994,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.325045
+    },
+    {
+      "false_hit_rate": 0.994,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.994,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.326962
+    },
+    {
+      "false_hit_rate": 0.994,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.994,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.32888
+    },
+    {
+      "false_hit_rate": 0.992,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.992,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.330798
+    },
+    {
+      "false_hit_rate": 0.992,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.992,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.332715
+    },
+    {
+      "false_hit_rate": 0.992,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.992,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.334633
+    },
+    {
+      "false_hit_rate": 0.992,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.992,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.336551
+    },
+    {
+      "false_hit_rate": 0.992,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.992,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.338468
+    },
+    {
+      "false_hit_rate": 0.992,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.992,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.340386
+    },
+    {
+      "false_hit_rate": 0.992,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.992,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.342304
+    },
+    {
+      "false_hit_rate": 0.992,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.992,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.344221
+    },
+    {
+      "false_hit_rate": 0.992,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.992,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.346139
+    },
+    {
+      "false_hit_rate": 0.992,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.992,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.348057
+    },
+    {
+      "false_hit_rate": 0.99,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.99,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.349974
+    },
+    {
+      "false_hit_rate": 0.99,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.99,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.351892
+    },
+    {
+      "false_hit_rate": 0.986,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.986,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.35381
+    },
+    {
+      "false_hit_rate": 0.986,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.986,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.355728
+    },
+    {
+      "false_hit_rate": 0.986,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.986,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.357645
+    },
+    {
+      "false_hit_rate": 0.986,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.986,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.359563
+    },
+    {
+      "false_hit_rate": 0.986,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.986,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.361481
+    },
+    {
+      "false_hit_rate": 0.986,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.986,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.363398
+    },
+    {
+      "false_hit_rate": 0.986,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.986,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.365316
+    },
+    {
+      "false_hit_rate": 0.984,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.984,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.367234
+    },
+    {
+      "false_hit_rate": 0.984,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.984,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.369151
+    },
+    {
+      "false_hit_rate": 0.98,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.98,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.371069
+    },
+    {
+      "false_hit_rate": 0.98,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.98,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.372987
+    },
+    {
+      "false_hit_rate": 0.98,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.98,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.374904
+    },
+    {
+      "false_hit_rate": 0.978,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.978,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.376822
+    },
+    {
+      "false_hit_rate": 0.978,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.978,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.37874
+    },
+    {
+      "false_hit_rate": 0.978,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.978,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.380657
+    },
+    {
+      "false_hit_rate": 0.978,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.978,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.382575
+    },
+    {
+      "false_hit_rate": 0.978,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.978,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.384493
+    },
+    {
+      "false_hit_rate": 0.978,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.978,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.38641
+    },
+    {
+      "false_hit_rate": 0.978,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.978,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.388328
+    },
+    {
+      "false_hit_rate": 0.978,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.978,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.390246
+    },
+    {
+      "false_hit_rate": 0.978,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.978,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.392163
+    },
+    {
+      "false_hit_rate": 0.978,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.978,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.394081
+    },
+    {
+      "false_hit_rate": 0.978,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.978,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.395999
+    },
+    {
+      "false_hit_rate": 0.978,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.978,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.397916
+    },
+    {
+      "false_hit_rate": 0.978,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.978,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.399834
+    },
+    {
+      "false_hit_rate": 0.978,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.978,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.401752
+    },
+    {
+      "false_hit_rate": 0.978,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.978,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.40367
+    },
+    {
+      "false_hit_rate": 0.978,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.978,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.405587
+    },
+    {
+      "false_hit_rate": 0.978,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.978,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.407505
+    },
+    {
+      "false_hit_rate": 0.978,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.978,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.409423
+    },
+    {
+      "false_hit_rate": 0.978,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.978,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.41134
+    },
+    {
+      "false_hit_rate": 0.978,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.978,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.413258
+    },
+    {
+      "false_hit_rate": 0.976,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.976,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.415176
+    },
+    {
+      "false_hit_rate": 0.976,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.976,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.417093
+    },
+    {
+      "false_hit_rate": 0.976,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.976,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.419011
+    },
+    {
+      "false_hit_rate": 0.976,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.976,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.420929
+    },
+    {
+      "false_hit_rate": 0.974,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.974,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.422846
+    },
+    {
+      "false_hit_rate": 0.974,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.974,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.424764
+    },
+    {
+      "false_hit_rate": 0.974,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.974,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.426682
+    },
+    {
+      "false_hit_rate": 0.972,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.972,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.428599
+    },
+    {
+      "false_hit_rate": 0.97,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.97,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.430517
+    },
+    {
+      "false_hit_rate": 0.968,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.968,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.432435
+    },
+    {
+      "false_hit_rate": 0.968,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.968,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.434352
+    },
+    {
+      "false_hit_rate": 0.968,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.968,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.43627
+    },
+    {
+      "false_hit_rate": 0.968,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.968,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.438188
+    },
+    {
+      "false_hit_rate": 0.968,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.968,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.440105
+    },
+    {
+      "false_hit_rate": 0.966,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.966,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.442023
+    },
+    {
+      "false_hit_rate": 0.966,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.966,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.443941
+    },
+    {
+      "false_hit_rate": 0.964,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.964,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.445858
+    },
+    {
+      "false_hit_rate": 0.962,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.962,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.447776
+    },
+    {
+      "false_hit_rate": 0.962,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.962,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.449694
+    },
+    {
+      "false_hit_rate": 0.96,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.96,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.451612
+    },
+    {
+      "false_hit_rate": 0.96,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.96,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.453529
+    },
+    {
+      "false_hit_rate": 0.96,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.96,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.455447
+    },
+    {
+      "false_hit_rate": 0.96,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.96,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.457365
+    },
+    {
+      "false_hit_rate": 0.96,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.96,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.459282
+    },
+    {
+      "false_hit_rate": 0.96,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.96,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.4612
+    },
+    {
+      "false_hit_rate": 0.958,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.958,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.463118
+    },
+    {
+      "false_hit_rate": 0.956,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.956,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.465035
+    },
+    {
+      "false_hit_rate": 0.956,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.956,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.466953
+    },
+    {
+      "false_hit_rate": 0.956,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.956,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.468871
+    },
+    {
+      "false_hit_rate": 0.956,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.956,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.470788
+    },
+    {
+      "false_hit_rate": 0.952,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.952,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.472706
+    },
+    {
+      "false_hit_rate": 0.952,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.952,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.474624
+    },
+    {
+      "false_hit_rate": 0.946,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.946,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.476541
+    },
+    {
+      "false_hit_rate": 0.942,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.942,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.478459
+    },
+    {
+      "false_hit_rate": 0.938,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.938,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.480377
+    },
+    {
+      "false_hit_rate": 0.936,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.936,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.482294
+    },
+    {
+      "false_hit_rate": 0.936,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.936,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.484212
+    },
+    {
+      "false_hit_rate": 0.934,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.934,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.48613
+    },
+    {
+      "false_hit_rate": 0.93,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.93,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.488047
+    },
+    {
+      "false_hit_rate": 0.926,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.926,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.489965
+    },
+    {
+      "false_hit_rate": 0.922,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.922,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.491883
+    },
+    {
+      "false_hit_rate": 0.922,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.922,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.4938
+    },
+    {
+      "false_hit_rate": 0.922,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.922,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.495718
+    },
+    {
+      "false_hit_rate": 0.92,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.92,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.497636
+    },
+    {
+      "false_hit_rate": 0.914,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.914,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.499554
+    },
+    {
+      "false_hit_rate": 0.912,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.912,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.501471
+    },
+    {
+      "false_hit_rate": 0.91,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.91,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.503389
+    },
+    {
+      "false_hit_rate": 0.91,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.91,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.505307
+    },
+    {
+      "false_hit_rate": 0.906,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.906,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.507224
+    },
+    {
+      "false_hit_rate": 0.906,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.906,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.509142
+    },
+    {
+      "false_hit_rate": 0.904,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.904,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.51106
+    },
+    {
+      "false_hit_rate": 0.898,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.898,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.512977
+    },
+    {
+      "false_hit_rate": 0.894,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.894,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.514895
+    },
+    {
+      "false_hit_rate": 0.892,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.892,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.516813
+    },
+    {
+      "false_hit_rate": 0.89,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.89,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.51873
+    },
+    {
+      "false_hit_rate": 0.888,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.888,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.520648
+    },
+    {
+      "false_hit_rate": 0.886,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.886,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.522566
+    },
+    {
+      "false_hit_rate": 0.882,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.882,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.524483
+    },
+    {
+      "false_hit_rate": 0.878,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.878,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.526401
+    },
+    {
+      "false_hit_rate": 0.876,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.876,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.528319
+    },
+    {
+      "false_hit_rate": 0.874,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.874,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.530236
+    },
+    {
+      "false_hit_rate": 0.864,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.864,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.532154
+    },
+    {
+      "false_hit_rate": 0.86,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.86,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.534072
+    },
+    {
+      "false_hit_rate": 0.858,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.858,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.535989
+    },
+    {
+      "false_hit_rate": 0.854,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.854,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.537907
+    },
+    {
+      "false_hit_rate": 0.85,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.85,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.539825
+    },
+    {
+      "false_hit_rate": 0.846,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.846,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.541742
+    },
+    {
+      "false_hit_rate": 0.84,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.84,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.54366
+    },
+    {
+      "false_hit_rate": 0.838,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.838,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.545578
+    },
+    {
+      "false_hit_rate": 0.836,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.836,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.547496
+    },
+    {
+      "false_hit_rate": 0.832,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.832,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.549413
+    },
+    {
+      "false_hit_rate": 0.832,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.832,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.551331
+    },
+    {
+      "false_hit_rate": 0.832,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.832,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.553249
+    },
+    {
+      "false_hit_rate": 0.822,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.822,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.555166
+    },
+    {
+      "false_hit_rate": 0.822,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.822,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.557084
+    },
+    {
+      "false_hit_rate": 0.818,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.818,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.559002
+    },
+    {
+      "false_hit_rate": 0.81,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.81,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.560919
+    },
+    {
+      "false_hit_rate": 0.808,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.808,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.562837
+    },
+    {
+      "false_hit_rate": 0.808,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.808,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.564755
+    },
+    {
+      "false_hit_rate": 0.806,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.806,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.566672
+    },
+    {
+      "false_hit_rate": 0.804,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.804,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.56859
+    },
+    {
+      "false_hit_rate": 0.802,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.802,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.570508
+    },
+    {
+      "false_hit_rate": 0.802,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.802,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.572425
+    },
+    {
+      "false_hit_rate": 0.798,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.798,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.574343
+    },
+    {
+      "false_hit_rate": 0.79,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.79,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.576261
+    },
+    {
+      "false_hit_rate": 0.79,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.79,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.578178
+    },
+    {
+      "false_hit_rate": 0.788,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.788,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.580096
+    },
+    {
+      "false_hit_rate": 0.782,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.782,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.582014
+    },
+    {
+      "false_hit_rate": 0.778,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.778,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.583931
+    },
+    {
+      "false_hit_rate": 0.776,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.776,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.585849
+    },
+    {
+      "false_hit_rate": 0.77,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.77,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.587767
+    },
+    {
+      "false_hit_rate": 0.764,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.764,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.589684
+    },
+    {
+      "false_hit_rate": 0.76,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.76,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.591602
+    },
+    {
+      "false_hit_rate": 0.758,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.758,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.59352
+    },
+    {
+      "false_hit_rate": 0.756,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.756,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.595438
+    },
+    {
+      "false_hit_rate": 0.754,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.754,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.597355
+    },
+    {
+      "false_hit_rate": 0.754,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.754,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.599273
+    },
+    {
+      "false_hit_rate": 0.75,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.75,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.601191
+    },
+    {
+      "false_hit_rate": 0.748,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.748,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.603108
+    },
+    {
+      "false_hit_rate": 0.748,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.748,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.605026
+    },
+    {
+      "false_hit_rate": 0.746,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.746,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.606944
+    },
+    {
+      "false_hit_rate": 0.746,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.746,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.608861
+    },
+    {
+      "false_hit_rate": 0.744,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.744,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.610779
+    },
+    {
+      "false_hit_rate": 0.738,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.738,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.612697
+    },
+    {
+      "false_hit_rate": 0.732,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.732,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.614614
+    },
+    {
+      "false_hit_rate": 0.728,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.728,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.616532
+    },
+    {
+      "false_hit_rate": 0.728,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.728,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.61845
+    },
+    {
+      "false_hit_rate": 0.726,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.726,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.620367
+    },
+    {
+      "false_hit_rate": 0.716,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.716,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.622285
+    },
+    {
+      "false_hit_rate": 0.716,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.716,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.624203
+    },
+    {
+      "false_hit_rate": 0.714,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.714,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.62612
+    },
+    {
+      "false_hit_rate": 0.712,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.712,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.628038
+    },
+    {
+      "false_hit_rate": 0.71,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.71,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.629956
+    },
+    {
+      "false_hit_rate": 0.71,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.71,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.631873
+    },
+    {
+      "false_hit_rate": 0.704,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.704,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.633791
+    },
+    {
+      "false_hit_rate": 0.702,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.702,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.635709
+    },
+    {
+      "false_hit_rate": 0.7,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.7,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.637626
+    },
+    {
+      "false_hit_rate": 0.696,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.696,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.639544
+    },
+    {
+      "false_hit_rate": 0.696,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.696,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.641462
+    },
+    {
+      "false_hit_rate": 0.696,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.696,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.64338
+    },
+    {
+      "false_hit_rate": 0.692,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.692,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.645297
+    },
+    {
+      "false_hit_rate": 0.688,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.688,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.647215
+    },
+    {
+      "false_hit_rate": 0.688,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.688,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.649133
+    },
+    {
+      "false_hit_rate": 0.688,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.688,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.65105
+    },
+    {
+      "false_hit_rate": 0.686,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.686,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.652968
+    },
+    {
+      "false_hit_rate": 0.686,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.686,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.654886
+    },
+    {
+      "false_hit_rate": 0.684,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.684,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.656803
+    },
+    {
+      "false_hit_rate": 0.682,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.682,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.658721
+    },
+    {
+      "false_hit_rate": 0.682,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.682,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.660639
+    },
+    {
+      "false_hit_rate": 0.678,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.678,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.662556
+    },
+    {
+      "false_hit_rate": 0.676,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.676,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.664474
+    },
+    {
+      "false_hit_rate": 0.676,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.676,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.666392
+    },
+    {
+      "false_hit_rate": 0.676,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.676,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.668309
+    },
+    {
+      "false_hit_rate": 0.674,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.674,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.670227
+    },
+    {
+      "false_hit_rate": 0.672,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.672,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.672145
+    },
+    {
+      "false_hit_rate": 0.672,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.672,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.674062
+    },
+    {
+      "false_hit_rate": 0.67,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.67,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.67598
+    },
+    {
+      "false_hit_rate": 0.668,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.668,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.677898
+    },
+    {
+      "false_hit_rate": 0.666,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.666,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.679815
+    },
+    {
+      "false_hit_rate": 0.66,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.66,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.681733
+    },
+    {
+      "false_hit_rate": 0.66,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.66,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.683651
+    },
+    {
+      "false_hit_rate": 0.66,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.66,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.685568
+    },
+    {
+      "false_hit_rate": 0.66,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.66,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.687486
+    },
+    {
+      "false_hit_rate": 0.66,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.66,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.689404
+    },
+    {
+      "false_hit_rate": 0.658,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.658,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.691321
+    },
+    {
+      "false_hit_rate": 0.656,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.656,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.693239
+    },
+    {
+      "false_hit_rate": 0.654,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.654,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.695157
+    },
+    {
+      "false_hit_rate": 0.65,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.65,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.697075
+    },
+    {
+      "false_hit_rate": 0.65,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.65,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.698992
+    },
+    {
+      "false_hit_rate": 0.65,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.65,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.70091
+    },
+    {
+      "false_hit_rate": 0.65,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.65,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.702828
+    },
+    {
+      "false_hit_rate": 0.65,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.65,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.704745
+    },
+    {
+      "false_hit_rate": 0.65,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.65,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.706663
+    },
+    {
+      "false_hit_rate": 0.65,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.65,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.708581
+    },
+    {
+      "false_hit_rate": 0.65,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.65,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.710498
+    },
+    {
+      "false_hit_rate": 0.65,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.65,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.712416
+    },
+    {
+      "false_hit_rate": 0.65,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.65,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.714334
+    },
+    {
+      "false_hit_rate": 0.65,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.65,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.716251
+    },
+    {
+      "false_hit_rate": 0.65,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.65,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.718169
+    },
+    {
+      "false_hit_rate": 0.65,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.65,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.720087
+    },
+    {
+      "false_hit_rate": 0.65,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.65,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.722004
+    },
+    {
+      "false_hit_rate": 0.648,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.648,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.723922
+    },
+    {
+      "false_hit_rate": 0.646,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.646,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.72584
+    },
+    {
+      "false_hit_rate": 0.638,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.638,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.727757
+    },
+    {
+      "false_hit_rate": 0.638,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.638,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.729675
+    },
+    {
+      "false_hit_rate": 0.638,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.638,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.731593
+    },
+    {
+      "false_hit_rate": 0.636,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.636,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.73351
+    },
+    {
+      "false_hit_rate": 0.636,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.636,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.735428
+    },
+    {
+      "false_hit_rate": 0.634,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.634,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.737346
+    },
+    {
+      "false_hit_rate": 0.632,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.632,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.739263
+    },
+    {
+      "false_hit_rate": 0.63,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.63,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.741181
+    },
+    {
+      "false_hit_rate": 0.628,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.628,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.743099
+    },
+    {
+      "false_hit_rate": 0.628,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.628,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.745017
+    },
+    {
+      "false_hit_rate": 0.626,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.626,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.746934
+    },
+    {
+      "false_hit_rate": 0.624,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.624,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.748852
+    },
+    {
+      "false_hit_rate": 0.622,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.622,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.75077
+    },
+    {
+      "false_hit_rate": 0.622,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.622,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.752687
+    },
+    {
+      "false_hit_rate": 0.622,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.622,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.754605
+    },
+    {
+      "false_hit_rate": 0.62,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.62,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.756523
+    },
+    {
+      "false_hit_rate": 0.62,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.62,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.75844
+    },
+    {
+      "false_hit_rate": 0.62,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.62,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.760358
+    },
+    {
+      "false_hit_rate": 0.618,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.618,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.762276
+    },
+    {
+      "false_hit_rate": 0.618,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.618,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.764193
+    },
+    {
+      "false_hit_rate": 0.614,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.614,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.766111
+    },
+    {
+      "false_hit_rate": 0.608,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.608,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.768029
+    },
+    {
+      "false_hit_rate": 0.606,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.606,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.769946
+    },
+    {
+      "false_hit_rate": 0.604,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.604,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.771864
+    },
+    {
+      "false_hit_rate": 0.602,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.602,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.773782
+    },
+    {
+      "false_hit_rate": 0.602,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.602,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.775699
+    },
+    {
+      "false_hit_rate": 0.6,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.6,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.777617
+    },
+    {
+      "false_hit_rate": 0.598,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.598,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.779535
+    },
+    {
+      "false_hit_rate": 0.594,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.594,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.781452
+    },
+    {
+      "false_hit_rate": 0.592,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.592,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.78337
+    },
+    {
+      "false_hit_rate": 0.584,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.584,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.785288
+    },
+    {
+      "false_hit_rate": 0.58,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.58,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.787205
+    },
+    {
+      "false_hit_rate": 0.576,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.576,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.789123
+    },
+    {
+      "false_hit_rate": 0.574,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.574,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.791041
+    },
+    {
+      "false_hit_rate": 0.57,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.57,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.792959
+    },
+    {
+      "false_hit_rate": 0.566,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.566,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.794876
+    },
+    {
+      "false_hit_rate": 0.56,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.56,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.796794
+    },
+    {
+      "false_hit_rate": 0.556,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.556,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.798712
+    },
+    {
+      "false_hit_rate": 0.556,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.556,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.800629
+    },
+    {
+      "false_hit_rate": 0.554,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.554,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.802547
+    },
+    {
+      "false_hit_rate": 0.554,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.554,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.804465
+    },
+    {
+      "false_hit_rate": 0.552,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.552,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.806382
+    },
+    {
+      "false_hit_rate": 0.55,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.55,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.8083
+    },
+    {
+      "false_hit_rate": 0.55,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.55,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.810218
+    },
+    {
+      "false_hit_rate": 0.544,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.544,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.812135
+    },
+    {
+      "false_hit_rate": 0.542,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.542,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.814053
+    },
+    {
+      "false_hit_rate": 0.53,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.53,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.815971
+    },
+    {
+      "false_hit_rate": 0.526,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.526,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.817888
+    },
+    {
+      "false_hit_rate": 0.526,
+      "hit_rate": 1.0,
+      "semantic_false_hit_rate": 0.526,
+      "semantic_hit_rate": 0.604,
+      "threshold": 0.819806
+    },
+    {
+      "false_hit_rate": 0.526,
+      "hit_rate": 0.998,
+      "semantic_false_hit_rate": 0.526,
+      "semantic_hit_rate": 0.602,
+      "threshold": 0.821724
+    },
+    {
+      "false_hit_rate": 0.522,
+      "hit_rate": 0.998,
+      "semantic_false_hit_rate": 0.522,
+      "semantic_hit_rate": 0.602,
+      "threshold": 0.823641
+    },
+    {
+      "false_hit_rate": 0.516,
+      "hit_rate": 0.998,
+      "semantic_false_hit_rate": 0.516,
+      "semantic_hit_rate": 0.602,
+      "threshold": 0.825559
+    },
+    {
+      "false_hit_rate": 0.508,
+      "hit_rate": 0.998,
+      "semantic_false_hit_rate": 0.508,
+      "semantic_hit_rate": 0.602,
+      "threshold": 0.827477
+    },
+    {
+      "false_hit_rate": 0.506,
+      "hit_rate": 0.998,
+      "semantic_false_hit_rate": 0.506,
+      "semantic_hit_rate": 0.602,
+      "threshold": 0.829394
+    },
+    {
+      "false_hit_rate": 0.5,
+      "hit_rate": 0.998,
+      "semantic_false_hit_rate": 0.5,
+      "semantic_hit_rate": 0.602,
+      "threshold": 0.831312
+    },
+    {
+      "false_hit_rate": 0.492,
+      "hit_rate": 0.998,
+      "semantic_false_hit_rate": 0.492,
+      "semantic_hit_rate": 0.602,
+      "threshold": 0.83323
+    },
+    {
+      "false_hit_rate": 0.49,
+      "hit_rate": 0.998,
+      "semantic_false_hit_rate": 0.49,
+      "semantic_hit_rate": 0.602,
+      "threshold": 0.835147
+    },
+    {
+      "false_hit_rate": 0.484,
+      "hit_rate": 0.998,
+      "semantic_false_hit_rate": 0.484,
+      "semantic_hit_rate": 0.602,
+      "threshold": 0.837065
+    },
+    {
+      "false_hit_rate": 0.482,
+      "hit_rate": 0.998,
+      "semantic_false_hit_rate": 0.482,
+      "semantic_hit_rate": 0.602,
+      "threshold": 0.838983
+    },
+    {
+      "false_hit_rate": 0.48,
+      "hit_rate": 0.998,
+      "semantic_false_hit_rate": 0.48,
+      "semantic_hit_rate": 0.602,
+      "threshold": 0.840901
+    },
+    {
+      "false_hit_rate": 0.476,
+      "hit_rate": 0.998,
+      "semantic_false_hit_rate": 0.476,
+      "semantic_hit_rate": 0.602,
+      "threshold": 0.842818
+    },
+    {
+      "false_hit_rate": 0.472,
+      "hit_rate": 0.998,
+      "semantic_false_hit_rate": 0.472,
+      "semantic_hit_rate": 0.602,
+      "threshold": 0.844736
+    },
+    {
+      "false_hit_rate": 0.468,
+      "hit_rate": 0.998,
+      "semantic_false_hit_rate": 0.468,
+      "semantic_hit_rate": 0.602,
+      "threshold": 0.846654
+    },
+    {
+      "false_hit_rate": 0.464,
+      "hit_rate": 0.998,
+      "semantic_false_hit_rate": 0.464,
+      "semantic_hit_rate": 0.602,
+      "threshold": 0.848571
+    },
+    {
+      "false_hit_rate": 0.46,
+      "hit_rate": 0.998,
+      "semantic_false_hit_rate": 0.46,
+      "semantic_hit_rate": 0.602,
+      "threshold": 0.850489
+    },
+    {
+      "false_hit_rate": 0.456,
+      "hit_rate": 0.994,
+      "semantic_false_hit_rate": 0.456,
+      "semantic_hit_rate": 0.598,
+      "threshold": 0.852407
+    },
+    {
+      "false_hit_rate": 0.454,
+      "hit_rate": 0.994,
+      "semantic_false_hit_rate": 0.454,
+      "semantic_hit_rate": 0.598,
+      "threshold": 0.854324
+    },
+    {
+      "false_hit_rate": 0.444,
+      "hit_rate": 0.994,
+      "semantic_false_hit_rate": 0.444,
+      "semantic_hit_rate": 0.598,
+      "threshold": 0.856242
+    },
+    {
+      "false_hit_rate": 0.44,
+      "hit_rate": 0.992,
+      "semantic_false_hit_rate": 0.44,
+      "semantic_hit_rate": 0.596,
+      "threshold": 0.85816
+    },
+    {
+      "false_hit_rate": 0.438,
+      "hit_rate": 0.992,
+      "semantic_false_hit_rate": 0.438,
+      "semantic_hit_rate": 0.596,
+      "threshold": 0.860077
+    },
+    {
+      "false_hit_rate": 0.436,
+      "hit_rate": 0.99,
+      "semantic_false_hit_rate": 0.436,
+      "semantic_hit_rate": 0.594,
+      "threshold": 0.861995
+    },
+    {
+      "false_hit_rate": 0.432,
+      "hit_rate": 0.99,
+      "semantic_false_hit_rate": 0.432,
+      "semantic_hit_rate": 0.594,
+      "threshold": 0.863913
+    },
+    {
+      "false_hit_rate": 0.428,
+      "hit_rate": 0.988,
+      "semantic_false_hit_rate": 0.428,
+      "semantic_hit_rate": 0.592,
+      "threshold": 0.86583
+    },
+    {
+      "false_hit_rate": 0.418,
+      "hit_rate": 0.988,
+      "semantic_false_hit_rate": 0.418,
+      "semantic_hit_rate": 0.592,
+      "threshold": 0.867748
+    },
+    {
+      "false_hit_rate": 0.41,
+      "hit_rate": 0.986,
+      "semantic_false_hit_rate": 0.41,
+      "semantic_hit_rate": 0.59,
+      "threshold": 0.869666
+    },
+    {
+      "false_hit_rate": 0.406,
+      "hit_rate": 0.986,
+      "semantic_false_hit_rate": 0.406,
+      "semantic_hit_rate": 0.59,
+      "threshold": 0.871583
+    },
+    {
+      "false_hit_rate": 0.402,
+      "hit_rate": 0.986,
+      "semantic_false_hit_rate": 0.402,
+      "semantic_hit_rate": 0.59,
+      "threshold": 0.873501
+    },
+    {
+      "false_hit_rate": 0.398,
+      "hit_rate": 0.982,
+      "semantic_false_hit_rate": 0.398,
+      "semantic_hit_rate": 0.586,
+      "threshold": 0.875419
+    },
+    {
+      "false_hit_rate": 0.394,
+      "hit_rate": 0.982,
+      "semantic_false_hit_rate": 0.394,
+      "semantic_hit_rate": 0.586,
+      "threshold": 0.877336
+    },
+    {
+      "false_hit_rate": 0.392,
+      "hit_rate": 0.982,
+      "semantic_false_hit_rate": 0.392,
+      "semantic_hit_rate": 0.586,
+      "threshold": 0.879254
+    },
+    {
+      "false_hit_rate": 0.39,
+      "hit_rate": 0.982,
+      "semantic_false_hit_rate": 0.39,
+      "semantic_hit_rate": 0.586,
+      "threshold": 0.881172
+    },
+    {
+      "false_hit_rate": 0.384,
+      "hit_rate": 0.982,
+      "semantic_false_hit_rate": 0.384,
+      "semantic_hit_rate": 0.586,
+      "threshold": 0.883089
+    },
+    {
+      "false_hit_rate": 0.382,
+      "hit_rate": 0.978,
+      "semantic_false_hit_rate": 0.382,
+      "semantic_hit_rate": 0.582,
+      "threshold": 0.885007
+    },
+    {
+      "false_hit_rate": 0.376,
+      "hit_rate": 0.976,
+      "semantic_false_hit_rate": 0.376,
+      "semantic_hit_rate": 0.58,
+      "threshold": 0.886925
+    },
+    {
+      "false_hit_rate": 0.374,
+      "hit_rate": 0.976,
+      "semantic_false_hit_rate": 0.374,
+      "semantic_hit_rate": 0.58,
+      "threshold": 0.888843
+    },
+    {
+      "false_hit_rate": 0.37,
+      "hit_rate": 0.974,
+      "semantic_false_hit_rate": 0.37,
+      "semantic_hit_rate": 0.578,
+      "threshold": 0.89076
+    },
+    {
+      "false_hit_rate": 0.37,
+      "hit_rate": 0.972,
+      "semantic_false_hit_rate": 0.37,
+      "semantic_hit_rate": 0.576,
+      "threshold": 0.892678
+    },
+    {
+      "false_hit_rate": 0.364,
+      "hit_rate": 0.964,
+      "semantic_false_hit_rate": 0.364,
+      "semantic_hit_rate": 0.568,
+      "threshold": 0.894596
+    },
+    {
+      "false_hit_rate": 0.354,
+      "hit_rate": 0.962,
+      "semantic_false_hit_rate": 0.354,
+      "semantic_hit_rate": 0.566,
+      "threshold": 0.896513
+    },
+    {
+      "false_hit_rate": 0.352,
+      "hit_rate": 0.962,
+      "semantic_false_hit_rate": 0.352,
+      "semantic_hit_rate": 0.566,
+      "threshold": 0.898431
+    },
+    {
+      "false_hit_rate": 0.346,
+      "hit_rate": 0.962,
+      "semantic_false_hit_rate": 0.346,
+      "semantic_hit_rate": 0.566,
+      "threshold": 0.900349
+    },
+    {
+      "false_hit_rate": 0.346,
+      "hit_rate": 0.96,
+      "semantic_false_hit_rate": 0.346,
+      "semantic_hit_rate": 0.564,
+      "threshold": 0.902266
+    },
+    {
+      "false_hit_rate": 0.338,
+      "hit_rate": 0.95,
+      "semantic_false_hit_rate": 0.338,
+      "semantic_hit_rate": 0.554,
+      "threshold": 0.904184
+    },
+    {
+      "false_hit_rate": 0.332,
+      "hit_rate": 0.948,
+      "semantic_false_hit_rate": 0.332,
+      "semantic_hit_rate": 0.552,
+      "threshold": 0.906102
+    },
+    {
+      "false_hit_rate": 0.326,
+      "hit_rate": 0.946,
+      "semantic_false_hit_rate": 0.326,
+      "semantic_hit_rate": 0.55,
+      "threshold": 0.908019
+    },
+    {
+      "false_hit_rate": 0.32,
+      "hit_rate": 0.944,
+      "semantic_false_hit_rate": 0.32,
+      "semantic_hit_rate": 0.548,
+      "threshold": 0.909937
+    },
+    {
+      "false_hit_rate": 0.316,
+      "hit_rate": 0.94,
+      "semantic_false_hit_rate": 0.316,
+      "semantic_hit_rate": 0.544,
+      "threshold": 0.911855
+    },
+    {
+      "false_hit_rate": 0.312,
+      "hit_rate": 0.94,
+      "semantic_false_hit_rate": 0.312,
+      "semantic_hit_rate": 0.544,
+      "threshold": 0.913772
+    },
+    {
+      "false_hit_rate": 0.3,
+      "hit_rate": 0.932,
+      "semantic_false_hit_rate": 0.3,
+      "semantic_hit_rate": 0.536,
+      "threshold": 0.91569
+    },
+    {
+      "false_hit_rate": 0.298,
+      "hit_rate": 0.928,
+      "semantic_false_hit_rate": 0.298,
+      "semantic_hit_rate": 0.532,
+      "threshold": 0.917608
+    },
+    {
+      "false_hit_rate": 0.296,
+      "hit_rate": 0.924,
+      "semantic_false_hit_rate": 0.296,
+      "semantic_hit_rate": 0.528,
+      "threshold": 0.919525
+    },
+    {
+      "false_hit_rate": 0.294,
+      "hit_rate": 0.914,
+      "semantic_false_hit_rate": 0.294,
+      "semantic_hit_rate": 0.518,
+      "threshold": 0.921443
+    },
+    {
+      "false_hit_rate": 0.286,
+      "hit_rate": 0.902,
+      "semantic_false_hit_rate": 0.286,
+      "semantic_hit_rate": 0.506,
+      "threshold": 0.923361
+    },
+    {
+      "false_hit_rate": 0.278,
+      "hit_rate": 0.896,
+      "semantic_false_hit_rate": 0.278,
+      "semantic_hit_rate": 0.5,
+      "threshold": 0.925278
+    },
+    {
+      "false_hit_rate": 0.274,
+      "hit_rate": 0.894,
+      "semantic_false_hit_rate": 0.274,
+      "semantic_hit_rate": 0.498,
+      "threshold": 0.927196
+    },
+    {
+      "false_hit_rate": 0.27,
+      "hit_rate": 0.892,
+      "semantic_false_hit_rate": 0.27,
+      "semantic_hit_rate": 0.496,
+      "threshold": 0.929114
+    },
+    {
+      "false_hit_rate": 0.264,
+      "hit_rate": 0.884,
+      "semantic_false_hit_rate": 0.264,
+      "semantic_hit_rate": 0.488,
+      "threshold": 0.931031
+    },
+    {
+      "false_hit_rate": 0.262,
+      "hit_rate": 0.882,
+      "semantic_false_hit_rate": 0.262,
+      "semantic_hit_rate": 0.486,
+      "threshold": 0.932949
+    },
+    {
+      "false_hit_rate": 0.256,
+      "hit_rate": 0.874,
+      "semantic_false_hit_rate": 0.256,
+      "semantic_hit_rate": 0.478,
+      "threshold": 0.934867
+    },
+    {
+      "false_hit_rate": 0.252,
+      "hit_rate": 0.868,
+      "semantic_false_hit_rate": 0.252,
+      "semantic_hit_rate": 0.472,
+      "threshold": 0.936785
+    },
+    {
+      "false_hit_rate": 0.244,
+      "hit_rate": 0.856,
+      "semantic_false_hit_rate": 0.244,
+      "semantic_hit_rate": 0.46,
+      "threshold": 0.938702
+    },
+    {
+      "false_hit_rate": 0.236,
+      "hit_rate": 0.848,
+      "semantic_false_hit_rate": 0.236,
+      "semantic_hit_rate": 0.452,
+      "threshold": 0.94062
+    },
+    {
+      "false_hit_rate": 0.228,
+      "hit_rate": 0.836,
+      "semantic_false_hit_rate": 0.228,
+      "semantic_hit_rate": 0.44,
+      "threshold": 0.942538
+    },
+    {
+      "false_hit_rate": 0.224,
+      "hit_rate": 0.828,
+      "semantic_false_hit_rate": 0.224,
+      "semantic_hit_rate": 0.432,
+      "threshold": 0.944455
+    },
+    {
+      "false_hit_rate": 0.22,
+      "hit_rate": 0.814,
+      "semantic_false_hit_rate": 0.22,
+      "semantic_hit_rate": 0.418,
+      "threshold": 0.946373
+    },
+    {
+      "false_hit_rate": 0.212,
+      "hit_rate": 0.802,
+      "semantic_false_hit_rate": 0.212,
+      "semantic_hit_rate": 0.406,
+      "threshold": 0.948291
+    },
+    {
+      "false_hit_rate": 0.202,
+      "hit_rate": 0.786,
+      "semantic_false_hit_rate": 0.202,
+      "semantic_hit_rate": 0.39,
+      "threshold": 0.950208
+    },
+    {
+      "false_hit_rate": 0.192,
+      "hit_rate": 0.774,
+      "semantic_false_hit_rate": 0.192,
+      "semantic_hit_rate": 0.378,
+      "threshold": 0.952126
+    },
+    {
+      "false_hit_rate": 0.19,
+      "hit_rate": 0.768,
+      "semantic_false_hit_rate": 0.19,
+      "semantic_hit_rate": 0.372,
+      "threshold": 0.954044
+    },
+    {
+      "false_hit_rate": 0.18,
+      "hit_rate": 0.764,
+      "semantic_false_hit_rate": 0.18,
+      "semantic_hit_rate": 0.368,
+      "threshold": 0.955961
+    },
+    {
+      "false_hit_rate": 0.168,
+      "hit_rate": 0.756,
+      "semantic_false_hit_rate": 0.168,
+      "semantic_hit_rate": 0.36,
+      "threshold": 0.957879
+    },
+    {
+      "false_hit_rate": 0.164,
+      "hit_rate": 0.748,
+      "semantic_false_hit_rate": 0.164,
+      "semantic_hit_rate": 0.352,
+      "threshold": 0.959797
+    },
+    {
+      "false_hit_rate": 0.156,
+      "hit_rate": 0.72,
+      "semantic_false_hit_rate": 0.156,
+      "semantic_hit_rate": 0.324,
+      "threshold": 0.961714
+    },
+    {
+      "false_hit_rate": 0.146,
+      "hit_rate": 0.712,
+      "semantic_false_hit_rate": 0.146,
+      "semantic_hit_rate": 0.316,
+      "threshold": 0.963632
+    },
+    {
+      "false_hit_rate": 0.14,
+      "hit_rate": 0.698,
+      "semantic_false_hit_rate": 0.14,
+      "semantic_hit_rate": 0.302,
+      "threshold": 0.96555
+    },
+    {
+      "false_hit_rate": 0.126,
+      "hit_rate": 0.684,
+      "semantic_false_hit_rate": 0.126,
+      "semantic_hit_rate": 0.288,
+      "threshold": 0.967467
+    },
+    {
+      "false_hit_rate": 0.12,
+      "hit_rate": 0.67,
+      "semantic_false_hit_rate": 0.12,
+      "semantic_hit_rate": 0.274,
+      "threshold": 0.969385
+    },
+    {
+      "false_hit_rate": 0.104,
+      "hit_rate": 0.656,
+      "semantic_false_hit_rate": 0.104,
+      "semantic_hit_rate": 0.26,
+      "threshold": 0.971303
+    },
+    {
+      "false_hit_rate": 0.098,
+      "hit_rate": 0.638,
+      "semantic_false_hit_rate": 0.098,
+      "semantic_hit_rate": 0.242,
+      "threshold": 0.97322
+    },
+    {
+      "false_hit_rate": 0.092,
+      "hit_rate": 0.62,
+      "semantic_false_hit_rate": 0.092,
+      "semantic_hit_rate": 0.224,
+      "threshold": 0.975138
+    },
+    {
+      "false_hit_rate": 0.084,
+      "hit_rate": 0.602,
+      "semantic_false_hit_rate": 0.084,
+      "semantic_hit_rate": 0.206,
+      "threshold": 0.977056
+    },
+    {
+      "false_hit_rate": 0.082,
+      "hit_rate": 0.588,
+      "semantic_false_hit_rate": 0.082,
+      "semantic_hit_rate": 0.192,
+      "threshold": 0.978973
+    },
+    {
+      "false_hit_rate": 0.076,
+      "hit_rate": 0.556,
+      "semantic_false_hit_rate": 0.076,
+      "semantic_hit_rate": 0.16,
+      "threshold": 0.980891
+    },
+    {
+      "false_hit_rate": 0.072,
+      "hit_rate": 0.518,
+      "semantic_false_hit_rate": 0.072,
+      "semantic_hit_rate": 0.122,
+      "threshold": 0.982809
+    },
+    {
+      "false_hit_rate": 0.062,
+      "hit_rate": 0.5,
+      "semantic_false_hit_rate": 0.062,
+      "semantic_hit_rate": 0.104,
+      "threshold": 0.984727
+    },
+    {
+      "false_hit_rate": 0.054,
+      "hit_rate": 0.468,
+      "semantic_false_hit_rate": 0.054,
+      "semantic_hit_rate": 0.072,
+      "threshold": 0.986644
+    },
+    {
+      "false_hit_rate": 0.054,
+      "hit_rate": 0.448,
+      "semantic_false_hit_rate": 0.054,
+      "semantic_hit_rate": 0.052,
+      "threshold": 0.988562
+    },
+    {
+      "false_hit_rate": 0.05,
+      "hit_rate": 0.438,
+      "semantic_false_hit_rate": 0.05,
+      "semantic_hit_rate": 0.042,
+      "threshold": 0.99048
+    },
+    {
+      "false_hit_rate": 0.026,
+      "hit_rate": 0.426,
+      "semantic_false_hit_rate": 0.026,
+      "semantic_hit_rate": 0.03,
+      "threshold": 0.992397
+    },
+    {
+      "false_hit_rate": 0.01,
+      "hit_rate": 0.416,
+      "semantic_false_hit_rate": 0.01,
+      "semantic_hit_rate": 0.02,
+      "threshold": 0.994315
+    },
+    {
+      "false_hit_rate": 0.004,
+      "hit_rate": 0.398,
+      "semantic_false_hit_rate": 0.004,
+      "semantic_hit_rate": 0.002,
+      "threshold": 0.996233
+    },
+    {
+      "false_hit_rate": 0.002,
+      "hit_rate": 0.396,
+      "semantic_false_hit_rate": 0.002,
+      "semantic_hit_rate": 0.0,
+      "threshold": 0.99815
+    }
+  ],
+  "embedder": "onnx",
+  "false_hit_budget": 0.005,
+  "finding": "Minimal pairs -- one word changed, meaning inverted -- embed closer together than many genuine paraphrases, so similarity alone cannot be pushed to a useful hit rate within the false-hit budget. The exact tier therefore carries the safe work and the semantic tier is calibrated to add only what fits in the budget. A production system wanting more would add a cross-encoder re-rank over the top-k candidates rather than lowering this threshold.",
+  "model": "BAAI/bge-small-en-v1.5",
+  "operating_point": {
+    "false_hit_rate": 0.004,
+    "hit_rate": 0.398,
+    "semantic_false_hit_rate": 0.004,
+    "semantic_hit_rate": 0.002,
+    "threshold": 0.996233
+  },
+  "pairs": {
+    "negative": 500,
+    "positive": 500,
+    "total": 1000
+  },
+  "plot": "docs\\diagrams\\cache_roc.png",
+  "provenance": {
+    "embedder": "onnx",
+    "generated_at": "2026-09-06T10:13:35+00:00",
+    "generated_by": "benchmarks/cache/calibrate.py",
+    "git_sha": "17c0c69-dirty",
+    "mode": "offline",
+    "model": "BAAI/bge-small-en-v1.5",
+    "platform": "windows-amd64",
+    "python": "3.11.9",
+    "seed": 1337
+  },
+  "similarity_auc": 0.842896,
+  "tiers": {
+    "exact": {
+      "description": "content-token equality after conservative normalisation",
+      "false_hit_rate": 0.0,
+      "hit_rate": 0.396
+    },
+    "semantic": {
+      "description": "cosine similarity on pairs the exact tier did not resolve",
+      "incremental_false_hit_rate": 0.004,
+      "incremental_hit_rate": 0.002,
+      "threshold": 0.996233
+    }
+  }
+}
