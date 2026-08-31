@@ -1,0 +1,9 @@
+{
+  "name": "llmrouter-examples",
+  "private": true,
+  "type": "module",
+  "description": "Wire-compatibility checks against the LLMRouter gateway",
+  "dependencies": {
+    "openai": "4.77.0"
+  }
+}
