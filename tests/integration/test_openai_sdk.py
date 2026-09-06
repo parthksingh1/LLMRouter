@@ -93,9 +93,16 @@ def test_routing_metadata_is_additive(client: OpenAI) -> None:
 
 
 def test_difficulty_changes_the_chosen_model(client: OpenAI) -> None:
-    """The central routing claim, end to end."""
+    """The central routing claim, end to end.
+
+    Both prompts are unique to this test. A prompt another test has already sent is served from
+    the cache, and a cache hit never reaches the router -- so it carries no difficulty and this
+    would be asserting on the cache rather than on routing. The `cached` assertions below are
+    what make that failure legible if it ever happens again.
+    """
     easy = client.chat.completions.create(
-        model="auto", messages=[{"role": "user", "content": "What is the capital of Peru?"}]
+        model="auto",
+        messages=[{"role": "user", "content": "What is the capital of Portugal?"}],
     )
     hard = client.chat.completions.create(
         model="auto",
@@ -106,6 +113,9 @@ def test_difficulty_changes_the_chosen_model(client: OpenAI) -> None:
 
     easy_meta = easy.model_extra["llmrouter"]
     hard_meta = hard.model_extra["llmrouter"]
+
+    assert easy_meta["cached"] is False, f"served from cache, so routing never ran: {easy_meta}"
+    assert hard_meta["cached"] is False, f"served from cache, so routing never ran: {hard_meta}"
 
     assert easy_meta["difficulty"] == "easy", easy_meta
     assert hard_meta["difficulty"] == "hard", hard_meta
