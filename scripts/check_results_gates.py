@@ -39,7 +39,7 @@ RESULTS = REPO_ROOT / "benchmarks" / "results"
 
 #: Key names whose subtree is a wall-clock measurement of the machine that ran it.
 MEASURED_KEYS = frozenset(
-    {"latency_ms", "http_ms", "in_process_ms", "wall_clock_seconds", "detectors"}
+    {"latency_ms", "http_ms", "in_process_ms", "wall_clock_seconds"}
 )
 
 #: How far a measured value may drift from the committed one before it is worth a look. Wide on
