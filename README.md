@@ -41,17 +41,19 @@ Docker.
 <!-- BENCHMARK TABLE START -->
 | What | Measured | Produced by |
 |---|---|---|
-| Cost reduction from policy routing | **52.0%** | `make bench-eval` |
-| Quality drift that reduction cost | **1.5 pp** (100.0% → 98.5%) | `make bench-eval` |
+| Cost reduction from policy routing | **52.7%** | `make bench-eval` |
+| Quality drift that reduction cost | **1.5 pp (100.0% -> 98.5%)** | `make bench-eval` |
 | Difficulty classifier accuracy | **80.0%** | `make bench-eval` |
-| Cache hit rate on seeded traffic | **39.6%** | `make bench-cache` |
-| Cache false-hit rate | **0.00%** of 5,405 near misses | `make bench-cache` |
-| Latency, uncached → cached (p50) | **2,471 ms → 0.8 ms** | `make bench-cache` |
-| Calibrated similarity threshold | **0.9962** (bge-small, AUC 0.843) | `make bench-cache` |
-| Guardrails p99 (budget 12 ms) | **1.78 ms** | `make bench-guardrails` |
-| Stream completion at a 5% mid-stream failure rate | **100.00%** of 10,000 streams | `make bench-failover` |
-| Streams recovered by failover | **489** (4.9%), 16 restarted | `make bench-failover` |
-| Runaway workloads found from spend alone | **3 tenants**, precision 1.00, recall 1.00 | `make bench-attribution` |
+| Cache hit rate on seeded traffic | **61.7%** | `make bench-cache` |
+| Cache false-hit rate | **0.00% of 2,876 near misses** | `make bench-cache` |
+| Latency, uncached -> cached (p50) | **2,467 ms -> 0.8 ms** | `make bench-cache` |
+| Calibrated similarity threshold | **0.9962 (onnx, AUC 0.843)** | `make bench-cache` |
+| Guardrails p99 (budget 12 ms) | **1.96 ms** | `make bench-guardrails` |
+| Stream completion at a 5% mid-stream failure rate | **100.00% of 10,000 streams** | `make bench-failover` |
+| Streams recovered by failover | **489 (4.9%), 16 restarted** | `make bench-failover` |
+| Runaway workloads found from spend alone | **3 tenants = 61.7% of spend (precision 1.00, recall 1.00)** | `make bench-attribution` |
+
+<sub>Rendered by `benchmarks/report.py` from `benchmarks/results/*.json`. No number in this table is typed by hand.</sub>
 <!-- BENCHMARK TABLE END -->
 
 ### What these numbers do and do not mean
@@ -145,6 +147,51 @@ whose spend had moved 20%. Precision and recall are now both 1.00.
 
 The same module powers the benchmark and the dashboard, so the committed result and the page a
 human looks at cannot disagree.
+
+---
+
+---
+
+## Screenshots
+
+> These are placeholders. Every number in this README comes from a committed benchmark result, so
+> the screenshots get the same treatment: nothing here is a mock-up of a UI that was never run.
+> `make demo` brings the whole stack up offline — capture the three views below and overwrite the
+> files in [docs/images/](docs/images/).
+
+**Cost dashboard** — per-tenant spend, model mix, and the tenants the runaway detector flagged.
+Reproduces the attribution row of the results table against the same seeded data.
+
+![Cost dashboard](docs/images/dashboard.png)
+
+**Grafana** — RED metrics per route, cache hit rate, circuit-breaker state and per-provider
+latency. Dashboards are provisioned from `infra/grafana/`, so this comes up populated.
+
+![Grafana overview](docs/images/grafana.png)
+
+**Jaeger** — one request's span tree for a stream that failed over mid-answer: the first
+provider's span ends early, the second continues from the assistant prefix, and the root span
+carries `llmrouter.failover=true`.
+
+![Jaeger failover trace](docs/images/jaeger.png)
+
+<details>
+<summary>How to capture them</summary>
+
+```bash
+make demo                    # brings the stack up and warms it with seeded traffic
+make bench-failover          # generates traces that contain a mid-stream failover
+```
+
+| Replace | From | Frame |
+|---|---|---|
+| `docs/images/dashboard.png` | http://localhost:8501 | Overview tab, date range covering the seeded window |
+| `docs/images/grafana.png` | http://localhost:3000 (`admin`/`admin`) | Dashboards → LLMRouter overview, last 15 minutes |
+| `docs/images/jaeger.png` | http://localhost:16686 | Service `llmrouter-gateway`, tag `llmrouter.failover=true`, open one trace |
+
+Keep them at 1200px wide so they render at a readable size on GitHub.
+
+</details>
 
 ---
 
