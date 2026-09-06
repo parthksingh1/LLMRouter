@@ -93,10 +93,20 @@ bench-eval: ## Cost reduction and quality drift over the 200-case eval set
 	$(PY) benchmarks/eval/run_eval.py --mode $(MODE) --out $(RESULTS)/eval.json
 
 .PHONY: bench-cache
-bench-cache: ## Calibrate the similarity threshold, then measure hit rate and latency
+bench-cache: ## Hit rate and latency at the committed similarity threshold
+	$(PY) benchmarks/cache/run_cache_bench.py --mode $(MODE) --out $(RESULTS)/cache_bench.json
+
+.PHONY: bench-calibrate
+bench-calibrate: ## Re-derive the similarity threshold and the ROC curve (needs fastembed)
+	# Deliberately NOT part of `bench`. Calibration is the one step needing a real
+	# sentence-transformer, which means fastembed, onnxruntime and a model download: a heavy,
+	# network-dependent dependency every other benchmark here does without. The committed
+	# cache_calibration.json is its output and run_cache_bench.py reads the threshold from
+	# there, so `make bench` reproduces every number on a fresh clone with nothing but
+	# requirements-dev.txt. Re-run this when the pair corpus or the embedding model changes.
+	$(PY) -m pip install --quiet 'fastembed==0.5.1'
 	$(PY) benchmarks/cache/calibrate.py --out $(RESULTS)/cache_calibration.json \
 	     --plot docs/diagrams/cache_roc.png
-	$(PY) benchmarks/cache/run_cache_bench.py --mode $(MODE) --out $(RESULTS)/cache_bench.json
 
 .PHONY: bench-guardrails
 bench-guardrails: ## p99 latency of the input screening pipeline (fails above budget)

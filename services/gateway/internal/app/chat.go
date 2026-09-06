@@ -138,9 +138,9 @@ func (s *ChatService) Complete(ctx context.Context, req domain.ChatRequest, tena
 	}
 
 	// --- 3. budget ----------------------------------------------------------
-	if err := s.reserveBudget(ctx, req, tenant, &res); err != nil {
+	if budgetErr := s.reserveBudget(ctx, req, tenant, &res); budgetErr != nil {
 		s.emitEvent(ctx, req, tenant, domain.RouteDecision{}, res, 429, start, false)
-		return res, err
+		return res, budgetErr
 	}
 
 	// --- 4. routing ---------------------------------------------------------

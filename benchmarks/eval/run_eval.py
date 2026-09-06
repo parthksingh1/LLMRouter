@@ -32,7 +32,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT))
 
 from benchmarks.common.catalogue import Model, baseline_model, load_catalogue  # noqa: E402
-from benchmarks.common.results import env_seed, write_result  # noqa: E402
+from benchmarks.common.results import env_seed, repo_relative, write_result  # noqa: E402
 from benchmarks.common.simulator import Router, answered_correctly  # noqa: E402
 
 DEFAULT_DATASET = REPO_ROOT / "benchmarks" / "eval" / "dataset.jsonl"
@@ -361,7 +361,7 @@ def main() -> int:
 
     payload = summarise(rows)
     payload["policy"] = policy_name
-    payload["dataset"] = str(args.dataset.relative_to(REPO_ROOT))
+    payload["dataset"] = repo_relative(args.dataset)
 
     if args.mode == "offline" and not args.no_sensitivity:
         payload["sensitivity"] = sensitivity(cases, fixtures, policy_name)
@@ -378,7 +378,7 @@ def main() -> int:
     cost = payload["cost"]
     quality = payload["quality"]
     print(
-        f"eval ({args.mode}, policy={policy_name}, {len(cases)} cases) -> {out.relative_to(REPO_ROOT)}"
+        f"eval ({args.mode}, policy={policy_name}, {len(cases)} cases) -> {repo_relative(out)}"
     )
     print(
         f"  cost      ${cost['baseline_usd']:.4f} -> ${cost['routed_usd']:.4f}  "

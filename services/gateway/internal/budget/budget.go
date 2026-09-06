@@ -13,6 +13,7 @@ package budget
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log/slog"
 	"time"
@@ -197,11 +198,11 @@ func (e *Enforcer) Commit(ctx context.Context, t domain.Tenant, usage domain.Usa
 // Usage reports a tenant's consumption today, for the dashboard and /readyz.
 func (e *Enforcer) Usage(ctx context.Context, tenantID string) (tokens int64, spendUSD float64, err error) {
 	tokenStr, err := e.client.Get(ctx, e.tokenKey(tenantID)).Result()
-	if err != nil && err != redis.Nil {
+	if err != nil && !errors.Is(err, redis.Nil) {
 		return 0, 0, fmt.Errorf("reading token usage: %w", err)
 	}
 	spendStr, err := e.client.Get(ctx, e.spendKey(tenantID)).Result()
-	if err != nil && err != redis.Nil {
+	if err != nil && !errors.Is(err, redis.Nil) {
 		return 0, 0, fmt.Errorf("reading spend: %w", err)
 	}
 

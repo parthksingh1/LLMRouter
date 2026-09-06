@@ -47,8 +47,8 @@ Docker.
 | Cache hit rate on seeded traffic | **61.7%** | `make bench-cache` |
 | Cache false-hit rate | **0.00% of 2,876 near misses** | `make bench-cache` |
 | Latency, uncached -> cached (p50) | **2,467 ms -> 0.8 ms** | `make bench-cache` |
-| Calibrated similarity threshold | **0.9962 (onnx, AUC 0.843)** | `make bench-cache` |
-| Guardrails p99 (budget 12 ms) | **1.96 ms** | `make bench-guardrails` |
+| Calibrated similarity threshold | **0.9962 (onnx, AUC 0.843)** | `make bench-calibrate` |
+| Guardrails p99 (budget 12 ms) | **2.02 ms** | `make bench-guardrails` |
 | Stream completion at a 5% mid-stream failure rate | **100.00% of 10,000 streams** | `make bench-failover` |
 | Streams recovered by failover | **489 (4.9%), 16 restarted** | `make bench-failover` |
 | Runaway workloads found from spend alone | **3 tenants = 61.7% of spend (precision 1.00, recall 1.00)** | `make bench-attribution` |

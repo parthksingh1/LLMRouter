@@ -210,7 +210,7 @@ func (m *Metrics) ObserveUpstream(provider, model, outcome string, d time.Durati
 }
 
 // ObserveCache records a lookup result and, when a neighbour was found, its similarity.
-func (m *Metrics) ObserveCache(result string, similarity float64, hitRatio float64) {
+func (m *Metrics) ObserveCache(result string, similarity, hitRatio float64) {
 	m.cacheLookups.WithLabelValues(result).Inc()
 	if similarity > 0 {
 		m.cacheSimilarity.Observe(similarity)

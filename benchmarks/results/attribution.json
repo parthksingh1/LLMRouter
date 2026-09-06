@@ -48,9 +48,9 @@
   "note": "The detector reads only daily spend per tenant. The seed_profile that marks which tenants were generated as pathological is read once, at the end, to score the result -- never as an input.",
   "provenance": {
     "events": 199581,
-    "generated_at": "2026-09-06T18:39:16+00:00",
+    "generated_at": "2026-09-06T19:52:17+00:00",
     "generated_by": "benchmarks/attribution/run_attribution.py",
-    "git_sha": "a78068f-dirty",
+    "git_sha": "52960f5-dirty",
     "mode": "offline",
     "platform": "windows-amd64",
     "python": "3.11.9",

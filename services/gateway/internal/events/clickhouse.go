@@ -152,7 +152,16 @@ func (c *ClickHouse) run(ctx context.Context) {
 		if len(batch) == 0 {
 			return
 		}
-		if err := c.insert(batch); err != nil {
+		// The shutdown drain runs with the loop's context already cancelled. Handing that
+		// context to the insert would abort the very batch the drain exists to save, so the
+		// final flush gets a fresh, bounded one instead.
+		insertCtx := ctx
+		if insertCtx.Err() != nil {
+			var cancel context.CancelFunc
+			insertCtx, cancel = context.WithTimeout(context.WithoutCancel(ctx), 5*time.Second)
+			defer cancel()
+		}
+		if err := c.insert(insertCtx, batch); err != nil {
 			// A failed insert loses the batch. Retrying would need a durable buffer, which is
 			// a real design decision rather than an oversight: the correct fix at scale is to
 			// write to Kafka and let a consumer own delivery. Documented in ADR-0004.
@@ -198,7 +207,7 @@ func (c *ClickHouse) run(ctx context.Context) {
 }
 
 // insert writes a batch as TabSeparated, which is ClickHouse's cheapest text format to parse.
-func (c *ClickHouse) insert(batch []domain.RequestEvent) error {
+func (c *ClickHouse) insert(ctx context.Context, batch []domain.RequestEvent) error {
 	var body bytes.Buffer
 	body.Grow(len(batch) * 160)
 	for _, e := range batch {
@@ -209,7 +218,7 @@ func (c *ClickHouse) insert(batch []domain.RequestEvent) error {
 	endpoint := fmt.Sprintf("%s/?database=%s&query=%s",
 		c.url, url.QueryEscape(c.database), url.QueryEscape(query))
 
-	req, err := http.NewRequest(http.MethodPost, endpoint, &body)
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, endpoint, &body)
 	if err != nil {
 		return fmt.Errorf("building insert: %w", err)
 	}
@@ -300,7 +309,7 @@ func boolDigit(v bool) string {
 
 // Ping checks connectivity, for readiness reporting.
 func (c *ClickHouse) Ping(ctx context.Context) error {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, c.url+"/ping", nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, c.url+"/ping", http.NoBody)
 	if err != nil {
 		return fmt.Errorf("building ping: %w", err)
 	}

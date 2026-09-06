@@ -135,7 +135,7 @@ func (e *Engine) Route(_ context.Context, req domain.ChatRequest, t domain.Tenan
 
 	pick, reason, err := strategy.Pick(req, difficulty, candidates)
 	if err != nil {
-		return domain.RouteDecision{}, fmt.Errorf("%w: %s", app.ErrNoProviderAvailable, err)
+		return domain.RouteDecision{}, fmt.Errorf("%w: %w", app.ErrNoProviderAvailable, err)
 	}
 
 	return domain.RouteDecision{

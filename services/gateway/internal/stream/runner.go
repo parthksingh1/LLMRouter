@@ -235,7 +235,7 @@ func (r *Runner) Run(
 			result.Decision = decision
 			result.Content = accumulated.String()
 			result.FinishReason = finish
-			if err := sink.Done(Summary{
+			if doneErr := sink.Done(Summary{
 				FinishReason: finish,
 				Usage:        result.Usage,
 				Provider:     decision.Provider,
@@ -243,8 +243,8 @@ func (r *Runner) Run(
 				Path:         result.Path,
 				Failovers:    len(result.Failovers),
 				Restarted:    result.Restarted,
-			}); err != nil {
-				return result, fmt.Errorf("writing stream terminator: %w", err)
+			}); doneErr != nil {
+				return result, fmt.Errorf("writing stream terminator: %w", doneErr)
 			}
 			return result, nil
 		}

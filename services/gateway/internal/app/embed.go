@@ -84,7 +84,7 @@ func (s *EmbedService) Embed(ctx context.Context, req domain.EmbedRequest, tenan
 		s.deps.Recorder.ObserveUpstream(model.Provider, model.ID, outcome, elapsed)
 	}
 	if err != nil {
-		return domain.EmbedResponse{}, fmt.Errorf("%w: %s: %s", ErrUpstream, model.Provider, err)
+		return domain.EmbedResponse{}, fmt.Errorf("%w: %s: %w", ErrUpstream, model.Provider, err)
 	}
 
 	costUSD := model.CostUSD(resp.Usage)

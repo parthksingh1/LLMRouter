@@ -40,7 +40,7 @@ sys.path.insert(0, str(REPO_ROOT / "services" / "embedder"))
 
 from app.main import cosine, hash_embed  # noqa: E402
 from benchmarks.common.normalise import same_question  # noqa: E402
-from benchmarks.common.results import env_seed, write_result  # noqa: E402
+from benchmarks.common.results import env_seed, repo_relative, write_result  # noqa: E402
 
 DEFAULT_PAIRS = REPO_ROOT / "benchmarks" / "cache" / "pairs.jsonl"
 DEFAULT_OUT = REPO_ROOT / "benchmarks" / "results" / "cache_calibration.json"
@@ -407,7 +407,7 @@ def main() -> int:
         "recommendation": recommendation,
     }
 
-    payload["plot"] = str(args.plot.relative_to(REPO_ROOT)) if plotted else None
+    payload["plot"] = repo_relative(args.plot) if plotted else None
 
     out = write_result(
         args.out,
@@ -419,7 +419,7 @@ def main() -> int:
     )
 
     print(
-        f"cache calibration ({args.embedder}, {len(pairs)} pairs) -> {out.relative_to(REPO_ROOT)}"
+        f"cache calibration ({args.embedder}, {len(pairs)} pairs) -> {repo_relative(out)}"
     )
     print(
         f"  exact tier      {payload['tiers']['exact']['hit_rate'] * 100:5.1f}% hit, "

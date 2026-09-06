@@ -149,6 +149,7 @@ func wireOptional(ctx context.Context, cfg *config.Config, log *slog.Logger, dro
 	}
 
 	// --- analytics -----------------------------------------------------------------------
+	//nolint:contextcheck // process-lifetime flusher; owns its context, stopped via Close
 	sink := events.New(events.Options{
 		URL:       cfg.Events.ClickHouseURL,
 		Database:  cfg.Events.Database,

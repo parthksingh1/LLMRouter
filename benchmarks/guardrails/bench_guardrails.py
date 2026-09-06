@@ -36,7 +36,7 @@ sys.path.insert(0, str(REPO_ROOT))
 sys.path.insert(0, str(REPO_ROOT / "services" / "guardrails"))
 
 from app.main import Screener, build_detectors  # noqa: E402
-from benchmarks.common.results import env_seed, percentile, write_result  # noqa: E402
+from benchmarks.common.results import env_seed, percentile, repo_relative, write_result  # noqa: E402
 
 DEFAULT_OUT = REPO_ROOT / "benchmarks" / "results" / "guardrails_latency.json"
 
@@ -244,9 +244,7 @@ def main() -> int:
         provenance_extra={"iterations": len(corpus), "budget_ms": args.budget_ms},
     )
 
-    print(
-        f"guardrails latency ({len(corpus):,} prompts) -> {out.relative_to(REPO_ROOT)}"
-    )
+    print(f"guardrails latency ({len(corpus):,} prompts) -> {repo_relative(out)}")
     print(
         f"  in-process  p50 {in_process['p50']:.3f} ms  p95 {in_process['p95']:.3f} ms  "
         f"p99 {in_process['p99']:.3f} ms  max {in_process['max']:.3f} ms"

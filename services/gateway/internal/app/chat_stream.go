@@ -3,7 +3,6 @@ package app
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/parthkumarsingh/llmrouter/services/gateway/internal/domain"
 )
@@ -124,10 +123,10 @@ func (s *ChatService) CompleteStream(
 			Usage:        cached.Usage,
 		}
 
-		if err := sink.Delta(cached.Content); err != nil {
-			return res, err
+		if deltaErr := sink.Delta(cached.Content); deltaErr != nil {
+			return res, deltaErr
 		}
-		if err := sink.Done(StreamSummary{
+		if doneErr := sink.Done(StreamSummary{
 			FinishReason: "stop",
 			Usage:        cached.Usage,
 			Provider:     cached.Provider,
@@ -136,8 +135,8 @@ func (s *ChatService) CompleteStream(
 			Cached:       true,
 			CacheScore:   score,
 			Findings:     len(findings),
-		}); err != nil {
-			return res, err
+		}); doneErr != nil {
+			return res, doneErr
 		}
 
 		res.LatencyMS = int(s.deps.Clock.Now().Sub(start).Milliseconds())
@@ -146,9 +145,9 @@ func (s *ChatService) CompleteStream(
 	}
 
 	// --- 3. budget ----------------------------------------------------------
-	if err := s.reserveBudget(ctx, req, tenant, &res); err != nil {
+	if budgetErr := s.reserveBudget(ctx, req, tenant, &res); budgetErr != nil {
 		s.emitEvent(ctx, req, tenant, domain.RouteDecision{}, res, 429, start, false)
-		return res, err
+		return res, budgetErr
 	}
 
 	// --- 4. routing ---------------------------------------------------------
@@ -211,11 +210,6 @@ func (s *ChatService) CompleteStream(
 	s.emitEvent(ctx, req, tenant, streamed.Decision, res, 200, start, false)
 	return res, nil
 }
-
-// streamStartGrace is how long a stream may take to produce its first token before the request
-// is considered failed. It is separate from the stall timeout because time-to-first-token is
-// legitimately much longer than the gap between tokens.
-const streamStartGrace = 30 * time.Second
 
 // enrichingSink adds the routing context the runner does not have.
 type enrichingSink struct {

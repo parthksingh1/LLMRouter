@@ -30,7 +30,7 @@ sys.path.insert(0, str(REPO_ROOT))
 
 from benchmarks.common.anomaly import Anomaly, detect  # noqa: E402
 from benchmarks.common.catalogue import load_tenants  # noqa: E402
-from benchmarks.common.results import env_seed, write_result  # noqa: E402
+from benchmarks.common.results import env_seed, repo_relative, write_result  # noqa: E402
 
 DEFAULT_EVENTS = REPO_ROOT / "seed" / "out" / "events.tsv"
 DEFAULT_OUT = REPO_ROOT / "benchmarks" / "results" / "attribution.json"
@@ -283,7 +283,7 @@ def main() -> int:
     )
 
     print(
-        f"attribution ({args.mode}, {stats['events']:,} events) -> {out.relative_to(REPO_ROOT)}"
+        f"attribution ({args.mode}, {stats['events']:,} events) -> {repo_relative(out)}"
     )
     print(f"  total spend       ${total_spend:,.2f} across {len(daily)} tenants")
     print(

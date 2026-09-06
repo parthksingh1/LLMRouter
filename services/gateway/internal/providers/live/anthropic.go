@@ -158,7 +158,9 @@ func (p *Anthropic) ChatStream(ctx context.Context, req domain.ChatRequest) (<-c
 	}
 	httpReq.Header.Set("Accept", "text/event-stream")
 
-	resp, err := p.client.Do(httpReq)
+	// The response body is closed by drainAndClose in the goroutine below. It has to
+	// outlive this function: that is what streaming means, and bodyclose cannot see it.
+	resp, err := p.client.Do(httpReq) //nolint:bodyclose // closed in the goroutine below
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", p.name, err)
 	}

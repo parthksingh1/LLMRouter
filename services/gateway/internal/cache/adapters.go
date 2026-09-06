@@ -6,6 +6,7 @@ import (
 	"crypto/sha1" //nolint:gosec // point ids only, not a security boundary
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net"
@@ -42,9 +43,9 @@ func NewRedisBlobs(rawURL string) (*RedisBlobs, error) {
 }
 
 // Get reads a cached blob.
-func (r *RedisBlobs) Get(ctx context.Context, key string) ([]byte, bool, error) {
-	value, err := r.client.Get(ctx, key).Bytes()
-	if err == redis.Nil {
+func (r *RedisBlobs) Get(ctx context.Context, key string) (value []byte, found bool, err error) {
+	value, err = r.client.Get(ctx, key).Bytes()
+	if errors.Is(err, redis.Nil) {
 		return nil, false, nil
 	}
 	if err != nil {
@@ -328,7 +329,7 @@ func (e *HTTPEmbedder) Embed(ctx context.Context, text string) ([]float32, error
 
 // Ping checks the sidecar is up and reports which mode it is running.
 func (e *HTTPEmbedder) Ping(ctx context.Context) (string, error) {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, e.baseURL+"/healthz", nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, e.baseURL+"/healthz", http.NoBody)
 	if err != nil {
 		return "", fmt.Errorf("building embedder health request: %w", err)
 	}

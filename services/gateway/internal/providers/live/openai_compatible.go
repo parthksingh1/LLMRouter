@@ -67,7 +67,7 @@ func (p *OpenAICompatible) Models() []domain.ModelDescriptor {
 
 // HealthCheck calls GET /models, the cheapest authenticated endpoint every vendor exposes.
 func (p *OpenAICompatible) HealthCheck(ctx context.Context) error {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, p.baseURL+"/models", nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, p.baseURL+"/models", http.NoBody)
 	if err != nil {
 		return fmt.Errorf("%s health check: %w", p.name, err)
 	}
@@ -108,8 +108,8 @@ func (p *OpenAICompatible) Chat(ctx context.Context, req domain.ChatRequest) (do
 	}
 
 	var out openaiapi.ChatCompletionResponse
-	if err := json.NewDecoder(resp.Body).Decode(&out); err != nil {
-		return domain.ChatResponse{}, fmt.Errorf("%s: decoding response: %w", p.name, err)
+	if decodeErr := json.NewDecoder(resp.Body).Decode(&out); decodeErr != nil {
+		return domain.ChatResponse{}, fmt.Errorf("%s: decoding response: %w", p.name, decodeErr)
 	}
 	if len(out.Choices) == 0 {
 		return domain.ChatResponse{}, fmt.Errorf("%s: response contained no choices", p.name)
@@ -155,7 +155,9 @@ func (p *OpenAICompatible) ChatStream(ctx context.Context, req domain.ChatReques
 	}
 	httpReq.Header.Set("Accept", "text/event-stream")
 
-	resp, err := p.client.Do(httpReq)
+	// The response body is closed by drainAndClose in the goroutine below. It has to
+	// outlive this function: that is what streaming means, and bodyclose cannot see it.
+	resp, err := p.client.Do(httpReq) //nolint:bodyclose // closed in the goroutine below
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", p.name, err)
 	}

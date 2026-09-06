@@ -174,3 +174,28 @@ def summarise_latency(samples: list[float]) -> dict[str, float]:
         "min": round(min(samples), 3),
         "max": round(max(samples), 3),
     }
+
+
+def repo_relative(path: Path | str) -> str:
+    """Render a path relative to the repository root, with forward slashes.
+
+    Two failure modes this exists to avoid, both of which broke CI:
+
+      - `Path.relative_to` raises when given a relative path, and every Makefile target passes
+        one (`benchmarks/results/eval.json`). A benchmark that crashes while printing its own
+        success line is a poor way to find that out.
+      - a path written *into* a results file must not carry the separator of whichever machine
+        produced it, or the same run on Windows and Linux disagrees over `\` versus `/` and the
+        drift check flags a difference that is not one.
+    """
+    p = Path(path)
+    try:
+        return (
+            (p if p.is_absolute() else (Path.cwd() / p))
+            .resolve()
+            .relative_to(REPO_ROOT)
+            .as_posix()
+        )
+    except ValueError:
+        # Outside the repository: nothing sensible to shorten it to, so say where it really is.
+        return p.as_posix()

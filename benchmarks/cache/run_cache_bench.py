@@ -45,6 +45,7 @@ from benchmarks.common.normalise import exact_key  # noqa: E402
 from benchmarks.common.results import (  # noqa: E402
     env_seed,
     read_result,
+    repo_relative,
     summarise_latency,
     write_result,
 )
@@ -444,9 +445,7 @@ def main() -> int:
 
     cached = payload["latency_ms"]["cached"]
     uncached = payload["latency_ms"]["uncached"]
-    print(
-        f"cache bench ({args.mode}, {count:,} requests) -> {out.relative_to(REPO_ROOT)}"
-    )
+    print(f"cache bench ({args.mode}, {count:,} requests) -> {repo_relative(out)}")
     print(f"  hit rate        {payload['hit_rate_pct']:.1f}%")
     opportunities = payload.get("near_miss_opportunities", 0)
     print(

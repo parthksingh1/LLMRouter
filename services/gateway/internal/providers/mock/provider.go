@@ -353,7 +353,7 @@ func HashEmbed(text string, dim int) []float32 {
 	v := make([]float32, dim)
 	norm := domain.NormalizePrompt(text)
 	if len(norm) < 3 {
-		norm = norm + "__"
+		norm += "__"
 	}
 	for i := 0; i+3 <= len(norm); i++ {
 		tri := norm[i : i+3]

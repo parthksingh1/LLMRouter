@@ -251,8 +251,11 @@ func TestNormalizePrompt(t *testing.T) {
 func TestHashTextIsStableAndDistinct(t *testing.T) {
 	t.Parallel()
 
-	// Stability across calls is what makes fixtures and cache keys reproducible.
-	if domain.HashText("abc") != domain.HashText("abc") {
+	// Stability across calls is what makes fixtures and cache keys reproducible. The two calls
+	// are bound to variables first: comparing the expression with itself is indistinguishable
+	// from a typo, to a reader and to staticcheck alike.
+	first, second := domain.HashText("abc"), domain.HashText("abc")
+	if first != second {
 		t.Fatal("HashText is not stable across calls")
 	}
 	if domain.HashText("abc") == domain.HashText("abd") {

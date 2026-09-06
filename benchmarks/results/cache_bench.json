@@ -34,29 +34,29 @@
   "latency_ms": {
     "cached": {
       "count": 30864,
-      "max": 12.946,
-      "mean": 0.851,
-      "min": 0.807,
-      "p50": 0.841,
-      "p95": 0.901,
-      "p99": 1.082
+      "max": 17.737,
+      "mean": 0.852,
+      "min": 0.812,
+      "p50": 0.844,
+      "p95": 0.869,
+      "p99": 0.946
     },
     "uncached": {
       "count": 19136,
-      "max": 5955.117,
-      "mean": 2700.891,
-      "min": 1986.6,
-      "p50": 2467.216,
-      "p95": 3705.502,
-      "p99": 4224.22
+      "max": 5955.125,
+      "mean": 2700.888,
+      "min": 1986.604,
+      "p50": 2467.214,
+      "p95": 3705.507,
+      "p99": 4224.232
     }
   },
   "near_miss_opportunities": 2876,
   "provenance": {
     "embedder": "onnx",
-    "generated_at": "2026-09-06T18:38:30+00:00",
+    "generated_at": "2026-09-06T19:51:42+00:00",
     "generated_by": "benchmarks/cache/run_cache_bench.py",
-    "git_sha": "a78068f-dirty",
+    "git_sha": "52960f5-dirty",
     "mode": "offline",
     "platform": "windows-amd64",
     "python": "3.11.9",

@@ -186,16 +186,19 @@ func (s *Server) Run(ctx context.Context) error {
 		s.log.Info("shutdown signal received, draining", "grace", s.grace)
 	}
 
+	// Deliberately rooted at Background rather than derived from ctx: ctx is already
+	// cancelled by the time we get here, and a derived context would give the drain a
+	// grace period of zero, which is the opposite of graceful.
 	shutdownCtx, cancel := context.WithTimeout(context.Background(), s.grace)
 	defer cancel()
 
 	var firstErr error
 	if s.metrics != nil {
-		if err := s.metrics.Shutdown(shutdownCtx); err != nil {
+		if err := s.metrics.Shutdown(shutdownCtx); err != nil { //nolint:contextcheck // see above
 			firstErr = fmt.Errorf("metrics shutdown: %w", err)
 		}
 	}
-	if err := s.api.Shutdown(shutdownCtx); err != nil {
+	if err := s.api.Shutdown(shutdownCtx); err != nil { //nolint:contextcheck // see above
 		if errors.Is(err, context.DeadlineExceeded) {
 			s.log.Warn("grace period elapsed with requests still in flight; closing")
 			_ = s.api.Close()

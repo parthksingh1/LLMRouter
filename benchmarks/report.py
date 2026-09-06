@@ -103,7 +103,7 @@ ROWS: list[Row] = [
         "cache_calibration.json",
         lambda d: f"{d['operating_point']['threshold']:.4f} "
         f"({d['embedder']}, AUC {d['similarity_auc']:.3f})",
-        "make bench-cache",
+        "make bench-calibrate",
     ),
     Row(
         "Guardrails p99 (budget 12 ms)",

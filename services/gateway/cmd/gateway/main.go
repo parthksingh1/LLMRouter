@@ -89,8 +89,8 @@ func run() error {
 		tracing = &telemetry.Tracing{}
 	}
 	defer func() {
-		if err := tracing.Shutdown(context.Background()); err != nil {
-			log.Warn("flushing traces failed", "error", err)
+		if shutdownErr := tracing.Shutdown(context.Background()); shutdownErr != nil {
+			log.Warn("flushing traces failed", "error", shutdownErr)
 		}
 	}()
 
@@ -277,7 +277,7 @@ func runHealthcheck() int {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "http://"+addr+"/readyz", nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "http://"+addr+"/readyz", http.NoBody)
 	if err != nil {
 		return 1
 	}

@@ -5,6 +5,7 @@ package http
 
 import (
 	"context"
+	"errors"
 	"log/slog"
 	"net/http"
 	"runtime/debug"
@@ -125,13 +126,17 @@ func Logging(log *slog.Logger) func(http.Handler) http.Handler {
 func Recover(log *slog.Logger) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			defer func() {
+			// A panic handler runs after the request is already over: there is no live context
+			// left to propagate, and the request id it needs is read back off the request.
+			defer func() { //nolint:contextcheck // no live request context by the time this runs
 				rec := recover()
 				if rec == nil {
 					return
 				}
 				// http.ErrAbortHandler is the documented way to abort a response; it is not a bug.
-				if rec == http.ErrAbortHandler {
+				// Compared with errors.Is rather than ==: a handler is free to wrap it before
+				// panicking, and a wrapped abort must not be logged as a crash.
+				if err, ok := rec.(error); ok && errors.Is(err, http.ErrAbortHandler) {
 					panic(rec)
 				}
 				log.Error("panic recovered",

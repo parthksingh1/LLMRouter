@@ -10,7 +10,7 @@ useDefault = true
 description = """
 Key-shaped strings that are deliberately committed.
 
-Three categories, all of them intentional:
+Four categories, all of them intentional:
 
   1. Demo tenant keys (demo-tenant-a ... demo-tenant-l). They are the offline stack's
      credentials, they are deliberately obvious, and they grant access to nothing.
@@ -18,39 +18,61 @@ Three categories, all of them intentional:
      shapes it detects, and its tests have to contain examples that trip them. AKIAIOSFODNN7EXAMPLE
      is AWS's own published example key.
   3. Benchmark and demo corpora, which feed those same fixtures through the running service.
+  4. Generated fixture corpora. Every record in seed/fixtures/responses.jsonl and
+     benchmarks/eval/dataset.jsonl carries a `key` field holding a content hash, which is
+     exactly the shape gitleaks' generic-api-key rule looks for: a high-entropy value next to
+     the word "key". They are deterministic output of seed/generate_*.py, reproducible with
+     `make seed`, and contain no credential.
 
 Everything else is scanned normally. If a real key is ever committed outside these paths, this
 config does not hide it.
+
+Path patterns accept either separator so that the pre-commit hook behaves the same on Windows
+as it does in CI; gitleaks reports native paths, and a forward-slash-only pattern silently
+matches nothing on Windows.
 """
 
 paths = [
   # Demo tenant registry and the documented environment template.
-  '''config/tenants\.yaml''',
+  '''config[/\\]tenants\.yaml''',
   '''\.env\.example''',
 
   # The detectors themselves plus their tests: a secret scanner that flags a secret detector's
   # own patterns is not useful.
-  '''services/guardrails/app/detectors/.*\.py''',
-  '''services/guardrails/tests/.*\.py''',
+  '''services[/\\]guardrails[/\\]app[/\\]detectors[/\\].*\.py''',
+  '''services[/\\]guardrails[/\\]tests[/\\].*\.py''',
 
   # Corpora that feed the detectors.
-  '''benchmarks/guardrails/bench_guardrails\.py''',
-  '''benchmarks/load/warm_traffic\.py''',
-  '''benchmarks/load/k6-smoke\.js''',
-  '''seed/.*\.py''',
+  '''benchmarks[/\\]guardrails[/\\]bench_guardrails\.py''',
+  '''benchmarks[/\\]load[/\\]warm_traffic\.py''',
+  '''benchmarks[/\\]load[/\\]k6-smoke\.js''',
+  '''seed[/\\].*\.py''',
+
+  # Generated fixture corpora: `key` holds a content hash, not a credential. See category 4.
+  '''seed[/\\]fixtures[/\\].*\.jsonl''',
+  '''benchmarks[/\\]eval[/\\]dataset\.jsonl''',
+  '''benchmarks[/\\]cache[/\\]pairs\.jsonl''',
 
   # SDK examples and integration tests exercise the guardrail-block path.
-  '''examples/.*''',
-  '''tests/integration/.*\.py''',
+  '''examples[/\\].*''',
+  '''tests[/\\]integration[/\\].*\.py''',
 
   # Documentation quotes the fixtures when explaining what is detected.
-  '''docs/.*\.md''',
+  '''docs[/\\].*\.md''',
   '''README\.md''',
   '''SECURITY\.md''',
 
   # Terraform creates the secret container with REPLACE_ME placeholders and deliberately does
   # not manage the values; see docs/adr/0008.
-  '''infra/terraform/.*\.tf''',
+  '''infra[/\\]terraform[/\\].*\.tf''',
+
+  # Local-only directories. CI scans a clean checkout and never sees these, but a developer
+  # running `gitleaks detect --no-git` locally otherwise drowns in findings from third-party
+  # package sources and compiled caches.
+  '''(^|[/\\])\.venv[/\\]''',
+  '''(^|[/\\])__pycache__[/\\]''',
+  '''(^|[/\\])\.pytest_cache[/\\]''',
+  '''(^|[/\\])node_modules[/\\]''',
 ]
 
 # Belt and braces: allow the specific fabricated values by content as well as by path, so moving

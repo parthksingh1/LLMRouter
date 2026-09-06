@@ -198,7 +198,7 @@ func (c *Client) unavailable(tenantID, text string, cause error) (domain.ScreenR
 
 // Ping checks the sidecar is reachable, for readiness reporting.
 func (c *Client) Ping(ctx context.Context) error {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, c.baseURL+"/healthz", nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, c.baseURL+"/healthz", http.NoBody)
 	if err != nil {
 		return fmt.Errorf("building guardrails health request: %w", err)
 	}

@@ -57,7 +57,7 @@ func (p *Google) Models() []domain.ModelDescriptor {
 // HealthCheck lists models, which is unauthenticated-cheap and validates the key.
 func (p *Google) HealthCheck(ctx context.Context) error {
 	u := p.baseURL + "/models?key=" + url.QueryEscape(p.apiKey)
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u, http.NoBody)
 	if err != nil {
 		return fmt.Errorf("%s health check: %w", p.name, err)
 	}
@@ -160,7 +160,9 @@ func (p *Google) ChatStream(ctx context.Context, req domain.ChatRequest) (<-chan
 	httpReq.Header.Set("Content-Type", "application/json")
 	httpReq.Header.Set("Accept", "text/event-stream")
 
-	resp, err := p.client.Do(httpReq)
+	// The response body is closed by drainAndClose in the goroutine below. It has to
+	// outlive this function: that is what streaming means, and bodyclose cannot see it.
+	resp, err := p.client.Do(httpReq) //nolint:bodyclose // closed in the goroutine below
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", p.name, err)
 	}

@@ -215,8 +215,8 @@ func (s *Store) Store(ctx context.Context, key domain.CacheKey, prompt string, r
 	}
 
 	exactKey := s.exactRedisKey(key, prompt)
-	if err := s.blobs.Set(ctx, exactKey, blob, s.ttl); err != nil {
-		return fmt.Errorf("writing cache entry: %w", err)
+	if setErr := s.blobs.Set(ctx, exactKey, blob, s.ttl); setErr != nil {
+		return fmt.Errorf("writing cache entry: %w", setErr)
 	}
 
 	if !s.semanticEnabled {

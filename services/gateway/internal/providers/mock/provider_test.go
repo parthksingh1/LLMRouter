@@ -242,7 +242,7 @@ func TestStreamStopsWhenTheContextIsCancelled(t *testing.T) {
 
 	done := make(chan struct{})
 	go func() {
-		for range ch { //nolint:revive // draining
+		for range ch {
 		}
 		close(done)
 	}()
