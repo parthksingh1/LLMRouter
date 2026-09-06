@@ -150,6 +150,7 @@ jobs:
     name: wire compatibility (live stack)
     runs-on: ubuntu-latest
     needs: [go, python]
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -172,10 +173,20 @@ jobs:
         run: |
           npm --prefix examples install --no-audit --no-fund
           node examples/node_openai_sdk.mjs
-      - name: gateway-mode benchmarks agree with offline mode
-        run: |
-          make bench MODE=gateway
-          python benchmarks/compare_modes.py
+      # The gateway-mode benchmark run used to live here and has been removed. It was not
+      # measuring what it claimed. Driven over HTTP it fell back to 400 requests instead of
+      # 50,000, which put the cache below its warm-up and reported an 11.8% hit rate and a 4%
+      # false-hit rate "of 0 near-miss opportunities" -- a division that should never have been
+      # printed. Comparing that against the offline numbers was comparing a cold cache with a
+      # warm one and calling the difference a mode disagreement.
+      #
+      # The offline run in the `bench` job is the source of every committed number and is gated
+      # properly. What is worth having here is the wire compatibility above: the real OpenAI
+      # Python and Node SDKs driving the real stack. That is a check nothing else performs.
+      #
+      # A gateway-mode cross-check is still worth building, at a volume that warms the cache and
+      # with the attribution step reading ClickHouse through a user that can actually query it
+      # (it returned 403 here). Until then, an assertion that does not hold is worse than none.
       - name: dump logs on failure
         if: failure()
         run: docker compose logs --tail=200
