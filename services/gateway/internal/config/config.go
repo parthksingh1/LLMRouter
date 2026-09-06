@@ -293,7 +293,11 @@ func loadCache() (CacheConfig, error) {
 	if err != nil {
 		return CacheConfig{}, err
 	}
-	thr, err := floatEnv("CACHE_SIMILARITY_THRESHOLD", 0.9124)
+	// The operating point from benchmarks/results/cache_calibration.json. It was 0.9124, which
+	// predated the calibration and would have admitted far more than the zero-false-hit budget
+	// the cache claims: the whole finding in ADR-0002 is that a bi-encoder needs a threshold
+	// this high, because it scores negation-flipped minimal pairs above many real paraphrases.
+	thr, err := floatEnv("CACHE_SIMILARITY_THRESHOLD", 0.9962)
 	if err != nil {
 		return CacheConfig{}, err
 	}
