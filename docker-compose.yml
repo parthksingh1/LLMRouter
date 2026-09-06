@@ -40,7 +40,7 @@ services:
       PROVIDERS_CONFIG: /etc/llmrouter/providers.yaml
       POLICIES_CONFIG: /etc/llmrouter/policies.yaml
       TENANTS_CONFIG: /etc/llmrouter/tenants.yaml
-      MOCK_FIXTURES: /etc/llmrouter/fixtures/responses.jsonl
+      MOCK_FIXTURES: /etc/llmrouter-fixtures/responses.jsonl
       REDIS_URL: redis://redis:6379/0
       BUDGET_REDIS_URL: redis://redis:6379/1
       QDRANT_URL: http://qdrant:6333
@@ -50,8 +50,12 @@ services:
       OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
       OTEL_SERVICE_NAME: llmrouter-gateway
     volumes:
+      # Two sibling mounts, not one nested inside the other. Mounting the fixtures at
+      # /etc/llmrouter/fixtures asks the runtime to mkdir inside /etc/llmrouter, which is
+      # itself a read-only mount -- it works wherever the image happens to already contain
+      # that directory, and fails at container init everywhere else.
       - ./config:/etc/llmrouter:ro
-      - ./seed/fixtures:/etc/llmrouter/fixtures:ro
+      - ./seed/fixtures:/etc/llmrouter-fixtures:ro
     depends_on:
       redis: { condition: service_healthy }
       qdrant: { condition: service_started }
