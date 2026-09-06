@@ -77,6 +77,16 @@ seed-fixtures: ## Generate deterministic mock-provider responses
 seed-clickhouse: ## Load ~30 days / ~200k synthetic events into ClickHouse
 	@bash seed/seed_clickhouse.sh
 
+# Not part of `seed`, and deliberately not committed: the traffic log is ~23 MB, which is over
+# the per-file size budget. It is a pure function of SEED, so regenerating it costs seconds and
+# gives byte-identical output. bench-attribution depends on the file rather than the phony
+# target so that a second `make bench` does not rebuild it.
+seed/out/events.tsv: seed/generate_traffic.py
+	$(PY) seed/generate_traffic.py --days 30 --target 200000 --seed $(SEED) --out $@
+
+.PHONY: seed-traffic
+seed-traffic: seed/out/events.tsv ## Generate the 30-day synthetic traffic log (~23 MB, not committed)
+
 .PHONY: verify-determinism
 verify-determinism: ## Regenerate seeds and fail if anything changed
 	@bash scripts/verify_determinism.sh
@@ -117,7 +127,7 @@ bench-failover: ## 10,000 streams at a 5% mid-stream failure rate
 	$(PY) benchmarks/failover/run_failover.py --mode $(MODE) --out $(RESULTS)/failover.json
 
 .PHONY: bench-attribution
-bench-attribution: ## Find runaway workloads in the seeded month of spend
+bench-attribution: seed/out/events.tsv ## Find runaway workloads in the seeded month of spend
 	$(PY) benchmarks/attribution/run_attribution.py --mode $(MODE) --out $(RESULTS)/attribution.json
 
 .PHONY: report

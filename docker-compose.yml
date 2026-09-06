@@ -127,28 +127,35 @@ services:
       - qdrant-data:/qdrant/storage
 
   clickhouse:
-    image: clickhouse/clickhouse-server:24.8-alpine
+    # Not the -alpine variant. Its entrypoint and the tools available inside it differ from
+    # the Debian image, and the healthcheck below has to run *something* to probe /ping.
+    image: clickhouse/clickhouse-server:24.8
     <<: [*default-restart]
     logging: *default-logging
     ports:
       - "8123:8123"   # HTTP + /play
       - "9000:9000"   # native
     environment:
+      # Only the database. CLICKHOUSE_USER makes the entrypoint *create* that user, and asking
+      # it to create `default` -- which the server already ships with -- fails the container
+      # before it ever answers /ping. The default user with no password is what every client
+      # here already expects, so there is nothing to create.
       CLICKHOUSE_DB: llmrouter
-      CLICKHOUSE_USER: default
-      CLICKHOUSE_PASSWORD: ""
-      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: "1"
     ulimits:
       nofile: { soft: 262144, hard: 262144 }
     volumes:
       - clickhouse-data:/var/lib/clickhouse
       - ./infra/clickhouse/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8123/ping"]
+      # clickhouse-client ships in the image, so this cannot fail because a probe binary is
+      # missing. It also proves the server answers queries, not merely that a port is open.
+      test: ["CMD", "clickhouse-client", "--query", "SELECT 1"]
       interval: 5s
-      timeout: 3s
+      timeout: 5s
       retries: 30
-      start_period: 10s
+      # ClickHouse replays its metadata and runs docker-entrypoint-initdb.d before it will
+      # answer; on a cold CI runner that is comfortably more than ten seconds.
+      start_period: 45s
 
   # ===========================================================================
   # Telemetry
