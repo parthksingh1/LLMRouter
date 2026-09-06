@@ -1,24 +1,24 @@
 {
   "by_kind": {
     "exact_repeat": {
-      "hit_rate_pct": 86.17,
-      "hits": 10776,
-      "requests": 12505
+      "hit_rate_pct": 91.37,
+      "hits": 18936,
+      "requests": 20725
     },
     "near_miss": {
-      "hit_rate_pct": 69.94,
-      "hits": 3780,
-      "requests": 5405
+      "hit_rate_pct": 58.1,
+      "hits": 1671,
+      "requests": 2876
     },
     "new": {
       "hit_rate_pct": 0.0,
       "hits": 0,
-      "requests": 24578
+      "requests": 13710
     },
     "paraphrase": {
-      "hit_rate_pct": 69.79,
-      "hits": 5243,
-      "requests": 7512
+      "hit_rate_pct": 80.83,
+      "hits": 10257,
+      "requests": 12689
     }
   },
   "calibration": {
@@ -28,35 +28,35 @@
   "false_hit_rate_of_all_requests_pct": 0.0,
   "false_hit_rate_pct": 0.0,
   "false_hits": 0,
-  "hit_rate_pct": 39.6,
-  "hits": 19799,
+  "hit_rate_pct": 61.73,
+  "hits": 30864,
   "latency_method": "cached: measured wall clock of the real lookup path plus a warm Redis round trip; uncached: the same, plus provider time sampled from the distribution in config/providers.yaml",
   "latency_ms": {
     "cached": {
-      "count": 19799,
-      "max": 4.779,
-      "mean": 0.821,
-      "min": 0.806,
-      "p50": 0.82,
-      "p95": 0.835,
-      "p99": 0.847
+      "count": 30864,
+      "max": 12.946,
+      "mean": 0.851,
+      "min": 0.807,
+      "p50": 0.841,
+      "p95": 0.901,
+      "p99": 1.082
     },
     "uncached": {
-      "count": 30201,
-      "max": 6133.262,
-      "mean": 2705.518,
-      "min": 1986.605,
-      "p50": 2470.864,
-      "p95": 3712.23,
-      "p99": 4222.061
+      "count": 19136,
+      "max": 5955.117,
+      "mean": 2700.891,
+      "min": 1986.6,
+      "p50": 2467.216,
+      "p95": 3705.502,
+      "p99": 4224.22
     }
   },
-  "near_miss_opportunities": 5405,
+  "near_miss_opportunities": 2876,
   "provenance": {
     "embedder": "onnx",
-    "generated_at": "2026-09-06T10:23:51+00:00",
+    "generated_at": "2026-09-06T18:38:30+00:00",
     "generated_by": "benchmarks/cache/run_cache_bench.py",
-    "git_sha": "17c0c69-dirty",
+    "git_sha": "a78068f-dirty",
     "mode": "offline",
     "platform": "windows-amd64",
     "python": "3.11.9",

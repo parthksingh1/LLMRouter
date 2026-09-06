@@ -85,7 +85,10 @@ def merge_overlapping(findings: list[Finding]) -> list[Finding]:
             # redaction still removes everything sensitive.
             winner = candidate if order[candidate.severity] > order[previous.severity] else previous
             kept[-1] = winner.model_copy(
-                update={"start": min(previous.start, candidate.start), "end": max(previous.end, candidate.end)}
+                update={
+                    "start": min(previous.start, candidate.start),
+                    "end": max(previous.end, candidate.end),
+                }
             )
         else:
             kept.append(candidate)

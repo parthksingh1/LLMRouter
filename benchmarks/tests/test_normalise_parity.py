@@ -54,7 +54,11 @@ def test_python_matches_go(record: dict[str, str]) -> None:
         ("List three metrics worth tracking.", "list 3 metrics worth tracking", True),
         ("Summarise the incident report.", "Summarize the incident report.", True),
         ("Analyze the p99 latency spike.", "Analyse the p99 latency spike.", True),
-        ("what is idempotency", "Hi, could you please help me with this - what is idempotency? Thanks!", True),
+        (
+            "what is idempotency",
+            "Hi, could you please help me with this - what is idempotency? Thanks!",
+            True,
+        ),
         ("for the queue, list the metrics", "list the metrics for the queue", True),
         # Meaning-changing edits: these must NOT share a key. Each one is a false hit the
         # embedding tier alone would have allowed, because a bi-encoder scores them ~0.99.
@@ -67,9 +71,9 @@ def test_python_matches_go(record: dict[str, str]) -> None:
 )
 def test_normalisation_semantics(left: str, right: str, same: bool) -> None:
     """The rule keeps politeness and spelling out, and keeps meaning in."""
-    assert same_question(left, right) is same, (
-        f"{left!r} vs {right!r}\n  left:  {exact_key(left)!r}\n  right: {exact_key(right)!r}"
-    )
+    assert (
+        same_question(left, right) is same
+    ), f"{left!r} vs {right!r}\n  left:  {exact_key(left)!r}\n  right: {exact_key(right)!r}"
 
 
 def test_instruction_verbs_are_not_filler() -> None:
@@ -81,7 +85,16 @@ def test_instruction_verbs_are_not_filler() -> None:
     """
     from benchmarks.common.normalise import FILLER
 
-    for verb in ("explain", "write", "draft", "summarise", "list", "compare", "describe", "review"):
+    for verb in (
+        "explain",
+        "write",
+        "draft",
+        "summarise",
+        "list",
+        "compare",
+        "describe",
+        "review",
+    ):
         assert verb not in FILLER, (
             f"{verb!r} is an instruction verb and must not be treated as filler: it changes what "
             f"is being asked, and folding it away buys hit rate with correctness"

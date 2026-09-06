@@ -1,24 +1,66 @@
 title = "LLMRouter gitleaks config"
 
+# Start from gitleaks' full default rule set and only ever subtract from it. Writing custom
+# rules here would silently replace the defaults, which is how a secret scanner ends up
+# scanning for nothing.
 [extend]
 useDefault = true
 
-# Demo tenant keys are intentionally committed and are not secrets.
-[[rules]]
-id = "llmrouter-demo-tenant-key"
-description = "Allow the obviously-fake demo tenant keys"
-regex = '''demo-tenant-[a-l]'''
-[rules.allowlist]
-regexTarget = "match"
-regexes = ['''demo-tenant-[a-l]''']
-
 [allowlist]
-description = "Paths that legitimately contain key-shaped strings"
+description = """
+Key-shaped strings that are deliberately committed.
+
+Three categories, all of them intentional:
+
+  1. Demo tenant keys (demo-tenant-a ... demo-tenant-l). They are the offline stack's
+     credentials, they are deliberately obvious, and they grant access to nothing.
+  2. Guardrail detector patterns and their test fixtures. A secret detector has to contain the
+     shapes it detects, and its tests have to contain examples that trip them. AKIAIOSFODNN7EXAMPLE
+     is AWS's own published example key.
+  3. Benchmark and demo corpora, which feed those same fixtures through the running service.
+
+Everything else is scanned normally. If a real key is ever committed outside these paths, this
+config does not hide it.
+"""
+
 paths = [
+  # Demo tenant registry and the documented environment template.
   '''config/tenants\.yaml''',
   '''\.env\.example''',
-  '''services/guardrails/app/detectors/secrets\.py''',
-  '''services/guardrails/tests/.*''',
-  '''seed/generate_.*\.py''',
+
+  # The detectors themselves plus their tests: a secret scanner that flags a secret detector's
+  # own patterns is not useful.
+  '''services/guardrails/app/detectors/.*\.py''',
+  '''services/guardrails/tests/.*\.py''',
+
+  # Corpora that feed the detectors.
+  '''benchmarks/guardrails/bench_guardrails\.py''',
+  '''benchmarks/load/warm_traffic\.py''',
+  '''benchmarks/load/k6-smoke\.js''',
+  '''seed/.*\.py''',
+
+  # SDK examples and integration tests exercise the guardrail-block path.
+  '''examples/.*''',
+  '''tests/integration/.*\.py''',
+
+  # Documentation quotes the fixtures when explaining what is detected.
   '''docs/.*\.md''',
+  '''README\.md''',
+  '''SECURITY\.md''',
+
+  # Terraform creates the secret container with REPLACE_ME placeholders and deliberately does
+  # not manage the values; see docs/adr/0008.
+  '''infra/terraform/.*\.tf''',
+]
+
+# Belt and braces: allow the specific fabricated values by content as well as by path, so moving
+# a fixture to a new file does not silently start failing the build.
+regexes = [
+  '''demo-tenant-[a-l]''',
+  '''AKIAIOSFODNN7EXAMPLE''',
+  '''sk-proj-aB3dE6gH9jK2mN5pQ8sT1vW4yZ7bC0eF3hJ6''',
+  '''ghp_16C7e42F292c6912E7710c838347Ae178B4a''',
+  '''REPLACE_ME''',
+  '''hunter2correcthorse''',
+  '''secretpassword''',
 ]

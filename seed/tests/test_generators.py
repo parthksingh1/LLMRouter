@@ -55,11 +55,15 @@ def test_eval_set_is_deterministic() -> None:
 
 def test_a_different_seed_produces_different_cases() -> None:
     """Guards against a generator that ignores its seed and only looks deterministic."""
-    assert generate_eval_set.build_cases(1337, 50) != generate_eval_set.build_cases(9999, 50)
+    assert generate_eval_set.build_cases(1337, 50) != generate_eval_set.build_cases(
+        9999, 50
+    )
 
 
 def test_cache_pairs_are_deterministic() -> None:
-    assert generate_cache_pairs.build_pairs(1337, 50, 50) == generate_cache_pairs.build_pairs(1337, 50, 50)
+    assert generate_cache_pairs.build_pairs(
+        1337, 50, 50
+    ) == generate_cache_pairs.build_pairs(1337, 50, 50)
 
 
 # --- eval set invariants -----------------------------------------------------
@@ -90,7 +94,9 @@ def test_misleading_cases_exist_and_are_a_minority() -> None:
     cases = generate_eval_set.build_cases(1337, 200)
     misleading = [c for c in cases if c["misleading"]]
 
-    assert misleading, "without these the classifier never makes a mistake and drift is zero"
+    assert (
+        misleading
+    ), "without these the classifier never makes a mistake and drift is zero"
     assert len(misleading) / len(cases) < 0.15
 
 

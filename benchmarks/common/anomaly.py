@@ -79,7 +79,9 @@ class Anomaly:
 
     @property
     def multiple_of_baseline(self) -> float:
-        return self.peak_usd / self.baseline_usd if self.baseline_usd > 0 else float("inf")
+        return (
+            self.peak_usd / self.baseline_usd if self.baseline_usd > 0 else float("inf")
+        )
 
     def explain(self) -> str:
         """A one-line explanation an on-call engineer can act on."""
@@ -142,7 +144,11 @@ def trailing_zscores(series: Sequence[float], window: int, warmup: int) -> list[
         if spread == 0:
             # A perfectly flat history: any increase is infinitely many sigmas, which is not
             # useful. Fall back to a proportional test so the score stays interpretable.
-            scores.append(0.0 if value <= centre else min(50.0, (value - centre) / max(centre, 1e-9)))
+            scores.append(
+                0.0
+                if value <= centre
+                else min(50.0, (value - centre) / max(centre, 1e-9))
+            )
             continue
         scores.append((value - centre) / spread)
     return scores
@@ -185,7 +191,9 @@ def detect(
         scores = trailing_zscores(series, window_days, warmup_days)
 
         flagged = []
-        for i, (day, spend, score) in enumerate(zip(ordered_days, series, scores, strict=True)):
+        for i, (day, spend, score) in enumerate(
+            zip(ordered_days, series, scores, strict=True)
+        ):
             if score < threshold or spend < min_daily_usd:
                 continue
             baseline = median(series[max(0, i - window_days) : i])
@@ -206,7 +214,9 @@ def detect(
                 baseline_usd=_baseline_before(series, ordered_days, flagged[0][0]),
                 peak_usd=max(spend for _, spend, _ in flagged),
                 total_usd=tenant_total,
-                share_of_spend_pct=(tenant_total / total_spend * 100) if total_spend else 0.0,
+                share_of_spend_pct=(tenant_total / total_spend * 100)
+                if total_spend
+                else 0.0,
                 max_zscore=max(score for _, _, score in flagged),
                 anomalous_days=[day for day, _, _ in flagged],
                 onset_day=flagged[0][0],

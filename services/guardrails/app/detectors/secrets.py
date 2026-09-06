@@ -38,7 +38,10 @@ VENDOR_PATTERNS: tuple[tuple[str, str], ...] = (
     ("private_key_block", r"-----BEGIN (?:RSA |EC |OPENSSH |PGP )?PRIVATE KEY-----"),
     ("jwt", r"\beyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b"),
     ("bearer_header", r"\b[Aa]uthorization\s*:\s*Bearer\s+[A-Za-z0-9._-]{20,}"),
-    ("connection_string", r"\b(?:postgres|postgresql|mysql|mongodb(?:\+srv)?|redis|amqp)://[^\s:@]+:[^\s:@]+@[^\s/]+"),
+    (
+        "connection_string",
+        r"\b(?:postgres|postgresql|mysql|mongodb(?:\+srv)?|redis|amqp)://[^\s:@]+:[^\s:@]+@[^\s/]+",
+    ),
 )
 
 COMPILED_VENDOR = tuple((name, re.compile(pattern)) for name, pattern in VENDOR_PATTERNS)
@@ -95,16 +98,32 @@ class SecretsDetector:
         for category, pattern in COMPILED_VENDOR:
             for match in pattern.finditer(text):
                 found.append(
-                    finding(self.name, category, OWASPCategory.LLM06_SENSITIVE_INFO,
-                            Severity.CRITICAL, Action.BLOCK, match, text, confidence=0.95)
+                    finding(
+                        self.name,
+                        category,
+                        OWASPCategory.LLM06_SENSITIVE_INFO,
+                        Severity.CRITICAL,
+                        Action.BLOCK,
+                        match,
+                        text,
+                        confidence=0.95,
+                    )
                 )
 
         for match in HIGH_ENTROPY_CANDIDATE.finditer(text):
             if not looks_like_a_secret(match.group()):
                 continue
             found.append(
-                finding(self.name, "high_entropy_string", OWASPCategory.LLM06_SENSITIVE_INFO,
-                        Severity.HIGH, Action.BLOCK, match, text, confidence=0.6)
+                finding(
+                    self.name,
+                    "high_entropy_string",
+                    OWASPCategory.LLM06_SENSITIVE_INFO,
+                    Severity.HIGH,
+                    Action.BLOCK,
+                    match,
+                    text,
+                    confidence=0.6,
+                )
             )
 
         return merge_overlapping(found)

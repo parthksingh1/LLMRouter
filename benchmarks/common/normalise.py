@@ -44,9 +44,21 @@ FILLER: Final[frozenset[str]] = frozenset(
 
 #: Numerals that mean the same written either way.
 NUMERALS: Final[dict[str, str]] = {
-    "1": "one", "2": "two", "3": "three", "4": "four", "5": "five",
-    "6": "six", "7": "seven", "8": "eight", "9": "nine", "10": "ten",
-    "20": "twenty", "30": "thirty", "40": "forty", "50": "fifty", "100": "hundred",
+    "1": "one",
+    "2": "two",
+    "3": "three",
+    "4": "four",
+    "5": "five",
+    "6": "six",
+    "7": "seven",
+    "8": "eight",
+    "9": "nine",
+    "10": "ten",
+    "20": "twenty",
+    "30": "thirty",
+    "40": "forty",
+    "50": "fifty",
+    "100": "hundred",
 }
 
 #: British/American suffix pairs, applied longest-first so "izes" is not mangled by "ize".

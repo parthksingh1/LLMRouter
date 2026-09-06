@@ -81,7 +81,7 @@ class Screener:
         for detector in self.detectors:
             try:
                 findings.extend(detector.scan(scanned))
-            except Exception:  # noqa: BLE001 - deliberate: one bad detector must not fail the request
+            except Exception:
                 # A detector that throws is a bug, but failing the whole request over it would
                 # turn a bug into an outage. It is logged loudly and the rest still run.
                 LOG.exception("detector %s raised; continuing without it", detector.name)

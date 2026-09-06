@@ -21,10 +21,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
-      - name: gitleaks
-        uses: gitleaks/gitleaks-action@v2
-        env:
-          GITLEAKS_CONFIG: .gitleaks.toml
+      # The official action is used directly as a binary rather than via
+      # gitleaks/gitleaks-action, which needs a GITLEAKS_LICENSE for organisation accounts and
+      # fails in seconds without one. Running the release binary is one less thing that can
+      # break for a reason unrelated to whether the repository contains a secret.
+      - name: install gitleaks
+        run: |
+          VERSION=8.21.2
+          curl -sSL "https://github.com/gitleaks/gitleaks/releases/download/v${VERSION}/gitleaks_${VERSION}_linux_x64.tar.gz"             | tar -xz -C /usr/local/bin gitleaks
+          gitleaks version
+      - name: scan the working tree
+        run: gitleaks detect --source . --config .gitleaks.toml --no-git --redact -v
+      - name: scan the full history
+        # --no-git above scans what is checked out; this scans every commit, which is what
+        # catches a key that was committed and then "removed" in a later commit.
+        run: gitleaks detect --source . --config .gitleaks.toml --redact -v
 
   # ---------------------------------------------------------------------------
   size:

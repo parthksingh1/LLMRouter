@@ -32,10 +32,16 @@ DEFAULT_OUT = REPO_ROOT / "benchmarks" / "results" / "failover.json"
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--mode", choices=["offline", "gateway"], default="offline",
-                        help="accepted for symmetry with the other benchmarks; this one always "
-                             "drives the real Go implementation")
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument(
+        "--mode",
+        choices=["offline", "gateway"],
+        default="offline",
+        help="accepted for symmetry with the other benchmarks; this one always "
+        "drives the real Go implementation",
+    )
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
     parser.add_argument("--streams", type=int, default=10_000)
     parser.add_argument("--failure-rate", type=float, default=0.05)
@@ -49,27 +55,37 @@ def main() -> int:
             "failover benchmark SKIPPED: no Go toolchain on PATH.\n"
             "  This benchmark drives the real stream.Runner, so it needs Go 1.23+.\n"
             "  Install Go, or run it in a container:\n"
-            "    docker run --rm -v \"$PWD/services/gateway\":/src -w /src golang:1.23-alpine \\\n"
+            '    docker run --rm -v "$PWD/services/gateway":/src -w /src golang:1.23-alpine \\\n'
             "      go run ./cmd/failoverbench -config /src/../../config",
             file=sys.stderr,
         )
         try:
             existing = read_result(args.out)
-            print(f"  keeping the committed result: "
-                  f"{existing['completion_rate_pct']}% completion over {existing['streams']:,} streams")
+            print(
+                f"  keeping the committed result: "
+                f"{existing['completion_rate_pct']}% completion over {existing['streams']:,} streams"
+            )
         except (FileNotFoundError, KeyError):
             print("  and there is no committed result to fall back on", file=sys.stderr)
             return 1
         return 0
 
     command = [
-        "go", "run", "./cmd/failoverbench",
-        "-streams", str(args.streams),
-        "-failure-rate", str(args.failure_rate),
-        "-stall-rate", str(args.stall_rate),
-        "-seed", str(env_seed()),
-        "-config", str(REPO_ROOT / "config"),
-        "-out", str(args.out.resolve()),
+        "go",
+        "run",
+        "./cmd/failoverbench",
+        "-streams",
+        str(args.streams),
+        "-failure-rate",
+        str(args.failure_rate),
+        "-stall-rate",
+        str(args.stall_rate),
+        "-seed",
+        str(env_seed()),
+        "-config",
+        str(REPO_ROOT / "config"),
+        "-out",
+        str(args.out.resolve()),
     ]
 
     print(f"running the failover benchmark in Go ({args.streams:,} streams)...")

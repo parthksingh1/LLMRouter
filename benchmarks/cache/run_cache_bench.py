@@ -93,7 +93,14 @@ class LatencyModel:
     come back equal to what an operator wrote in config/providers.yaml.
     """
 
-    def __init__(self, p50: float, p95: float, p99: float, tokens_per_sec: float, rng: random.Random) -> None:
+    def __init__(
+        self,
+        p50: float,
+        p95: float,
+        p99: float,
+        tokens_per_sec: float,
+        rng: random.Random,
+    ) -> None:
         self.p50, self.p95, self.p99 = p50, p95, p99
         self.tokens_per_sec = tokens_per_sec
         self.rng = rng
@@ -114,14 +121,21 @@ class LatencyModel:
         return self.ttfb_ms() + completion_tokens * 1000.0 / self.tokens_per_sec
 
 
-def build_traffic(pairs: list[dict[str, Any]], tenants: list[dict[str, Any]], count: int, rng: random.Random) -> list[dict[str, Any]]:
+def build_traffic(
+    pairs: list[dict[str, Any]],
+    tenants: list[dict[str, Any]],
+    count: int,
+    rng: random.Random,
+) -> list[dict[str, Any]]:
     """Generate a request stream with a realistic repeat structure."""
     paraphrases = [p for p in pairs if p["label"] == 1]
     near_misses = [p for p in pairs if p["label"] == 0]
     if not paraphrases or not near_misses:
         raise ValueError("the pair set needs both positives and negatives")
 
-    weights = [max(0.05, float(t.get("seed_profile", {}).get("rps", 0.5))) for t in tenants]
+    weights = [
+        max(0.05, float(t.get("seed_profile", {}).get("rps", 0.5))) for t in tenants
+    ]
 
     traffic: list[dict[str, Any]] = []
     for _ in range(count):
@@ -170,7 +184,9 @@ def build_traffic(pairs: list[dict[str, Any]], tenants: list[dict[str, Any]], co
     return traffic
 
 
-def different_questions(stored: str, asked: str, negatives: set[tuple[str, str]]) -> bool:
+def different_questions(
+    stored: str, asked: str, negatives: set[tuple[str, str]]
+) -> bool:
     """Whether serving `stored`'s answer for `asked` would be a wrong answer.
 
     Identical text is obviously the same question. Otherwise the pair set is the authority: it
@@ -194,7 +210,9 @@ def run_offline(
     policy_name = load_policies()["default_policy"]
 
     latency_models = {
-        p.name: LatencyModel(p.ttfb_p50_ms, p.ttfb_p95_ms, p.ttfb_p99_ms, p.tokens_per_sec, rng)
+        p.name: LatencyModel(
+            p.ttfb_p50_ms, p.ttfb_p95_ms, p.ttfb_p99_ms, p.tokens_per_sec, rng
+        )
         for p in catalogue.providers
     }
 
@@ -247,7 +265,9 @@ def run_offline(
         model = decision.model
         completion_tokens = 180 if model.tier == "frontier" else 90
         uncached_latencies.append(
-            lookup_ms + REDIS_ROUND_TRIP_MS + latency_models[model.provider].total_ms(completion_tokens)
+            lookup_ms
+            + REDIS_ROUND_TRIP_MS
+            + latency_models[model.provider].total_ms(completion_tokens)
         )
         store[namespace][key] = request["prompt"]
 
@@ -258,7 +278,9 @@ def run_offline(
         "hit_rate_pct": round(hits / total * 100, 2),
         "near_miss_opportunities": near_miss_opportunities,
         "false_hit_rate_pct": (
-            round(false_hits / near_miss_opportunities * 100, 3) if near_miss_opportunities else 0.0
+            round(false_hits / near_miss_opportunities * 100, 3)
+            if near_miss_opportunities
+            else 0.0
         ),
         "false_hit_rate_of_all_requests_pct": round(false_hits / total * 100, 4),
         "hits": hits,
@@ -269,7 +291,9 @@ def run_offline(
             kind: {
                 "requests": stats["total"],
                 "hits": stats["hit"],
-                "hit_rate_pct": round(stats["hit"] / stats["total"] * 100, 2) if stats["total"] else 0.0,
+                "hit_rate_pct": round(stats["hit"] / stats["total"] * 100, 2)
+                if stats["total"]
+                else 0.0,
             }
             for kind, stats in sorted(by_kind.items())
         },
@@ -287,7 +311,9 @@ def run_offline(
 REDIS_ROUND_TRIP_MS = 0.8
 
 
-def run_gateway(traffic: list[dict[str, Any]], base_url: str, tenants: list[dict[str, Any]]) -> dict[str, Any]:
+def run_gateway(
+    traffic: list[dict[str, Any]], base_url: str, tenants: list[dict[str, Any]]
+) -> dict[str, Any]:
     """Replay the traffic against a live gateway and measure end-to-end wall clock."""
     import urllib.error
     import urllib.request
@@ -302,10 +328,14 @@ def run_gateway(traffic: list[dict[str, Any]], base_url: str, tenants: list[dict
     for request in traffic:
         by_kind[request["kind"]]["total"] += 1
         body = json.dumps(
-            {"model": "auto", "messages": [{"role": "user", "content": request["prompt"]}]}
+            {
+                "model": "auto",
+                "messages": [{"role": "user", "content": request["prompt"]}],
+            }
         ).encode("utf-8")
         req = urllib.request.Request(
-            f"{base_url.rstrip('/')}/v1/chat/completions", data=body,
+            f"{base_url.rstrip('/')}/v1/chat/completions",
+            data=body,
             headers={
                 "Content-Type": "application/json",
                 "Authorization": f"Bearer {keys[request['tenant_id']]}",
@@ -318,7 +348,9 @@ def run_gateway(traffic: list[dict[str, Any]], base_url: str, tenants: list[dict
             with urllib.request.urlopen(req, timeout=180) as resp:
                 payload = json.loads(resp.read())
         except urllib.error.URLError as exc:
-            raise SystemExit(f"could not reach the gateway at {base_url}: {exc}") from exc
+            raise SystemExit(
+                f"could not reach the gateway at {base_url}: {exc}"
+            ) from exc
         elapsed_ms = (time.perf_counter() - started) * 1000
 
         cached = bool(payload.get("llmrouter", {}).get("cached"))
@@ -336,14 +368,19 @@ def run_gateway(traffic: list[dict[str, Any]], base_url: str, tenants: list[dict
     return {
         "requests": total,
         "hit_rate_pct": round(hits / total * 100, 2),
-        "false_hit_rate_pct": round(false_hits / near_miss_total * 100, 3) if near_miss_total else 0.0,
+        "false_hit_rate_pct": round(false_hits / near_miss_total * 100, 3)
+        if near_miss_total
+        else 0.0,
         "false_hit_rate_of_all_requests_pct": round(false_hits / total * 100, 4),
         "hits": hits,
         "false_hits": false_hits,
         "by_kind": {
             kind: {
-                "requests": s["total"], "hits": s["hit"],
-                "hit_rate_pct": round(s["hit"] / s["total"] * 100, 2) if s["total"] else 0.0,
+                "requests": s["total"],
+                "hits": s["hit"],
+                "hit_rate_pct": round(s["hit"] / s["total"] * 100, 2)
+                if s["total"]
+                else 0.0,
             }
             for kind, s in sorted(by_kind.items())
         },
@@ -355,7 +392,9 @@ def run_gateway(traffic: list[dict[str, Any]], base_url: str, tenants: list[dict
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     parser.add_argument("--mode", choices=["offline", "gateway"], default="offline")
     parser.add_argument("--pairs", type=Path, default=DEFAULT_PAIRS)
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
@@ -391,23 +430,40 @@ def main() -> int:
     )
 
     out = write_result(
-        args.out, payload, mode=args.mode, seed=seed,
+        args.out,
+        payload,
+        mode=args.mode,
+        seed=seed,
         generated_by="benchmarks/cache/run_cache_bench.py",
-        provenance_extra={"requests": count, "threshold": threshold, "embedder": embedder},
+        provenance_extra={
+            "requests": count,
+            "threshold": threshold,
+            "embedder": embedder,
+        },
     )
 
     cached = payload["latency_ms"]["cached"]
     uncached = payload["latency_ms"]["uncached"]
-    print(f"cache bench ({args.mode}, {count:,} requests) -> {out.relative_to(REPO_ROOT)}")
+    print(
+        f"cache bench ({args.mode}, {count:,} requests) -> {out.relative_to(REPO_ROOT)}"
+    )
     print(f"  hit rate        {payload['hit_rate_pct']:.1f}%")
     opportunities = payload.get("near_miss_opportunities", 0)
-    print(f"  false-hit rate  {payload['false_hit_rate_pct']:.2f}% of {opportunities:,} near-miss "
-          f"opportunities ({payload['false_hit_rate_of_all_requests_pct']:.3f}% of all requests)")
-    print(f"  p50 latency     {uncached['p50']:.0f} ms uncached -> {cached['p50']:.1f} ms cached")
-    print(f"  p95 latency     {uncached['p95']:.0f} ms uncached -> {cached['p95']:.1f} ms cached")
+    print(
+        f"  false-hit rate  {payload['false_hit_rate_pct']:.2f}% of {opportunities:,} near-miss "
+        f"opportunities ({payload['false_hit_rate_of_all_requests_pct']:.3f}% of all requests)"
+    )
+    print(
+        f"  p50 latency     {uncached['p50']:.0f} ms uncached -> {cached['p50']:.1f} ms cached"
+    )
+    print(
+        f"  p95 latency     {uncached['p95']:.0f} ms uncached -> {cached['p95']:.1f} ms cached"
+    )
     print("  by request kind:")
     for kind, stats in payload["by_kind"].items():
-        print(f"    {kind:14} {stats['requests']:7,} requests  {stats['hit_rate_pct']:5.1f}% hit")
+        print(
+            f"    {kind:14} {stats['requests']:7,} requests  {stats['hit_rate_pct']:5.1f}% hit"
+        )
     return 0
 
 

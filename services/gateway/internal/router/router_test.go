@@ -574,16 +574,20 @@ func TestClassifier(t *testing.T) {
 		},
 		{
 			name: "three hard markers reach the hard bucket on their own",
-			messages: []domain.Message{{Role: domain.RoleUser,
-				Content: "derive the complexity and the trade-off here"}},
+			messages: []domain.Message{{
+				Role:    domain.RoleUser,
+				Content: "derive the complexity and the trade-off here",
+			}},
 			want: domain.DifficultyHard,
 		},
 		{
 			// With no markers at all the score is a small positive number, which is the medium
 			// bucket by construction: "medium" is the absence of evidence either way.
 			name: "a prompt with no markers is medium",
-			messages: []domain.Message{{Role: domain.RoleUser,
-				Content: strings.Repeat("some ordinary prose about a topic. ", 20)}},
+			messages: []domain.Message{{
+				Role:    domain.RoleUser,
+				Content: strings.Repeat("some ordinary prose about a topic. ", 20),
+			}},
 			want: domain.DifficultyMedium,
 		},
 		{
@@ -591,14 +595,18 @@ func TestClassifier(t *testing.T) {
 			// prompt outweighs. That is the intended ordering: length is weak evidence, but it
 			// is not nothing, and one keyword should not override a wall of text.
 			name: "one easy marker does not outweigh a very long prompt",
-			messages: []domain.Message{{Role: domain.RoleUser,
-				Content: "summar" + strings.Repeat("ise this text please. ", 40)}},
+			messages: []domain.Message{{
+				Role:    domain.RoleUser,
+				Content: "summar" + strings.Repeat("ise this text please. ", 40),
+			}},
 			want: domain.DifficultyMedium,
 		},
 		{
 			name: "several easy markers win regardless of length",
-			messages: []domain.Message{{Role: domain.RoleUser,
-				Content: "translate and summarise: what is " + strings.Repeat("this text about a topic. ", 20)}},
+			messages: []domain.Message{{
+				Role:    domain.RoleUser,
+				Content: "translate and summarise: what is " + strings.Repeat("this text about a topic. ", 20),
+			}},
 			want: domain.DifficultyEasy,
 		},
 	}

@@ -53,9 +53,9 @@ def test_python_matches_go(record: dict[str, object]) -> None:
 
     assert len(actual) == len(expected), "dimension mismatch between Go and Python"
     for i, (got, want) in enumerate(zip(actual, expected, strict=True)):
-        assert abs(got - want) < TOLERANCE, (
-            f"component {i} differs for {text!r}: python={got!r} go={want!r}"
-        )
+        assert (
+            abs(got - want) < TOLERANCE
+        ), f"component {i} differs for {text!r}: python={got!r} go={want!r}"
 
 
 def test_vectors_are_unit_norm() -> None:
@@ -98,7 +98,9 @@ def test_a_one_word_change_is_measurably_different() -> None:
 
     similarity = cosine(base, confusable)
     assert similarity < 1.0, "a different question must not be identical"
-    assert similarity > 0.3, "a near-miss should still be lexically close, or the test is wrong"
+    assert (
+        similarity > 0.3
+    ), "a near-miss should still be lexically close, or the test is wrong"
 
 
 def test_short_inputs_do_not_crash() -> None:

@@ -33,7 +33,16 @@ REFERENCE_CHARS = 1200.0
 KEYWORD_SATURATION = 3.0
 
 #: Markers the Go classifier treats as evidence of code.
-CODE_MARKERS = ("def ", "func ", "class ", "SELECT ", "import ", "#include", "=> ", "};")
+CODE_MARKERS = (
+    "def ",
+    "func ",
+    "class ",
+    "SELECT ",
+    "import ",
+    "#include",
+    "=> ",
+    "};",
+)
 
 
 @dataclass(frozen=True)
@@ -64,7 +73,9 @@ def _clamp_signed(v: float) -> float:
     return max(-1.0, min(1.0, v))
 
 
-def classify(prompt: str, turns: int, classifier_cfg: dict[str, Any]) -> tuple[str, Features]:
+def classify(
+    prompt: str, turns: int, classifier_cfg: dict[str, Any]
+) -> tuple[str, Features]:
     """Reproduce the Go difficulty classifier exactly.
 
     Any change here without the same change in classifier.go will show up as a compare_modes
@@ -89,16 +100,22 @@ def classify(prompt: str, turns: int, classifier_cfg: dict[str, Any]) -> tuple[s
 
     hard_hits = sum(1 for k in hard_keywords if k in lower)
     easy_hits = sum(1 for k in easy_keywords if k in lower)
-    keywords = _clamp01(hard_hits / KEYWORD_SATURATION) - _clamp01(easy_hits / KEYWORD_SATURATION)
+    keywords = _clamp01(hard_hits / KEYWORD_SATURATION) - _clamp01(
+        easy_hits / KEYWORD_SATURATION
+    )
 
     code = 1.0 if _looks_like_code(prompt) else 0.0
     multi_turn = _clamp01((turns - 1) / 5.0)
 
     # Clamped to -1..1, not 0..1: the sign is what separates "easy" (more easy markers than
     # hard ones) from "medium" (neither). See the matching comment in classifier.go.
-    score = _clamp_signed(w_len * length + w_kw * keywords + w_code * code + w_multi * multi_turn)
+    score = _clamp_signed(
+        w_len * length + w_kw * keywords + w_code * code + w_multi * multi_turn
+    )
 
-    return _bucket(score, easy_below, hard_above, band), Features(length, keywords, code, multi_turn, score)
+    return _bucket(score, easy_below, hard_above, band), Features(
+        length, keywords, code, multi_turn, score
+    )
 
 
 def _bucket(score: float, easy_below: float, hard_above: float, band: float) -> str:
@@ -151,18 +168,28 @@ class Router:
 
     # -- strategies ---------------------------------------------------------------------
 
-    def _quality_tiered(self, prompt: str, turns: int, params: dict[str, Any]) -> Decision:
+    def _quality_tiered(
+        self, prompt: str, turns: int, params: dict[str, Any]
+    ) -> Decision:
         difficulty, _ = classify(prompt, turns, params.get("classifier", {}))
 
-        floors = {b["name"]: float(b["quality_floor"]) for b in params.get("buckets", [])}
+        floors = {
+            b["name"]: float(b["quality_floor"]) for b in params.get("buckets", [])
+        }
         margin = float(params.get("safety_margin", 0.0))
         floor = floors.get(difficulty, floors.get("hard", 0.9))
         effective = floor + margin
 
         eligible = [m for m in self.catalogue.models if m.quality >= effective]
         if not eligible:
-            best = max(self.catalogue.models, key=lambda m: (m.quality, -m.estimated_cost))
-            return Decision(best, difficulty, f"nothing cleared quality {effective:.3f}; used the best available")
+            best = max(
+                self.catalogue.models, key=lambda m: (m.quality, -m.estimated_cost)
+            )
+            return Decision(
+                best,
+                difficulty,
+                f"nothing cleared quality {effective:.3f}; used the best available",
+            )
 
         chosen = min(eligible, key=lambda m: (m.estimated_cost, -m.quality, m.id))
         return Decision(
@@ -184,21 +211,35 @@ class Router:
             eligible.append(m)
 
         if not eligible:
-            best = max(self.catalogue.models, key=lambda m: (m.quality, -m.estimated_cost))
-            return Decision(best, "n/a", f"nothing cleared quality {floor:.2f}; used the best available")
+            best = max(
+                self.catalogue.models, key=lambda m: (m.quality, -m.estimated_cost)
+            )
+            return Decision(
+                best,
+                "n/a",
+                f"nothing cleared quality {floor:.2f}; used the best available",
+            )
 
         chosen = min(eligible, key=lambda m: (m.estimated_cost, -m.quality, m.id))
         return Decision(chosen, "n/a", f"cheapest model above quality {floor:.2f}")
 
     def _latency_optimized(self, params: dict[str, Any]) -> Decision:
         floor = float(params.get("quality_floor", 0.0))
-        eligible = [m for m in self.catalogue.models if m.quality >= floor] or list(self.catalogue.models)
+        eligible = [m for m in self.catalogue.models if m.quality >= floor] or list(
+            self.catalogue.models
+        )
 
         chosen = min(
             eligible,
-            key=lambda m: (self.catalogue.provider(m.provider).ttfb_p50_ms, m.estimated_cost, m.id),
+            key=lambda m: (
+                self.catalogue.provider(m.provider).ttfb_p50_ms,
+                m.estimated_cost,
+                m.id,
+            ),
         )
-        return Decision(chosen, "n/a", f"lowest configured TTFB above quality {floor:.2f}")
+        return Decision(
+            chosen, "n/a", f"lowest configured TTFB above quality {floor:.2f}"
+        )
 
 
 def answered_correctly(model: Model, min_quality: float) -> bool:

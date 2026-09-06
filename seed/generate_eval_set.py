@@ -95,7 +95,9 @@ def build_cases(seed: int, count: int) -> list[dict[str, Any]]:
         n = round(n_regular * MIX[difficulty])
         allocated += n
         plan.extend(rng.choice(by_difficulty[difficulty]) for _ in range(n))
-    plan.extend(rng.choice(by_difficulty["medium"]) for _ in range(n_regular - allocated))
+    plan.extend(
+        rng.choice(by_difficulty["medium"]) for _ in range(n_regular - allocated)
+    )
     plan.extend(rng.choice(MISLEADING_TEMPLATES) for _ in range(n_misleading))
 
     # Shuffle so difficulty is not correlated with position; a harness that processed the file
@@ -136,10 +138,14 @@ def build_cases(seed: int, count: int) -> list[dict[str, Any]]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     parser.add_argument("--seed", type=int, default=1337)
     parser.add_argument("--count", type=int, default=200)
-    parser.add_argument("--out", type=Path, default=Path("benchmarks/eval/dataset.jsonl"))
+    parser.add_argument(
+        "--out", type=Path, default=Path("benchmarks/eval/dataset.jsonl")
+    )
     args = parser.parse_args()
 
     cases = build_cases(args.seed, args.count)

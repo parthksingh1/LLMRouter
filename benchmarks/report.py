@@ -71,7 +71,7 @@ ROWS: list[Row] = [
         "Quality drift that reduction cost",
         "eval.json",
         lambda d: f"{d['quality']['drift_pp']:.1f} pp "
-                  f"({d['quality']['baseline_accuracy_pct']:.1f}% -> {d['quality']['routed_accuracy_pct']:.1f}%)",
+        f"({d['quality']['baseline_accuracy_pct']:.1f}% -> {d['quality']['routed_accuracy_pct']:.1f}%)",
         "make bench-eval",
     ),
     Row(
@@ -102,14 +102,14 @@ ROWS: list[Row] = [
         "Calibrated similarity threshold",
         "cache_calibration.json",
         lambda d: f"{d['operating_point']['threshold']:.4f} "
-                  f"({d['embedder']}, AUC {d['similarity_auc']:.3f})",
+        f"({d['embedder']}, AUC {d['similarity_auc']:.3f})",
         "make bench-cache",
     ),
     Row(
         "Guardrails p99 (budget 12 ms)",
         "guardrails_latency.json",
         lambda d: f"{d['in_process_ms']['p99']:.2f} ms"
-                  + ("" if d["within_budget"] else "  OVER BUDGET"),
+        + ("" if d["within_budget"] else "  OVER BUDGET"),
         "make bench-guardrails",
     ),
     Row(
@@ -122,14 +122,14 @@ ROWS: list[Row] = [
         "Streams recovered by failover",
         "failover.json",
         lambda d: f"{d['streams_with_failover']:,} "
-                  f"({d['failover_rate_pct']:.1f}%), {d['restarted_streams']} restarted",
+        f"({d['failover_rate_pct']:.1f}%), {d['restarted_streams']} restarted",
         "make bench-failover",
     ),
     Row(
         "Runaway workloads found from spend alone",
         "attribution.json",
         lambda d: f"{d['flagged_tenants']} tenants = {d['flagged_share_of_spend_pct']:.1f}% of spend "
-                  f"(precision {d['scoring']['precision']:.2f}, recall {d['scoring']['recall']:.2f})",
+        f"(precision {d['scoring']['precision']:.2f}, recall {d['scoring']['recall']:.2f})",
         "make bench-attribution",
     ),
 ]
@@ -159,7 +159,9 @@ def render_markdown() -> str:
     ]
     for row in ROWS:
         value, provenance = row.measure()
-        lines.append(f"| {row.claim} | **{value}** | `{row.command}` <br><sub>{provenance}</sub> |")
+        lines.append(
+            f"| {row.claim} | **{value}** | `{row.command}` <br><sub>{provenance}</sub> |"
+        )
     lines += [
         "",
         "<sub>Rendered by `benchmarks/report.py` from `benchmarks/results/*.json`. "
@@ -169,7 +171,9 @@ def render_markdown() -> str:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     parser.add_argument("--markdown", action="store_true", help="emit the README table")
     args = parser.parse_args()
 

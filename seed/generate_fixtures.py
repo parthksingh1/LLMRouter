@@ -108,11 +108,19 @@ def load_prompts(eval_path: Path, pairs_path: Path) -> list[tuple[str, str]]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     parser.add_argument("--seed", type=int, default=1337)
-    parser.add_argument("--eval", type=Path, default=Path("benchmarks/eval/dataset.jsonl"))
-    parser.add_argument("--pairs", type=Path, default=Path("benchmarks/cache/pairs.jsonl"))
-    parser.add_argument("--out", type=Path, default=Path("seed/fixtures/responses.jsonl"))
+    parser.add_argument(
+        "--eval", type=Path, default=Path("benchmarks/eval/dataset.jsonl")
+    )
+    parser.add_argument(
+        "--pairs", type=Path, default=Path("benchmarks/cache/pairs.jsonl")
+    )
+    parser.add_argument(
+        "--out", type=Path, default=Path("seed/fixtures/responses.jsonl")
+    )
     args = parser.parse_args()
 
     prompts = load_prompts(args.eval, args.pairs)

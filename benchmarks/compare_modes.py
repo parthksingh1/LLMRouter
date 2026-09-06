@@ -37,7 +37,14 @@ RESULTS = REPO_ROOT / "benchmarks" / "results"
 class Check:
     """One value that must agree across modes."""
 
-    def __init__(self, name: str, source: str, extract: Callable[[dict[str, Any]], float], tolerance: float, unit: str) -> None:
+    def __init__(
+        self,
+        name: str,
+        source: str,
+        extract: Callable[[dict[str, Any]], float],
+        tolerance: float,
+        unit: str,
+    ) -> None:
         self.name = name
         self.source = source
         self.extract = extract
@@ -52,21 +59,46 @@ class Check:
 #: or two per call even when the routing decision is identical. What must not differ is which
 #: model was chosen, and that shows up as a large cost-saving gap long before a small one.
 CHECKS: list[Check] = [
-    Check("cost reduction", "eval.json",
-          lambda d: d["cost"]["reduction_pct"], tolerance=2.0, unit="pp"),
-    Check("quality drift", "eval.json",
-          lambda d: d["quality"]["drift_pp"], tolerance=1.0, unit="pp"),
-    Check("classifier accuracy", "eval.json",
-          lambda d: d["classifier"]["accuracy_pct"], tolerance=1.0, unit="pp"),
+    Check(
+        "cost reduction",
+        "eval.json",
+        lambda d: d["cost"]["reduction_pct"],
+        tolerance=2.0,
+        unit="pp",
+    ),
+    Check(
+        "quality drift",
+        "eval.json",
+        lambda d: d["quality"]["drift_pp"],
+        tolerance=1.0,
+        unit="pp",
+    ),
+    Check(
+        "classifier accuracy",
+        "eval.json",
+        lambda d: d["classifier"]["accuracy_pct"],
+        tolerance=1.0,
+        unit="pp",
+    ),
 ]
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--offline", type=Path, default=RESULTS,
-                        help="directory holding the offline-mode results")
-    parser.add_argument("--gateway", type=Path, default=RESULTS,
-                        help="directory holding the gateway-mode results")
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument(
+        "--offline",
+        type=Path,
+        default=RESULTS,
+        help="directory holding the offline-mode results",
+    )
+    parser.add_argument(
+        "--gateway",
+        type=Path,
+        default=RESULTS,
+        help="directory holding the gateway-mode results",
+    )
     args = parser.parse_args()
 
     failures = 0
@@ -97,8 +129,10 @@ def main() -> int:
         checked += 1
 
         if delta <= check.tolerance:
-            print(f"ok    {check.name}: offline {left:.2f} vs gateway {right:.2f} "
-                  f"(delta {delta:.2f} {check.unit}, tolerance {check.tolerance})")
+            print(
+                f"ok    {check.name}: offline {left:.2f} vs gateway {right:.2f} "
+                f"(delta {delta:.2f} {check.unit}, tolerance {check.tolerance})"
+            )
         else:
             failures += 1
             print(
@@ -118,7 +152,9 @@ def main() -> int:
         print(f"\n{failures} of {checked} checks diverged.", file=sys.stderr)
         return 1
 
-    print(f"\nAll {checked} checks agree: the offline simulator still matches the router.")
+    print(
+        f"\nAll {checked} checks agree: the offline simulator still matches the router."
+    )
     return 0
 
 

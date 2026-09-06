@@ -53,7 +53,9 @@ def build_pairs(seed: int, positives: int, negatives: int) -> list[dict[str, Any
     attempts = 0
     while len([p for p in pairs if p["label"] == 1]) < positives:
         attempts += 1
-        if attempts > positives * 40:  # pragma: no cover - guards against a degenerate corpus
+        if (
+            attempts > positives * 40
+        ):  # pragma: no cover - guards against a degenerate corpus
             raise RuntimeError("could not generate enough distinct positive pairs")
 
         template = rng.choice(ALL_TEMPLATES)
@@ -142,11 +144,15 @@ def build_pairs(seed: int, positives: int, negatives: int) -> list[dict[str, Any
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     parser.add_argument("--seed", type=int, default=1337)
     parser.add_argument("--positives", type=int, default=500)
     parser.add_argument("--negatives", type=int, default=500)
-    parser.add_argument("--out", type=Path, default=Path("benchmarks/cache/pairs.jsonl"))
+    parser.add_argument(
+        "--out", type=Path, default=Path("benchmarks/cache/pairs.jsonl")
+    )
     args = parser.parse_args()
 
     pairs = build_pairs(args.seed, args.positives, args.negatives)

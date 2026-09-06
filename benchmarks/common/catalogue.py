@@ -76,7 +76,9 @@ class Catalogue:
     @property
     def models(self) -> tuple[Model, ...]:
         """Every chat-capable model, excluding embedding models."""
-        return tuple(m for p in self.providers for m in p.models if m.tier != "embedding")
+        return tuple(
+            m for p in self.providers for m in p.models if m.tier != "embedding"
+        )
 
     def model(self, model_id: str) -> Model:
         for m in self.models:

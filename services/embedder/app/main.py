@@ -103,7 +103,9 @@ class Embedder:
     def _load_onnx(self) -> object:
         try:
             from fastembed import TextEmbedding
-        except ImportError as exc:  # pragma: no cover - exercised only in a broken image
+        except (
+            ImportError
+        ) as exc:  # pragma: no cover - exercised only in a broken image
             raise RuntimeError(
                 "EMBEDDER_MODE=onnx requires fastembed. Either install it, or run with "
                 "EMBEDDER_MODE=hash, which needs no model and is what the committed cache "
@@ -117,7 +119,11 @@ class Embedder:
 
     @property
     def model_name(self) -> str:
-        return self.settings.model_name if self.settings.mode == "onnx" else "hash-trigram-384"
+        return (
+            self.settings.model_name
+            if self.settings.mode == "onnx"
+            else "hash-trigram-384"
+        )
 
     def embed(self, texts: list[str]) -> list[list[float]]:
         """Embed a batch of texts."""

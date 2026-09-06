@@ -19,7 +19,6 @@ from __future__ import annotations
 import os
 import sys
 from pathlib import Path
-from typing import Any
 
 import pandas as pd
 import streamlit as st
@@ -33,7 +32,9 @@ CLICKHOUSE_URL = os.getenv("CLICKHOUSE_URL", "http://localhost:8123")
 DATABASE = os.getenv("CLICKHOUSE_DB", "llmrouter")
 ZSCORE_THRESHOLD = float(os.getenv("ANOMALY_ZSCORE_THRESHOLD", "2.5"))
 
-st.set_page_config(page_title="LLMRouter cost attribution", page_icon="💸", layout="wide")
+st.set_page_config(
+    page_title="LLMRouter cost attribution", page_icon="💸", layout="wide"
+)
 
 
 @st.cache_data(ttl=30)
@@ -47,14 +48,20 @@ def query(sql: str) -> pd.DataFrame:
     import urllib.parse
     import urllib.request
 
-    params = urllib.parse.urlencode({"database": DATABASE, "default_format": "JSONEachRow"})
+    params = urllib.parse.urlencode(
+        {"database": DATABASE, "default_format": "JSONEachRow"}
+    )
     request = urllib.request.Request(
-        f"{CLICKHOUSE_URL.rstrip('/')}/?{params}", data=sql.encode("utf-8"), method="POST"
+        f"{CLICKHOUSE_URL.rstrip('/')}/?{params}",
+        data=sql.encode("utf-8"),
+        method="POST",
     )
     with urllib.request.urlopen(request, timeout=30) as response:
         body = response.read().decode("utf-8")
 
-    rows = [pd.read_json(line, typ="series") for line in body.splitlines() if line.strip()]
+    rows = [
+        pd.read_json(line, typ="series") for line in body.splitlines() if line.strip()
+    ]
     return pd.DataFrame(rows) if rows else pd.DataFrame()
 
 
@@ -112,7 +119,9 @@ c3.metric(
     money(saved),
     # The delta is the share of what spend WOULD have been, which is the honest denominator:
     # measuring the saving against post-cache spend would flatter it.
-    delta=f"{saved / (billed + saved) * 100:.1f}% of counterfactual" if billed + saved else None,
+    delta=f"{saved / (billed + saved) * 100:.1f}% of counterfactual"
+    if billed + saved
+    else None,
 )
 c4.metric("Cache hit rate", f"{int(row['cached']) / requests * 100:.1f}%")
 c5.metric("Guardrail blocks", f"{int(row['blocked']):,}")
@@ -136,7 +145,9 @@ daily = query(
 
 spend_by_tenant: dict[str, dict[str, float]] = {}
 for _, r in daily.iterrows():
-    spend_by_tenant.setdefault(str(r["tenant_id"]), {})[str(r["day"])] = float(r["cost_usd"])
+    spend_by_tenant.setdefault(str(r["tenant_id"]), {})[str(r["day"])] = float(
+        r["cost_usd"]
+    )
 
 anomalies = detect(spend_by_tenant, threshold=ZSCORE_THRESHOLD)
 
@@ -199,10 +210,15 @@ with left:
             "tenant_id": "Tenant",
             "billed_usd": st.column_config.NumberColumn("Billed", format="$%.2f"),
             "share_pct": st.column_config.ProgressColumn(
-                "Share", format="%.1f%%", min_value=0, max_value=float(by_tenant["share_pct"].max())
+                "Share",
+                format="%.1f%%",
+                min_value=0,
+                max_value=float(by_tenant["share_pct"].max()),
             ),
             "requests": st.column_config.NumberColumn("Requests", format="%d"),
-            "cache_hit_rate": st.column_config.NumberColumn("Cache hits", format="%.0f%%"),
+            "cache_hit_rate": st.column_config.NumberColumn(
+                "Cache hits", format="%.0f%%"
+            ),
             "runaway": st.column_config.CheckboxColumn("⚠️"),
         },
     )
@@ -243,8 +259,10 @@ daily_total = query(
 )
 if not daily_total.empty:
     st.area_chart(daily_total.set_index("day"), height=240)
-    st.caption("`saved_usd` is what the cache hits would have cost. Stacked, the two are the "
-               "bill you would have had.")
+    st.caption(
+        "`saved_usd` is what the cache hits would have cost. Stacked, the two are the "
+        "bill you would have had."
+    )
 
 st.subheader("Cache hit rate over time")
 cache = query(

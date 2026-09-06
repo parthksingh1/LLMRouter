@@ -66,7 +66,9 @@ def load_pairs(path: Path) -> list[dict[str, Any]]:
         return [json.loads(line) for line in fh if line.strip()]
 
 
-def build_embedder(kind: str, texts: list[str], model_name: str, dim: int, url: str) -> Callable[[str], list[float]]:
+def build_embedder(
+    kind: str, texts: list[str], model_name: str, dim: int, url: str
+) -> Callable[[str], list[float]]:
     """Return a text -> vector function for the chosen backend."""
     if kind == "hash":
         return lambda text: hash_embed(text, dim)
@@ -82,7 +84,13 @@ def build_embedder(kind: str, texts: list[str], model_name: str, dim: int, url: 
         # One batched pass: embedding 2,000 texts individually takes minutes.
         model = TextEmbedding(model_name=model_name)
         unique = sorted(set(texts))
-        table = dict(zip(unique, ([float(x) for x in v] for v in model.embed(unique)), strict=True))
+        table = dict(
+            zip(
+                unique,
+                ([float(x) for x in v] for v in model.embed(unique)),
+                strict=True,
+            )
+        )
         return lambda text: table[text]
 
     import urllib.error
@@ -94,14 +102,18 @@ def build_embedder(kind: str, texts: list[str], model_name: str, dim: int, url: 
         if text not in cache:
             body = json.dumps({"texts": [text]}).encode("utf-8")
             req = urllib.request.Request(
-                f"{url.rstrip('/')}/embed", data=body,
-                headers={"Content-Type": "application/json"}, method="POST",
+                f"{url.rstrip('/')}/embed",
+                data=body,
+                headers={"Content-Type": "application/json"},
+                method="POST",
             )
             try:
                 with urllib.request.urlopen(req, timeout=30) as resp:
                     cache[text] = json.loads(resp.read())["vectors"][0]
             except urllib.error.URLError as exc:
-                raise SystemExit(f"could not reach the embedder at {url}: {exc}") from exc
+                raise SystemExit(
+                    f"could not reach the embedder at {url}: {exc}"
+                ) from exc
         return cache[text]
 
     return embed
@@ -129,14 +141,20 @@ def sweep(rows: list[dict[str, Any]], steps: int = 400) -> list[dict[str, float]
     curve: list[dict[str, float]] = []
     for i in range(steps + 1):
         threshold = lo + span * i / steps
-        semantic_hits = sum(1 for r in positives if not r["exact"] and r["similarity"] >= threshold)
-        semantic_false = sum(1 for r in negatives if not r["exact"] and r["similarity"] >= threshold)
+        semantic_hits = sum(
+            1 for r in positives if not r["exact"] and r["similarity"] >= threshold
+        )
+        semantic_false = sum(
+            1 for r in negatives if not r["exact"] and r["similarity"] >= threshold
+        )
 
         curve.append(
             {
                 "threshold": round(threshold, 6),
                 "hit_rate": round((exact_hits + semantic_hits) / len(positives), 6),
-                "false_hit_rate": round((exact_false + semantic_false) / len(negatives), 6),
+                "false_hit_rate": round(
+                    (exact_false + semantic_false) / len(negatives), 6
+                ),
                 "semantic_hit_rate": round(semantic_hits / len(positives), 6),
                 "semantic_false_hit_rate": round(semantic_false / len(negatives), 6),
             }
@@ -144,14 +162,18 @@ def sweep(rows: list[dict[str, Any]], steps: int = 400) -> list[dict[str, float]
     return curve
 
 
-def choose_operating_point(curve: list[dict[str, float]], budget: float) -> dict[str, float]:
+def choose_operating_point(
+    curve: list[dict[str, float]], budget: float
+) -> dict[str, float]:
     """Highest total hit rate whose false-hit rate stays inside the budget.
 
     Ties are broken towards the *higher* threshold, so the operating point sits as far from the
     negatives as the budget allows rather than balanced on the edge of it.
     """
     admissible = [p for p in curve if p["false_hit_rate"] <= budget]
-    if not admissible:  # pragma: no cover - only if the exact tier alone blows the budget
+    if (
+        not admissible
+    ):  # pragma: no cover - only if the exact tier alone blows the budget
         return max(curve, key=lambda p: p["threshold"])
     return max(admissible, key=lambda p: (p["hit_rate"], p["threshold"]))
 
@@ -169,7 +191,13 @@ def auc(rows: list[dict[str, Any]]) -> float:
     return wins / (len(positives) * len(negatives))
 
 
-def render_plot(curve: list[dict[str, float]], operating: dict[str, float], rows: list[dict[str, Any]], path: Path, backend: str) -> bool:
+def render_plot(
+    curve: list[dict[str, float]],
+    operating: dict[str, float],
+    rows: list[dict[str, Any]],
+    path: Path,
+    backend: str,
+) -> bool:
     """Draw the ROC curve and the per-kind similarity distributions."""
     try:
         import matplotlib
@@ -183,14 +211,31 @@ def render_plot(curve: list[dict[str, float]], operating: dict[str, float], rows
 
     fpr = [p["false_hit_rate"] for p in curve]
     tpr = [p["hit_rate"] for p in curve]
-    ax_roc.plot(fpr, tpr, color="#2563eb", linewidth=2, label=f"two-tier (AUC {auc(rows):.3f} on similarity)")
+    ax_roc.plot(
+        fpr,
+        tpr,
+        color="#2563eb",
+        linewidth=2,
+        label=f"two-tier (AUC {auc(rows):.3f} on similarity)",
+    )
     ax_roc.scatter(
-        [operating["false_hit_rate"]], [operating["hit_rate"]],
-        color="#dc2626", zorder=5, s=70,
+        [operating["false_hit_rate"]],
+        [operating["hit_rate"]],
+        color="#dc2626",
+        zorder=5,
+        s=70,
         label=f"operating point (t={operating['threshold']:.4f})",
     )
-    ax_roc.axvline(FALSE_HIT_BUDGET, color="#dc2626", linestyle="--", linewidth=1, alpha=0.7)
-    ax_roc.text(FALSE_HIT_BUDGET + 0.005, 0.05, f"budget {FALSE_HIT_BUDGET:.1%}", fontsize=8, color="#dc2626")
+    ax_roc.axvline(
+        FALSE_HIT_BUDGET, color="#dc2626", linestyle="--", linewidth=1, alpha=0.7
+    )
+    ax_roc.text(
+        FALSE_HIT_BUDGET + 0.005,
+        0.05,
+        f"budget {FALSE_HIT_BUDGET:.1%}",
+        fontsize=8,
+        color="#dc2626",
+    )
     ax_roc.set_xlim(-0.01, 0.25)
     ax_roc.set_xlabel("false-hit rate (wrong answer served)")
     ax_roc.set_ylabel("hit rate (paraphrase served from cache)")
@@ -199,14 +244,28 @@ def render_plot(curve: list[dict[str, float]], operating: dict[str, float], rows
     ax_roc.grid(alpha=0.25)
 
     kinds = sorted({r["kind"] for r in rows})
-    colours = {"paraphrase": "#16a34a", "minimal_pair": "#dc2626",
-               "subject_swap": "#ea580c", "different_question": "#6b7280"}
+    colours = {
+        "paraphrase": "#16a34a",
+        "minimal_pair": "#dc2626",
+        "subject_swap": "#ea580c",
+        "different_question": "#6b7280",
+    }
     for kind in kinds:
         values = [r["similarity"] for r in rows if r["kind"] == kind]
-        ax_dist.hist(values, bins=40, alpha=0.55, label=f"{kind} (n={len(values)})",
-                     color=colours.get(kind, "#3b82f6"))
-    ax_dist.axvline(operating["threshold"], color="#111827", linestyle="--", linewidth=1.2,
-                    label=f"threshold {operating['threshold']:.4f}")
+        ax_dist.hist(
+            values,
+            bins=40,
+            alpha=0.55,
+            label=f"{kind} (n={len(values)})",
+            color=colours.get(kind, "#3b82f6"),
+        )
+    ax_dist.axvline(
+        operating["threshold"],
+        color="#111827",
+        linestyle="--",
+        linewidth=1.2,
+        label=f"threshold {operating['threshold']:.4f}",
+    )
     ax_dist.set_xlabel("cosine similarity")
     ax_dist.set_ylabel("pairs")
     ax_dist.set_title("Why the semantic tier alone is not enough")
@@ -221,10 +280,14 @@ def render_plot(curve: list[dict[str, float]], operating: dict[str, float], rows
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     parser.add_argument("--pairs", type=Path, default=DEFAULT_PAIRS)
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
-    parser.add_argument("--plot", type=Path, default=REPO_ROOT / "docs" / "diagrams" / "cache_roc.png")
+    parser.add_argument(
+        "--plot", type=Path, default=REPO_ROOT / "docs" / "diagrams" / "cache_roc.png"
+    )
     parser.add_argument("--embedder", choices=["onnx", "hash", "http"], default="onnx")
     parser.add_argument("--embedder-url", default="http://localhost:8001")
     parser.add_argument("--model", default="BAAI/bge-small-en-v1.5")
@@ -234,7 +297,9 @@ def main() -> int:
 
     pairs = load_pairs(args.pairs)
     texts = [t for pair in pairs for t in (pair["left"], pair["right"])]
-    embed = build_embedder(args.embedder, texts, args.model, args.dim, args.embedder_url)
+    embed = build_embedder(
+        args.embedder, texts, args.model, args.dim, args.embedder_url
+    )
 
     rows: list[dict[str, Any]] = []
     for pair in pairs:
@@ -243,7 +308,9 @@ def main() -> int:
                 "label": int(pair["label"]),
                 "kind": pair["kind"],
                 "exact": same_question(pair["left"], pair["right"]),
-                "similarity": cosine(unit(embed(pair["left"])), unit(embed(pair["right"]))),
+                "similarity": cosine(
+                    unit(embed(pair["left"])), unit(embed(pair["right"]))
+                ),
             }
         )
 
@@ -260,8 +327,7 @@ def main() -> int:
         group = [r for r in rows if r["kind"] == kind]
         sims = [r["similarity"] for r in group]
         admitted = sum(
-            1 for r in group
-            if r["exact"] or r["similarity"] >= operating["threshold"]
+            1 for r in group if r["exact"] or r["similarity"] >= operating["threshold"]
         )
         by_kind[kind] = {
             "count": len(group),
@@ -275,8 +341,14 @@ def main() -> int:
 
     payload: dict[str, Any] = {
         "embedder": args.embedder,
-        "model": args.model if args.embedder == "onnx" else f"{args.embedder}-{args.dim}",
-        "pairs": {"total": len(pairs), "positive": len(positives), "negative": len(negatives)},
+        "model": args.model
+        if args.embedder == "onnx"
+        else f"{args.embedder}-{args.dim}",
+        "pairs": {
+            "total": len(pairs),
+            "positive": len(positives),
+            "negative": len(negatives),
+        },
         "false_hit_budget": args.budget,
         "operating_point": operating,
         "tiers": {
@@ -315,7 +387,9 @@ def main() -> int:
         recommendation = "enable the semantic tier at the operating point"
     elif marginal_true > marginal_false:
         verdict = "marginal"
-        recommendation = "enable only if a missed hit is much more expensive than a wrong answer"
+        recommendation = (
+            "enable only if a missed hit is much more expensive than a wrong answer"
+        )
     else:
         verdict = "not worthwhile on this pair set"
         recommendation = (
@@ -336,27 +410,42 @@ def main() -> int:
     payload["plot"] = str(args.plot.relative_to(REPO_ROOT)) if plotted else None
 
     out = write_result(
-        args.out, payload, mode="offline", seed=env_seed(),
+        args.out,
+        payload,
+        mode="offline",
+        seed=env_seed(),
         generated_by="benchmarks/cache/calibrate.py",
         provenance_extra={"embedder": args.embedder, "model": payload["model"]},
     )
 
-    print(f"cache calibration ({args.embedder}, {len(pairs)} pairs) -> {out.relative_to(REPO_ROOT)}")
-    print(f"  exact tier      {payload['tiers']['exact']['hit_rate'] * 100:5.1f}% hit, "
-          f"{payload['tiers']['exact']['false_hit_rate'] * 100:.2f}% false-hit")
-    print(f"  semantic tier  +{operating['semantic_hit_rate'] * 100:5.1f}% hit, "
-          f"+{operating['semantic_false_hit_rate'] * 100:.2f}% false-hit  (t={operating['threshold']:.4f})")
-    print(f"  combined        {operating['hit_rate'] * 100:5.1f}% hit, "
-          f"{operating['false_hit_rate'] * 100:.2f}% false-hit  (budget {args.budget * 100:.1f}%)")
+    print(
+        f"cache calibration ({args.embedder}, {len(pairs)} pairs) -> {out.relative_to(REPO_ROOT)}"
+    )
+    print(
+        f"  exact tier      {payload['tiers']['exact']['hit_rate'] * 100:5.1f}% hit, "
+        f"{payload['tiers']['exact']['false_hit_rate'] * 100:.2f}% false-hit"
+    )
+    print(
+        f"  semantic tier  +{operating['semantic_hit_rate'] * 100:5.1f}% hit, "
+        f"+{operating['semantic_false_hit_rate'] * 100:.2f}% false-hit  (t={operating['threshold']:.4f})"
+    )
+    print(
+        f"  combined        {operating['hit_rate'] * 100:5.1f}% hit, "
+        f"{operating['false_hit_rate'] * 100:.2f}% false-hit  (budget {args.budget * 100:.1f}%)"
+    )
     print(f"  similarity AUC  {payload['similarity_auc']:.3f}")
     print()
     for kind, stats in by_kind.items():
         verdict = "should hit" if stats["label"] == 1 else "must not hit"
-        print(f"    {kind:20} n={stats['count']:4}  mean sim {stats['mean_similarity']:.3f}  "
-              f"admitted {stats['admitted_pct']:5.1f}%  ({verdict})")
+        print(
+            f"    {kind:20} n={stats['count']:4}  mean sim {stats['mean_similarity']:.3f}  "
+            f"admitted {stats['admitted_pct']:5.1f}%  ({verdict})"
+        )
     print()
-    print(f"  semantic tier: {payload['semantic_tier_verdict']['verdict']} "
-          f"(+{marginal_true:.0f} right, +{marginal_false:.0f} wrong)")
+    print(
+        f"  semantic tier: {payload['semantic_tier_verdict']['verdict']} "
+        f"(+{marginal_true:.0f} right, +{marginal_false:.0f} wrong)"
+    )
     print(f"  Set CACHE_SIMILARITY_THRESHOLD={operating['threshold']:.4f}")
     return 0
 

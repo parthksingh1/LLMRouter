@@ -19,18 +19,18 @@
     }
   },
   "cost": {
-    "baseline_usd": 0.212778,
-    "reduction_pct": 51.95,
-    "routed_usd": 0.102249,
-    "saved_usd": 0.110528
+    "baseline_usd": 0.208478,
+    "reduction_pct": 52.69,
+    "routed_usd": 0.098639,
+    "saved_usd": 0.109839
   },
   "dataset": "benchmarks\\eval\\dataset.jsonl",
   "policy": "quality_tiered",
   "provenance": {
     "cases": 200,
-    "generated_at": "2026-09-06T09:52:03+00:00",
+    "generated_at": "2026-09-06T18:38:24+00:00",
     "generated_by": "benchmarks/eval/run_eval.py",
-    "git_sha": "17c0c69-dirty",
+    "git_sha": "a78068f-dirty",
     "mode": "offline",
     "platform": "windows-amd64",
     "policy": "quality_tiered",
@@ -86,7 +86,7 @@
   "sensitivity": [
     {
       "confidence_band": 0.0,
-      "cost_reduction_pct": 82.67,
+      "cost_reduction_pct": 83.31,
       "quality_drift_pp": 6.0,
       "regressions": 12,
       "safety_margin": 0.0,
@@ -94,7 +94,7 @@
     },
     {
       "confidence_band": 0.1,
-      "cost_reduction_pct": 82.67,
+      "cost_reduction_pct": 83.31,
       "quality_drift_pp": 6.0,
       "regressions": 12,
       "safety_margin": 0.0,
@@ -102,7 +102,7 @@
     },
     {
       "confidence_band": 0.2,
-      "cost_reduction_pct": 79.22,
+      "cost_reduction_pct": 79.85,
       "quality_drift_pp": 3.5,
       "regressions": 7,
       "safety_margin": 0.0,
@@ -110,7 +110,7 @@
     },
     {
       "confidence_band": 0.0,
-      "cost_reduction_pct": 51.95,
+      "cost_reduction_pct": 52.69,
       "quality_drift_pp": 1.5,
       "regressions": 3,
       "safety_margin": 0.01,
@@ -118,7 +118,7 @@
     },
     {
       "confidence_band": 0.1,
-      "cost_reduction_pct": 51.95,
+      "cost_reduction_pct": 52.69,
       "quality_drift_pp": 1.5,
       "regressions": 3,
       "safety_margin": 0.01,
@@ -126,7 +126,7 @@
     },
     {
       "confidence_band": 0.2,
-      "cost_reduction_pct": 37.28,
+      "cost_reduction_pct": 38.13,
       "quality_drift_pp": 0.0,
       "regressions": 0,
       "safety_margin": 0.01,
@@ -134,7 +134,7 @@
     },
     {
       "confidence_band": 0.0,
-      "cost_reduction_pct": 51.95,
+      "cost_reduction_pct": 52.69,
       "quality_drift_pp": 1.5,
       "regressions": 3,
       "safety_margin": 0.02,
@@ -142,7 +142,7 @@
     },
     {
       "confidence_band": 0.1,
-      "cost_reduction_pct": 51.95,
+      "cost_reduction_pct": 52.69,
       "quality_drift_pp": 1.5,
       "regressions": 3,
       "safety_margin": 0.02,
@@ -150,7 +150,7 @@
     },
     {
       "confidence_band": 0.2,
-      "cost_reduction_pct": 37.28,
+      "cost_reduction_pct": 38.13,
       "quality_drift_pp": 0.0,
       "regressions": 0,
       "safety_margin": 0.02,
@@ -158,7 +158,7 @@
     },
     {
       "confidence_band": 0.0,
-      "cost_reduction_pct": 38.17,
+      "cost_reduction_pct": 39.0,
       "quality_drift_pp": 0.0,
       "regressions": 0,
       "safety_margin": 0.03,
@@ -166,7 +166,7 @@
     },
     {
       "confidence_band": 0.1,
-      "cost_reduction_pct": 38.17,
+      "cost_reduction_pct": 39.0,
       "quality_drift_pp": 0.0,
       "regressions": 0,
       "safety_margin": 0.03,
@@ -174,7 +174,7 @@
     },
     {
       "confidence_band": 0.2,
-      "cost_reduction_pct": 36.81,
+      "cost_reduction_pct": 37.59,
       "quality_drift_pp": 0.0,
       "regressions": 0,
       "safety_margin": 0.03,
@@ -182,7 +182,7 @@
     },
     {
       "confidence_band": 0.0,
-      "cost_reduction_pct": 38.17,
+      "cost_reduction_pct": 39.0,
       "quality_drift_pp": 0.0,
       "regressions": 0,
       "safety_margin": 0.05,
@@ -190,7 +190,7 @@
     },
     {
       "confidence_band": 0.1,
-      "cost_reduction_pct": 38.17,
+      "cost_reduction_pct": 39.0,
       "quality_drift_pp": 0.0,
       "regressions": 0,
       "safety_margin": 0.05,
@@ -198,7 +198,7 @@
     },
     {
       "confidence_band": 0.2,
-      "cost_reduction_pct": 36.81,
+      "cost_reduction_pct": 37.59,
       "quality_drift_pp": 0.0,
       "regressions": 0,
       "safety_margin": 0.05,

@@ -113,9 +113,28 @@ SUBJECTS: Final[tuple[str, ...]] = (
     "a webhook retry mechanism",
 )
 
-LANGUAGES: Final[tuple[str, ...]] = ("French", "German", "Japanese", "Portuguese", "Hindi", "Polish")
-CITIES: Final[tuple[str, ...]] = ("Peru", "Norway", "Kenya", "Vietnam", "Chile", "Hungary", "Morocco")
-UNITS: Final[tuple[str, ...]] = ("miles to kilometres", "Celsius to Fahrenheit", "pounds to kilograms")
+LANGUAGES: Final[tuple[str, ...]] = (
+    "French",
+    "German",
+    "Japanese",
+    "Portuguese",
+    "Hindi",
+    "Polish",
+)
+CITIES: Final[tuple[str, ...]] = (
+    "Peru",
+    "Norway",
+    "Kenya",
+    "Vietnam",
+    "Chile",
+    "Hungary",
+    "Morocco",
+)
+UNITS: Final[tuple[str, ...]] = (
+    "miles to kilometres",
+    "Celsius to Fahrenheit",
+    "pounds to kilograms",
+)
 
 # --------------------------------------------------------------------------------------
 # Templates
@@ -127,39 +146,129 @@ UNITS: Final[tuple[str, ...]] = ("miles to kilometres", "Celsius to Fahrenheit",
 
 EASY_TEMPLATES: Final[tuple[Template, ...]] = (
     Template("What is the capital of {city}?", EASY, "factual"),
-    Template("Translate this sentence into {language}: the deployment finished successfully.", EASY, "translation"),
-    Template("Summarise the following release note in one sentence: we fixed a bug in {subject}.", EASY, "summarisation"),
-    Template("Define the term idempotency as it applies to {subject}.", EASY, "definition"),
+    Template(
+        "Translate this sentence into {language}: the deployment finished successfully.",
+        EASY,
+        "translation",
+    ),
+    Template(
+        "Summarise the following release note in one sentence: we fixed a bug in {subject}.",
+        EASY,
+        "summarisation",
+    ),
+    Template(
+        "Define the term idempotency as it applies to {subject}.", EASY, "definition"
+    ),
     Template("List three metrics worth tracking for {subject}.", EASY, "listing"),
     Template("Convert {unit} and show the formula.", EASY, "conversion"),
     Template("What is the difference between a queue and a topic?", EASY, "factual"),
-    Template("Rephrase this status update to be more concise: {subject} is currently degraded.", EASY, "rewriting"),
-    Template("Spell out the acronym SLA and say what it means for {subject}.", EASY, "definition"),
+    Template(
+        "Rephrase this status update to be more concise: {subject} is currently degraded.",
+        EASY,
+        "rewriting",
+    ),
+    Template(
+        "Spell out the acronym SLA and say what it means for {subject}.",
+        EASY,
+        "definition",
+    ),
     Template("What is a reasonable default timeout for {subject}?", EASY, "factual"),
 )
 
 MEDIUM_TEMPLATES: Final[tuple[Template, ...]] = (
-    Template("Write a runbook entry for the on-call engineer covering the three most common failures in {subject}.", MEDIUM, "operations"),
-    Template("Draft a short design note explaining how {subject} should handle backpressure.", MEDIUM, "design"),
-    Template("Given a spike in p99 latency on {subject}, outline the first four things you would check.", MEDIUM, "operations"),
-    Template("Write unit test cases covering the boundary conditions of {subject}.", MEDIUM, "testing"),
-    Template("Explain to a new team member how {subject} recovers after a deploy is rolled back.", MEDIUM, "explanation"),
-    Template("Produce a migration checklist for moving {subject} from one region to two.", MEDIUM, "planning"),
-    Template("Write the alerting rules you would configure for {subject}, with thresholds and reasoning.", MEDIUM, "operations"),
-    Template("Describe how you would add idempotency keys to {subject} without downtime.", MEDIUM, "design"),
-    Template("Review this plan for {subject} and list the assumptions it leaves unstated.", MEDIUM, "review"),
-    Template("Write a postmortem summary for an incident where {subject} dropped 2% of messages.", MEDIUM, "writing"),
+    Template(
+        "Write a runbook entry for the on-call engineer covering the three most common failures in {subject}.",
+        MEDIUM,
+        "operations",
+    ),
+    Template(
+        "Draft a short design note explaining how {subject} should handle backpressure.",
+        MEDIUM,
+        "design",
+    ),
+    Template(
+        "Given a spike in p99 latency on {subject}, outline the first four things you would check.",
+        MEDIUM,
+        "operations",
+    ),
+    Template(
+        "Write unit test cases covering the boundary conditions of {subject}.",
+        MEDIUM,
+        "testing",
+    ),
+    Template(
+        "Explain to a new team member how {subject} recovers after a deploy is rolled back.",
+        MEDIUM,
+        "explanation",
+    ),
+    Template(
+        "Produce a migration checklist for moving {subject} from one region to two.",
+        MEDIUM,
+        "planning",
+    ),
+    Template(
+        "Write the alerting rules you would configure for {subject}, with thresholds and reasoning.",
+        MEDIUM,
+        "operations",
+    ),
+    Template(
+        "Describe how you would add idempotency keys to {subject} without downtime.",
+        MEDIUM,
+        "design",
+    ),
+    Template(
+        "Review this plan for {subject} and list the assumptions it leaves unstated.",
+        MEDIUM,
+        "review",
+    ),
+    Template(
+        "Write a postmortem summary for an incident where {subject} dropped 2% of messages.",
+        MEDIUM,
+        "writing",
+    ),
 )
 
 HARD_TEMPLATES: Final[tuple[Template, ...]] = (
-    Template("Derive the worst-case complexity of the retry strategy in {subject}, then analyse the trade-off against a bounded queue.", HARD, "analysis"),
-    Template("Debug the race condition that appears in {subject} under concurrent writes, and explain the root cause.", HARD, "debugging"),
-    Template("Prove that the deduplication scheme in {subject} is correct under at-least-once delivery, step by step.", HARD, "proof"),
-    Template("Architect a rewrite of {subject} for a distributed deployment, and justify each trade-off you make.", HARD, "architecture"),
-    Template("Explain step by step how to optimise the hot path of {subject} without changing its public contract.", HARD, "optimisation"),
-    Template("Analyse the concurrency model of {subject} and identify where a race condition could be introduced by a naive refactor.", HARD, "analysis"),
-    Template("Derive the algorithm needed to shard {subject} while preserving ordering guarantees.", HARD, "algorithm"),
-    Template("Compare two designs for {subject} on complexity, failure modes and cost, and recommend one with reasoning.", HARD, "architecture"),
+    Template(
+        "Derive the worst-case complexity of the retry strategy in {subject}, then analyse the trade-off against a bounded queue.",
+        HARD,
+        "analysis",
+    ),
+    Template(
+        "Debug the race condition that appears in {subject} under concurrent writes, and explain the root cause.",
+        HARD,
+        "debugging",
+    ),
+    Template(
+        "Prove that the deduplication scheme in {subject} is correct under at-least-once delivery, step by step.",
+        HARD,
+        "proof",
+    ),
+    Template(
+        "Architect a rewrite of {subject} for a distributed deployment, and justify each trade-off you make.",
+        HARD,
+        "architecture",
+    ),
+    Template(
+        "Explain step by step how to optimise the hot path of {subject} without changing its public contract.",
+        HARD,
+        "optimisation",
+    ),
+    Template(
+        "Analyse the concurrency model of {subject} and identify where a race condition could be introduced by a naive refactor.",
+        HARD,
+        "analysis",
+    ),
+    Template(
+        "Derive the algorithm needed to shard {subject} while preserving ordering guarantees.",
+        HARD,
+        "algorithm",
+    ),
+    Template(
+        "Compare two designs for {subject} on complexity, failure modes and cost, and recommend one with reasoning.",
+        HARD,
+        "architecture",
+    ),
 )
 
 #: Templates whose surface form misleads the difficulty classifier.
@@ -179,10 +288,30 @@ MISLEADING_TEMPLATES: Final[tuple[Template, ...]] = (
     # any lexical classifier and it is where most of the measured quality drift comes from --
     # excluding it would make the drift figure look far better than production would.
     Template("What is wrong with {subject}?", HARD, "analysis", misleading=True),
-    Template("List the reasons {subject} loses messages under load.", HARD, "analysis", misleading=True),
-    Template("Summarise why {subject} deadlocks when two workers retry at once.", HARD, "debugging", misleading=True),
-    Template("What is the right way to shard {subject} without breaking ordering?", HARD, "architecture", misleading=True),
-    Template("Define the correctness condition {subject} must hold under partial failure.", HARD, "proof", misleading=True),
+    Template(
+        "List the reasons {subject} loses messages under load.",
+        HARD,
+        "analysis",
+        misleading=True,
+    ),
+    Template(
+        "Summarise why {subject} deadlocks when two workers retry at once.",
+        HARD,
+        "debugging",
+        misleading=True,
+    ),
+    Template(
+        "What is the right way to shard {subject} without breaking ordering?",
+        HARD,
+        "architecture",
+        misleading=True,
+    ),
+    Template(
+        "Define the correctness condition {subject} must hold under partial failure.",
+        HARD,
+        "proof",
+        misleading=True,
+    ),
     Template(
         "Here is a configuration file for {subject}:\n\n"
         "    retries: 3\n"
@@ -340,7 +469,11 @@ def confuse(text: str, rng: random.Random) -> str | None:
     Returns None when no confusable term is present, so the caller can pick another source
     rather than emitting a "hard negative" that is really just a paraphrase.
     """
-    candidates = [(old, new) for old, new in CONFUSABLE if re.search(rf"\b{re.escape(old)}\b", text)]
+    candidates = [
+        (old, new)
+        for old, new in CONFUSABLE
+        if re.search(rf"\b{re.escape(old)}\b", text)
+    ]
     if not candidates:
         return None
     old, new = rng.choice(candidates)

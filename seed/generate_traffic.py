@@ -51,10 +51,22 @@ ALL_TEMPLATES = EASY_TEMPLATES + MEDIUM_TEMPLATES + HARD_TEMPLATES
 
 #: Column order for the TSV. Must match the INSERT in seed_clickhouse.sh.
 COLUMNS = [
-    "ts", "request_id", "tenant_id", "policy", "model", "provider",
-    "prompt_tokens", "completion_tokens", "cached", "cache_similarity",
-    "guardrail_blocked", "guardrail_findings", "failover_count",
-    "status_code", "latency_ms", "cost_usd",
+    "ts",
+    "request_id",
+    "tenant_id",
+    "policy",
+    "model",
+    "provider",
+    "prompt_tokens",
+    "completion_tokens",
+    "cached",
+    "cache_similarity",
+    "guardrail_blocked",
+    "guardrail_findings",
+    "failover_count",
+    "status_code",
+    "latency_ms",
+    "cost_usd",
 ]
 
 
@@ -186,7 +198,9 @@ def build_row(
     # A cache hit is billed at zero but the counterfactual is recorded, because "what did the
     # cache save" is unanswerable otherwise. The materialised view sums cost_usd only where
     # cached = 1 to produce the saving.
-    cost = model.cost_usd(prompt_tokens, completion_tokens if not cached else rng.randint(60, 420))
+    cost = model.cost_usd(
+        prompt_tokens, completion_tokens if not cached else rng.randint(60, 420)
+    )
     if shape == "runaway_retry_storm" and multiplier > 1.0:
         cost *= multiplier
         prompt_tokens = int(prompt_tokens * multiplier)
@@ -227,7 +241,9 @@ def generate(days: int, target: int, seed: int, out: TextIO) -> dict[str, Any]:
 
     # Allocate the request budget across tenants by their configured rate, then across days by
     # the diurnal shape. This is what makes the totals land near `target` without a second pass.
-    weights = [max(0.05, float(t.get("seed_profile", {}).get("rps", 0.5))) for t in tenants]
+    weights = [
+        max(0.05, float(t.get("seed_profile", {}).get("rps", 0.5))) for t in tenants
+    ]
     total_weight = sum(weights)
 
     written = 0
@@ -258,7 +274,9 @@ def generate(days: int, target: int, seed: int, out: TextIO) -> dict[str, Any]:
                 continue
 
             # Sample timestamps within the day according to the diurnal shape.
-            hour_weights = [diurnal_weight(day_start + timedelta(hours=h), shape) for h in range(24)]
+            hour_weights = [
+                diurnal_weight(day_start + timedelta(hours=h), shape) for h in range(24)
+            ]
             hour_total = sum(hour_weights) or 1.0
 
             # Fractional carry across hours.
@@ -275,8 +293,10 @@ def generate(days: int, target: int, seed: int, out: TextIO) -> dict[str, Any]:
                 carry = exact - count
                 for i in range(count):
                     when = day_start + timedelta(
-                        hours=hour, minutes=rng.randint(0, 59),
-                        seconds=rng.randint(0, 59), milliseconds=rng.randint(0, 999),
+                        hours=hour,
+                        minutes=rng.randint(0, 59),
+                        seconds=rng.randint(0, 59),
+                        milliseconds=rng.randint(0, 999),
                     )
                     row = build_row(when, tenant, router, rng, day_index, written)
                     out.write("\t".join(str(row[c]) for c in COLUMNS) + "\n")
@@ -291,7 +311,8 @@ def generate(days: int, target: int, seed: int, out: TextIO) -> dict[str, Any]:
 
     total_cost = sum(per_tenant_cost.values())
     runaways = [
-        t["id"] for t in tenants
+        t["id"]
+        for t in tenants
         if str(t.get("seed_profile", {}).get("shape", "")).startswith("runaway")
     ]
     runaway_cost = sum(per_tenant_cost[t] for t in runaways)
@@ -301,18 +322,29 @@ def generate(days: int, target: int, seed: int, out: TextIO) -> dict[str, Any]:
         "days": days,
         "tenants": len(tenants),
         "total_cost_usd": round(total_cost, 2),
-        "per_tenant_cost": {k: round(v, 2) for k, v in sorted(per_tenant_cost.items(), key=lambda kv: -kv[1])},
+        "per_tenant_cost": {
+            k: round(v, 2)
+            for k, v in sorted(per_tenant_cost.items(), key=lambda kv: -kv[1])
+        },
         "runaway_tenants": runaways,
-        "runaway_share_pct": round(runaway_cost / total_cost * 100, 2) if total_cost else 0.0,
+        "runaway_share_pct": round(runaway_cost / total_cost * 100, 2)
+        if total_cost
+        else 0.0,
     }
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     parser.add_argument("--days", type=int, default=30)
-    parser.add_argument("--target", type=int, default=200_000, help="approximate number of events")
+    parser.add_argument(
+        "--target", type=int, default=200_000, help="approximate number of events"
+    )
     parser.add_argument("--seed", type=int, default=1337)
-    parser.add_argument("--out", type=Path, default=REPO_ROOT / "seed" / "out" / "events.tsv")
+    parser.add_argument(
+        "--out", type=Path, default=REPO_ROOT / "seed" / "out" / "events.tsv"
+    )
     args = parser.parse_args()
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
@@ -327,7 +359,9 @@ def main() -> int:
     print(f"  runaway share   {summary['runaway_share_pct']:.1f}% of the month's spend")
     print("  top spenders:")
     for tenant, cost in list(summary["per_tenant_cost"].items())[:6]:
-        share = cost / summary["total_cost_usd"] * 100 if summary["total_cost_usd"] else 0
+        share = (
+            cost / summary["total_cost_usd"] * 100 if summary["total_cost_usd"] else 0
+        )
         print(f"    {tenant:12} ${cost:10,.2f}  {share:5.1f}%")
     return 0
 

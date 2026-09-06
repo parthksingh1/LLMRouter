@@ -97,7 +97,9 @@ def build_corpus(seed: int, size: int) -> list[str]:
 
         # Vary the length so the measurement covers realistic prompt sizes rather than one.
         if rng.random() < 0.25:
-            padding = " ".join(rng.choice(CLEAN_PROMPTS) for _ in range(rng.randint(2, 12)))
+            padding = " ".join(
+                rng.choice(CLEAN_PROMPTS) for _ in range(rng.randint(2, 12))
+            )
             text = f"{padding} {text}"
         corpus.append(text)
 
@@ -117,7 +119,9 @@ def build_corpus(seed: int, size: int) -> list[str]:
     return corpus
 
 
-def measure_in_process(screener: Screener, corpus: list[str], warmup: int) -> list[float]:
+def measure_in_process(
+    screener: Screener, corpus: list[str], warmup: int
+) -> list[float]:
     """Time the detector chain directly."""
     for text in corpus[:warmup]:
         screener.screen(text, None)
@@ -149,9 +153,13 @@ def measure_http(corpus: list[str], warmup: int) -> list[float] | None:
     async def run() -> list[float]:
         samples: list[float] = []
         transport = httpx.ASGITransport(app=app)
-        async with httpx.AsyncClient(transport=transport, base_url="http://guardrails") as client:
+        async with httpx.AsyncClient(
+            transport=transport, base_url="http://guardrails"
+        ) as client:
             for text in corpus[:warmup]:
-                await client.post("/v1/screen/input", json={"tenant_id": "bench", "text": text})
+                await client.post(
+                    "/v1/screen/input", json={"tenant_id": "bench", "text": text}
+                )
 
             for text in corpus:
                 started = time.perf_counter()
@@ -181,12 +189,16 @@ def summarise(samples: list[float]) -> dict[str, float]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
     parser.add_argument("--iterations", type=int, default=4000)
     parser.add_argument("--warmup", type=int, default=200)
     parser.add_argument("--budget-ms", type=float, default=P99_BUDGET_MS)
-    parser.add_argument("--no-fail", action="store_true", help="report without failing on a budget miss")
+    parser.add_argument(
+        "--no-fail", action="store_true", help="report without failing on a budget miss"
+    )
     args = parser.parse_args()
 
     seed = env_seed()
@@ -218,30 +230,42 @@ def main() -> int:
             "blocked": blocked,
             "findings": findings,
             "note": "roughly one prompt in three triggers a detector, which is far above real "
-                    "traffic; the point is to measure the expensive path",
+            "traffic; the point is to measure the expensive path",
         },
         "detectors": screener.names,
     }
 
     out = write_result(
-        args.out, payload, mode="offline", seed=seed,
+        args.out,
+        payload,
+        mode="offline",
+        seed=seed,
         generated_by="benchmarks/guardrails/bench_guardrails.py",
         provenance_extra={"iterations": len(corpus), "budget_ms": args.budget_ms},
     )
 
-    print(f"guardrails latency ({len(corpus):,} prompts) -> {out.relative_to(REPO_ROOT)}")
-    print(f"  in-process  p50 {in_process['p50']:.3f} ms  p95 {in_process['p95']:.3f} ms  "
-          f"p99 {in_process['p99']:.3f} ms  max {in_process['max']:.3f} ms")
+    print(
+        f"guardrails latency ({len(corpus):,} prompts) -> {out.relative_to(REPO_ROOT)}"
+    )
+    print(
+        f"  in-process  p50 {in_process['p50']:.3f} ms  p95 {in_process['p95']:.3f} ms  "
+        f"p99 {in_process['p99']:.3f} ms  max {in_process['max']:.3f} ms"
+    )
     if http:
-        print(f"  over HTTP   p50 {http['p50']:.3f} ms  p95 {http['p95']:.3f} ms  "
-              f"p99 {http['p99']:.3f} ms")
+        print(
+            f"  over HTTP   p50 {http['p50']:.3f} ms  p95 {http['p95']:.3f} ms  "
+            f"p99 {http['p99']:.3f} ms"
+        )
     print(f"  corpus      {blocked:,} blocked, {findings:,} findings")
 
     if within_budget:
         print(f"  BUDGET OK   p99 {in_process['p99']:.3f} ms <= {args.budget_ms} ms")
         return 0
 
-    print(f"  BUDGET MISS p99 {in_process['p99']:.3f} ms > {args.budget_ms} ms", file=sys.stderr)
+    print(
+        f"  BUDGET MISS p99 {in_process['p99']:.3f} ms > {args.budget_ms} ms",
+        file=sys.stderr,
+    )
     return 0 if args.no_fail else 1
 
 

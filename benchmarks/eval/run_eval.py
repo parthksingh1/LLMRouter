@@ -67,7 +67,9 @@ def completion_tokens(fixture: dict[str, Any] | None, model: Model) -> int:
     return int(variant["completion_tokens"])
 
 
-def run_offline(cases: list[dict[str, Any]], fixtures: dict[str, dict[str, Any]], policy_name: str) -> list[dict[str, Any]]:
+def run_offline(
+    cases: list[dict[str, Any]], fixtures: dict[str, dict[str, Any]], policy_name: str
+) -> list[dict[str, Any]]:
     """Route every case through the offline simulator."""
     router = Router()
     baseline = baseline_model()
@@ -90,18 +92,30 @@ def run_offline(cases: list[dict[str, Any]], fixtures: dict[str, dict[str, Any]]
                 "min_quality": case["min_quality"],
                 "prompt_tokens": case["prompt_tokens"],
                 "baseline_model": baseline.id,
-                "baseline_cost": baseline.cost_usd(case["prompt_tokens"], baseline_completion),
+                "baseline_cost": baseline.cost_usd(
+                    case["prompt_tokens"], baseline_completion
+                ),
                 "baseline_correct": answered_correctly(baseline, case["min_quality"]),
                 "routed_model": decision.model.id,
                 "routed_provider": decision.model.provider,
-                "routed_cost": decision.model.cost_usd(case["prompt_tokens"], routed_completion),
-                "routed_correct": answered_correctly(decision.model, case["min_quality"]),
+                "routed_cost": decision.model.cost_usd(
+                    case["prompt_tokens"], routed_completion
+                ),
+                "routed_correct": answered_correctly(
+                    decision.model, case["min_quality"]
+                ),
             }
         )
     return rows
 
 
-def run_gateway(cases: list[dict[str, Any]], fixtures: dict[str, dict[str, Any]], policy_name: str, base_url: str, api_key: str) -> list[dict[str, Any]]:
+def run_gateway(
+    cases: list[dict[str, Any]],
+    fixtures: dict[str, dict[str, Any]],
+    policy_name: str,
+    base_url: str,
+    api_key: str,
+) -> list[dict[str, Any]]:
     """Route every case through a running gateway.
 
     The gateway reports the model it chose in its `llmrouter` response extension, so scoring is
@@ -122,7 +136,10 @@ def run_gateway(cases: list[dict[str, Any]], fixtures: dict[str, dict[str, Any]]
                 "messages": [{"role": "user", "content": case["prompt"]}],
                 # Disable the cache for this run: the eval measures routing, and a cache hit
                 # would price a case at zero and flatter the result.
-                "metadata": {"llmrouter_policy": policy_name, "llmrouter_no_cache": "true"},
+                "metadata": {
+                    "llmrouter_policy": policy_name,
+                    "llmrouter_no_cache": "true",
+                },
             }
         ).encode("utf-8")
 
@@ -160,7 +177,9 @@ def run_gateway(cases: list[dict[str, Any]], fixtures: dict[str, dict[str, Any]]
                 "min_quality": case["min_quality"],
                 "prompt_tokens": case["prompt_tokens"],
                 "baseline_model": baseline.id,
-                "baseline_cost": baseline.cost_usd(case["prompt_tokens"], completion_tokens(fixture, baseline)),
+                "baseline_cost": baseline.cost_usd(
+                    case["prompt_tokens"], completion_tokens(fixture, baseline)
+                ),
                 "baseline_correct": answered_correctly(baseline, case["min_quality"]),
                 "routed_model": routed.id,
                 "routed_provider": routed.provider,
@@ -184,13 +203,17 @@ def summarise(rows: list[dict[str, Any]]) -> dict[str, Any]:
     baseline_accuracy = baseline_correct / n
     routed_accuracy = routed_correct / n
 
-    cost_reduction = (baseline_cost - routed_cost) / baseline_cost if baseline_cost else 0.0
+    cost_reduction = (
+        (baseline_cost - routed_cost) / baseline_cost if baseline_cost else 0.0
+    )
 
     # Quality drift is reported in absolute percentage points, which is the honest unit: it says
     # "1.8 more cases in 100 were answered worse". The relative figure is also given, because
     # the two are easy to confuse and quoting only the smaller one would be convenient.
     drift_pp = (baseline_accuracy - routed_accuracy) * 100
-    drift_relative = (drift_pp / (baseline_accuracy * 100) * 100) if baseline_accuracy else 0.0
+    drift_relative = (
+        (drift_pp / (baseline_accuracy * 100) * 100) if baseline_accuracy else 0.0
+    )
 
     by_model: dict[str, int] = defaultdict(int)
     by_provider: dict[str, int] = defaultdict(int)
@@ -202,11 +225,19 @@ def summarise(rows: list[dict[str, Any]]) -> dict[str, Any]:
     confusion: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
     for r in rows:
         confusion[r["difficulty"]][r["predicted_difficulty"]] += 1
-    classifier_correct = sum(1 for r in rows if r["difficulty"] == r["predicted_difficulty"])
+    classifier_correct = sum(
+        1 for r in rows if r["difficulty"] == r["predicted_difficulty"]
+    )
 
     regressions = [
-        {"id": r["id"], "difficulty": r["difficulty"], "predicted": r["predicted_difficulty"],
-         "routed_model": r["routed_model"], "min_quality": r["min_quality"], "misleading": r["misleading"]}
+        {
+            "id": r["id"],
+            "difficulty": r["difficulty"],
+            "predicted": r["predicted_difficulty"],
+            "routed_model": r["routed_model"],
+            "min_quality": r["min_quality"],
+            "misleading": r["misleading"],
+        }
         for r in rows
         if r["baseline_correct"] and not r["routed_correct"]
     ]
@@ -244,7 +275,9 @@ def summarise(rows: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
-def sensitivity(cases: list[dict[str, Any]], fixtures: dict[str, dict[str, Any]], policy_name: str) -> list[dict[str, Any]]:
+def sensitivity(
+    cases: list[dict[str, Any]], fixtures: dict[str, dict[str, Any]], policy_name: str
+) -> list[dict[str, Any]]:
     """Sweep the two cost/quality dials and report the frontier.
 
     This is what turns the committed configuration from an assertion into a measurement. A
@@ -263,7 +296,9 @@ def sensitivity(cases: list[dict[str, Any]], fixtures: dict[str, dict[str, Any]]
         return []
 
     original_margin = params.get("safety_margin", 0.0)
-    original_band = params["classifier"].get("thresholds", {}).get("confidence_band", 0.0)
+    original_band = (
+        params["classifier"].get("thresholds", {}).get("confidence_band", 0.0)
+    )
 
     rows: list[dict[str, Any]] = []
     try:
@@ -291,16 +326,25 @@ def sensitivity(cases: list[dict[str, Any]], fixtures: dict[str, dict[str, Any]]
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     parser.add_argument("--mode", choices=["offline", "gateway"], default="offline")
-    parser.add_argument("--policy", default=None, help="policy to evaluate (default: the configured default)")
+    parser.add_argument(
+        "--policy",
+        default=None,
+        help="policy to evaluate (default: the configured default)",
+    )
     parser.add_argument("--dataset", type=Path, default=DEFAULT_DATASET)
     parser.add_argument("--fixtures", type=Path, default=DEFAULT_FIXTURES)
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT)
     parser.add_argument("--gateway", default="http://localhost:8080")
     parser.add_argument("--api-key", default="demo-tenant-a")
-    parser.add_argument("--no-sensitivity", action="store_true",
-                        help="skip the cost/quality dial sweep (offline mode only)")
+    parser.add_argument(
+        "--no-sensitivity",
+        action="store_true",
+        help="skip the cost/quality dial sweep (offline mode only)",
+    )
     args = parser.parse_args()
 
     from benchmarks.common.catalogue import load_policies
@@ -333,11 +377,17 @@ def main() -> int:
 
     cost = payload["cost"]
     quality = payload["quality"]
-    print(f"eval ({args.mode}, policy={policy_name}, {len(cases)} cases) -> {out.relative_to(REPO_ROOT)}")
-    print(f"  cost      ${cost['baseline_usd']:.4f} -> ${cost['routed_usd']:.4f}  "
-          f"({cost['reduction_pct']:.1f}% reduction)")
-    print(f"  quality   {quality['baseline_accuracy_pct']:.1f}% -> {quality['routed_accuracy_pct']:.1f}%  "
-          f"({quality['drift_pp']:.1f} pp drift, {quality['regressions']} regressions)")
+    print(
+        f"eval ({args.mode}, policy={policy_name}, {len(cases)} cases) -> {out.relative_to(REPO_ROOT)}"
+    )
+    print(
+        f"  cost      ${cost['baseline_usd']:.4f} -> ${cost['routed_usd']:.4f}  "
+        f"({cost['reduction_pct']:.1f}% reduction)"
+    )
+    print(
+        f"  quality   {quality['baseline_accuracy_pct']:.1f}% -> {quality['routed_accuracy_pct']:.1f}%  "
+        f"({quality['drift_pp']:.1f} pp drift, {quality['regressions']} regressions)"
+    )
     print(f"  routing   {payload['routing']['by_model']}")
     print(f"  classifier accuracy {payload['classifier']['accuracy_pct']:.1f}%")
 
@@ -345,8 +395,10 @@ def main() -> int:
         print("  sensitivity (margin/band -> reduction%, drift pp):")
         for row in payload["sensitivity"]:
             marker = " <- selected" if row["selected"] else ""
-            print(f"    {row['safety_margin']:.2f}/{row['confidence_band']:.2f} -> "
-                  f"{row['cost_reduction_pct']:5.1f}%, {row['quality_drift_pp']:.2f} pp{marker}")
+            print(
+                f"    {row['safety_margin']:.2f}/{row['confidence_band']:.2f} -> "
+                f"{row['cost_reduction_pct']:5.1f}%, {row['quality_drift_pp']:.2f} pp{marker}"
+            )
     return 0
 
 

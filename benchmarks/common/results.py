@@ -64,7 +64,9 @@ def git_sha() -> str:
     return f"{sha}-dirty" if dirty else sha
 
 
-def provenance(mode: str, seed: int, generated_by: str, extra: dict[str, Any] | None = None) -> dict[str, Any]:
+def provenance(
+    mode: str, seed: int, generated_by: str, extra: dict[str, Any] | None = None
+) -> dict[str, Any]:
     """Build the provenance block."""
     if mode not in MODES:
         raise ValueError(f"mode must be one of {MODES}, got {mode!r}")
@@ -126,7 +128,10 @@ def env_seed(default: int = 1337) -> int:
     try:
         return int(raw)
     except ValueError:
-        print(f"warning: SEED={raw!r} is not an integer; falling back to {default}", file=sys.stderr)
+        print(
+            f"warning: SEED={raw!r} is not an integer; falling back to {default}",
+            file=sys.stderr,
+        )
         return default
 
 
@@ -151,7 +156,15 @@ def percentile(values: list[float], q: float) -> float:
 def summarise_latency(samples: list[float]) -> dict[str, float]:
     """Return the standard latency summary used across every results file."""
     if not samples:
-        return {"count": 0, "p50": 0.0, "p95": 0.0, "p99": 0.0, "mean": 0.0, "min": 0.0, "max": 0.0}
+        return {
+            "count": 0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0,
+            "mean": 0.0,
+            "min": 0.0,
+            "max": 0.0,
+        }
     return {
         "count": len(samples),
         "p50": round(percentile(samples, 50), 3),

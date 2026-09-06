@@ -69,16 +69,21 @@ class Stats:
 
 def send(gateway: str, api_key: str, prompt: str, stream: bool, stats: Stats) -> None:
     """Issue one request and record the outcome."""
-    body = json.dumps({
-        "model": "auto",
-        "messages": [{"role": "user", "content": prompt}],
-        "stream": stream,
-    }).encode("utf-8")
+    body = json.dumps(
+        {
+            "model": "auto",
+            "messages": [{"role": "user", "content": prompt}],
+            "stream": stream,
+        }
+    ).encode("utf-8")
 
     request = urllib.request.Request(
         f"{gateway.rstrip('/')}/v1/chat/completions",
         data=body,
-        headers={"Content-Type": "application/json", "Authorization": f"Bearer {api_key}"},
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {api_key}",
+        },
         method="POST",
     )
 
@@ -94,20 +99,28 @@ def send(gateway: str, api_key: str, prompt: str, stream: bool, stats: Stats) ->
 
         data = json.loads(payload)
         meta = data.get("llmrouter", {})
-        stats.record("cached" if meta.get("cached") else "ok", meta.get("resolved_model"), elapsed)
+        stats.record(
+            "cached" if meta.get("cached") else "ok",
+            meta.get("resolved_model"),
+            elapsed,
+        )
 
     except urllib.error.HTTPError as exc:
         elapsed = (time.perf_counter() - started) * 1000
         # A 400 here is usually a guardrail block, which is the system working. Counting it as
         # an error would make the demo look broken.
-        stats.record("blocked" if exc.code == 400 else f"http_{exc.code}", None, elapsed)
+        stats.record(
+            "blocked" if exc.code == 400 else f"http_{exc.code}", None, elapsed
+        )
     except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
         elapsed = (time.perf_counter() - started) * 1000
         stats.record(f"error:{type(exc).__name__}", None, elapsed)
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
     parser.add_argument("--seconds", type=int, default=60)
     parser.add_argument("--gateway", default="http://localhost:8080")
     parser.add_argument("--workers", type=int, default=6)
@@ -115,7 +128,9 @@ def main() -> int:
     args = parser.parse_args()
 
     tenants = load_tenants()["tenants"]
-    weights = [max(0.05, float(t.get("seed_profile", {}).get("rps", 0.5))) for t in tenants]
+    weights = [
+        max(0.05, float(t.get("seed_profile", {}).get("rps", 0.5))) for t in tenants
+    ]
     stats = Stats()
     deadline = time.time() + args.seconds
     stop = threading.Event()
@@ -140,10 +155,19 @@ def main() -> int:
             else:
                 prompt = render(rng.choice(ALL_TEMPLATES), rng)
 
-            send(args.gateway, tenant["api_key"], prompt, stream=rng.random() < 0.15, stats=stats)
+            send(
+                args.gateway,
+                tenant["api_key"],
+                prompt,
+                stream=rng.random() < 0.15,
+                stats=stats,
+            )
             time.sleep(rng.uniform(0.05, 0.3))
 
-    threads = [threading.Thread(target=worker, args=(i,), daemon=True) for i in range(args.workers)]
+    threads = [
+        threading.Thread(target=worker, args=(i,), daemon=True)
+        for i in range(args.workers)
+    ]
     for thread in threads:
         thread.start()
 

@@ -28,15 +28,17 @@ from app.models.schemas import Action, Finding, OWASPCategory, Severity
 #: Slurs are not enumerated here: a list of them in a public repository is its own problem, and
 #: a word list is the wrong tool for that job.
 PATTERNS: tuple[tuple[str, str, Severity], ...] = (
-    ("threat_of_violence",
-     r"\b(?:i\s+will|i'm\s+going\s+to|gonna)\s+(?:kill|hurt|attack|stab|shoot)\s+(?:you|him|her|them)\b",
-     Severity.HIGH),
-    ("self_harm",
-     r"\b(?:how\s+to|ways?\s+to|best\s+way\s+to)\s+(?:kill\s+myself|end\s+my\s+life|self[\s-]harm)\b",
-     Severity.CRITICAL),
-    ("harassment",
-     r"\b(?:you\s+are|you're)\s+(?:worthless|pathetic|stupid|an\s+idiot)\b",
-     Severity.LOW),
+    (
+        "threat_of_violence",
+        r"\b(?:i\s+will|i'm\s+going\s+to|gonna)\s+(?:kill|hurt|attack|stab|shoot)\s+(?:you|him|her|them)\b",
+        Severity.HIGH,
+    ),
+    (
+        "self_harm",
+        r"\b(?:how\s+to|ways?\s+to|best\s+way\s+to)\s+(?:kill\s+myself|end\s+my\s+life|self[\s-]harm)\b",
+        Severity.CRITICAL,
+    ),
+    ("harassment", r"\b(?:you\s+are|you're)\s+(?:worthless|pathetic|stupid|an\s+idiot)\b", Severity.LOW),
 )
 
 COMPILED = tuple((name, re.compile(pattern, re.IGNORECASE), severity) for name, pattern, severity in PATTERNS)
@@ -53,8 +55,16 @@ class ToxicityDetector:
             for match in pattern.finditer(text):
                 action = Action.BLOCK if severity is Severity.CRITICAL else Action.ALLOW
                 found.append(
-                    finding(self.name, category, OWASPCategory.LLM02_INSECURE_OUTPUT,
-                            severity, action, match, text, confidence=0.5)
+                    finding(
+                        self.name,
+                        category,
+                        OWASPCategory.LLM02_INSECURE_OUTPUT,
+                        severity,
+                        action,
+                        match,
+                        text,
+                        confidence=0.5,
+                    )
                 )
         return merge_overlapping(found)
 

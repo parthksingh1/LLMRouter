@@ -6,6 +6,8 @@ alone what it must, and does it never leak the thing it found.
 
 from __future__ import annotations
 
+from itertools import pairwise
+
 import pytest
 
 from app.detectors.base import merge_overlapping, redact
@@ -14,7 +16,6 @@ from app.detectors.prompt_injection import PromptInjectionDetector
 from app.detectors.secrets import SecretsDetector, looks_like_a_secret, shannon_entropy
 from app.detectors.toxicity import ToxicityDetector
 from app.models.schemas import Action, OWASPCategory, Severity
-
 
 # --- PII ---------------------------------------------------------------------
 
@@ -136,9 +137,7 @@ def test_injection_is_detected(injection: PromptInjectionDetector, text: str, ca
         "What are the rules for IBAN validation?",
     ],
 )
-def test_injection_does_not_fire_on_legitimate_prompts(
-    injection: PromptInjectionDetector, text: str
-) -> None:
+def test_injection_does_not_fire_on_legitimate_prompts(injection: PromptInjectionDetector, text: str) -> None:
     """Developers legitimately talk about prompts, rules and ignoring things.
 
     A detector that blocks "how do I ignore whitespace" is a detector that gets turned off.
@@ -238,7 +237,7 @@ def test_toxicity_detects_the_unambiguous_cases() -> None:
 
 
 def test_toxicity_leaves_technical_language_alone() -> None:
-    """"Kill the process" is not violence, which is exactly why this detector is off by default."""
+    """ "Kill the process" is not violence, which is exactly why this detector is off by default."""
     detector = ToxicityDetector()
     for text in ("kill the process with SIGTERM", "the deploy killed the old pods", "abort the transaction"):
         assert detector.scan(text) == [], text
@@ -253,8 +252,8 @@ def test_merge_overlapping_keeps_the_most_severe() -> None:
     # same span twice and corrupting the offsets.
     findings = detector.scan("card 4111 1111 1111 1111 here")
     spans = [(f.start, f.end) for f in findings]
-    for (s1, e1), (s2, _) in zip(spans, spans[1:], strict=False):
-        assert e1 <= s2, f"overlapping spans survived merging: {spans}"
+    for (_, end), (start, _) in pairwise(spans):
+        assert end <= start, f"overlapping spans survived merging: {spans}"
 
 
 def test_merge_overlapping_on_empty_input() -> None:

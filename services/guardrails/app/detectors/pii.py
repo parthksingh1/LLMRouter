@@ -90,30 +90,58 @@ class PIIDetector:
 
         for match in EMAIL_RE.finditer(text):
             found.append(
-                finding(self.name, "email", OWASPCategory.LLM06_SENSITIVE_INFO,
-                        Severity.MEDIUM, Action.REDACT, match, text)
+                finding(
+                    self.name,
+                    "email",
+                    OWASPCategory.LLM06_SENSITIVE_INFO,
+                    Severity.MEDIUM,
+                    Action.REDACT,
+                    match,
+                    text,
+                )
             )
 
         for match in SSN_RE.finditer(text):
             found.append(
-                finding(self.name, "ssn", OWASPCategory.LLM06_SENSITIVE_INFO,
-                        Severity.CRITICAL, Action.REDACT, match, text)
+                finding(
+                    self.name,
+                    "ssn",
+                    OWASPCategory.LLM06_SENSITIVE_INFO,
+                    Severity.CRITICAL,
+                    Action.REDACT,
+                    match,
+                    text,
+                )
             )
 
         for match in CARD_RE.finditer(text):
             if not luhn_valid(match.group()):
                 continue
             found.append(
-                finding(self.name, "credit_card", OWASPCategory.LLM06_SENSITIVE_INFO,
-                        Severity.CRITICAL, Action.REDACT, match, text)
+                finding(
+                    self.name,
+                    "credit_card",
+                    OWASPCategory.LLM06_SENSITIVE_INFO,
+                    Severity.CRITICAL,
+                    Action.REDACT,
+                    match,
+                    text,
+                )
             )
 
         for match in IBAN_RE.finditer(text):
             if not iban_valid(match.group()):
                 continue
             found.append(
-                finding(self.name, "iban", OWASPCategory.LLM06_SENSITIVE_INFO,
-                        Severity.HIGH, Action.REDACT, match, text)
+                finding(
+                    self.name,
+                    "iban",
+                    OWASPCategory.LLM06_SENSITIVE_INFO,
+                    Severity.HIGH,
+                    Action.REDACT,
+                    match,
+                    text,
+                )
             )
 
         for match in PHONE_RE.finditer(text):
@@ -121,8 +149,16 @@ class PIIDetector:
             if not 7 <= digits <= 15:
                 continue
             found.append(
-                finding(self.name, "phone", OWASPCategory.LLM06_SENSITIVE_INFO,
-                        Severity.MEDIUM, Action.REDACT, match, text, confidence=0.8)
+                finding(
+                    self.name,
+                    "phone",
+                    OWASPCategory.LLM06_SENSITIVE_INFO,
+                    Severity.MEDIUM,
+                    Action.REDACT,
+                    match,
+                    text,
+                    confidence=0.8,
+                )
             )
 
         for match in IP_RE.finditer(text):
@@ -131,8 +167,16 @@ class PIIDetector:
             if match.group().startswith(("10.", "192.168.", "127.", "172.16.", "0.")):
                 continue
             found.append(
-                finding(self.name, "ip_address", OWASPCategory.LLM06_SENSITIVE_INFO,
-                        Severity.LOW, Action.REDACT, match, text, confidence=0.6)
+                finding(
+                    self.name,
+                    "ip_address",
+                    OWASPCategory.LLM06_SENSITIVE_INFO,
+                    Severity.LOW,
+                    Action.REDACT,
+                    match,
+                    text,
+                    confidence=0.6,
+                )
             )
 
         return merge_overlapping(found)
